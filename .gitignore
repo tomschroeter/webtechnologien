@@ -1,0 +1,31 @@
+# Logs
+*.log
+logs/
+error_log
+
+# Temporary Files
+*.tmp
+*.swp
+*.bak
+
+# Composer
+/vendor/
+composer.lock
+
+# PHPUnit
+phpunit.xml
+phpunit.xml.dist
+/build/
+
+# IDEs/Editors
+.vscode/
+.idea/
+*.sublime-*
+
+# System Files
+.DS_Store
+Thumbs.db
+
+# Cache
+cache/
+*.cache
