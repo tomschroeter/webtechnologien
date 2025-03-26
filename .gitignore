@@ -29,3 +29,6 @@ Thumbs.db
 # Cache
 cache/
 *.cache
+
+# Environment
+.env
