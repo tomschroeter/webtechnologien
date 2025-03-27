@@ -7,9 +7,11 @@ It is a PHP web app that is an art showcase site, including pages for artists, g
 ## Setup
 Make sure you have XAMPP installed and have added the art DB that was provided.
 
-1. Run the Apache Web Server
-2. Run the MySQL Database
-3. Got to the browser on http://localhost/webtechnologien to see the main page
+1. Clone the GitHub Project
+2. Copy the images folder into the assets folder (webtechnologien/assets/images)
+3. Run the Apache Web Server
+4. Run the MySQL Database
+5. Got to the browser on http://localhost/webtechnologien to see the main page
 
 ## Routing
 This app uses filebased routing by default. Routes are therefore based on the folder structure, e.g. app/index.php -> http://localhost/app & app/about/index.php -> http://localhost/app/about.

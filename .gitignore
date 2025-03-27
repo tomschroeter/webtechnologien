@@ -32,3 +32,6 @@ cache/
 
 # Environment
 .env
+
+# Image files
+assets/images/*
