@@ -25,3 +25,12 @@
 .carousel-item.active img {
   opacity: 1; /* Visble when active */
 }
+
+.break {
+  border-top: 1px solid black;
+  border-radius: 2rem;
+  margin-left: 1rem;
+  margin-right: 1rem;
+  margin-top: 4rem;
+  margin-bottom: 4rem;
+}
