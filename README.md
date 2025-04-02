@@ -14,13 +14,26 @@ Make sure you have XAMPP installed and have added the art DB that was provided.
 5. Got to the browser on http://localhost/webtechnologien to see the main page
 
 ## Routing
-This app uses filebased routing by default. Routes are therefore based on the folder structure, e.g. app/index.php -> http://localhost/app & app/about/index.php -> http://localhost/app/about.
+This app uses filebased routing by default. Routes are therefore based on the folder structure, e.g. `app/index.php` -> http://localhost/app & `app/about/index.php` -> http://localhost/app/about.
 
 If you want to link to another page you can do the following:
-- href="about" -> http://localhost/app/about
-- href="/about" -> http://localhost/about (avoid this)
-- href="" -> http://localhost/app, returns to main page
-- href="about/another_page" -> use this to go to more nested routes
+- `href="about"` -> http://localhost/app/about
+- `href="/about"` -> http://localhost/about (avoid this)
+- `href=""` -> http://localhost/app, returns to main page
+- `href="about/another_page"` -> use this to go to more nested routes
+
+### Dynamic Routing
+> Make sure you have included `navbar.php` or `router.php` directly!
+> For example usage see `navbar.php`
+
+You can use:
+- `href=<?php echo route("your_route", ["param" => some_id]) ?>`
+
+When setting routes in `routes.php` make sure that:
+- Routes make sense
+- You give easy to remember route names
+- Use optional params by adding `/:your_param` (: -> optional)
+- Or use required params by adding `/{your_param}` ({} -> required)
 
 # Unsere Termine
 ### Erster Pflicht-Besprechungstermin

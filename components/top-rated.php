@@ -20,21 +20,27 @@
         $artworkName = $row["artwork_name"];
         $artworkArtist = $row["artist_first"] . " " . $row["artist_last"];
         $rating = round($row["avg_rating"], 0);
+
+        // Get the correct filename and check if it exists
+        // If file does not exist, use a placeholder image (001010.jpg for example)
         $fileName = $row["imgFile"] . ".jpg";
+        $imgPath = "$worksDir/$fileName";
+        $placeholderImg = "$worksDir/001010.jpg";
+
+        $imgToUse = file_exists($imgPath) ? $imgPath : $placeholderImg;
 
         // Note: Wrong filenames: 12030; Balcony by Edouard Manet, 01290; The Dream by Pablo Picasso
         // And many more
         // echo $fileName;
-        // TODO: work on rating position
         echo "
           <div class=\"card\">
-            <img class=\"card-img-top\" src=\"$worksDir/$fileName\" alt=\"\">
+            <img class=\"card-img-top\" src=\"$imgToUse\" alt=\"\">
             <div class=\"card-body\">
               <h4 class=\"card-title\">$artworkName</h4>
-              <div class=\"d-flex w-100\">
-              <p class=\"card-text\">
+              <div class=\"w-100\">
+              <p class=\"card-text d-flex\">
                 $artworkArtist
-                <span class=\"ml-auto text-danger font-weight-bold\">$rating/10</span>
+                <span class=\"ml-auto font-weight-bold\">$rating/10</span>
               </p>
               </div>
             </div>
@@ -42,7 +48,9 @@
           ";
       }
     } else {
-      echo "No results found.";
+      echo "
+        <div>No results found</div>
+      ";
     }
     ?>
   </div>
