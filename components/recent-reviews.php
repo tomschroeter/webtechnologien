@@ -14,9 +14,10 @@
   if ($result->num_rows > 0) {
     while ($row = $result->fetch_assoc()) {
       $formattedDate = date("F j, Y", strtotime($row["ReviewDate"]));
+      $artworkRoute = route("subjects", ["id" => $row["artwork_id"]]);
 
       echo "
-      <div class=\"card\" onclick=\"window.location.href='https://example.com';\" style=\"cursor: pointer;\">
+      <div class=\"card\" onclick=\" window.location.href='$artworkRoute'; \" style=\"cursor: pointer;\">
         <div class=\"card-body\">
           <h4 class=\"card-title\">$row[title]</h4>
           <h6 class=\"card-subtitle mb-2 text-muted\">

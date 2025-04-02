@@ -9,10 +9,10 @@
   include 'navbar.php';
   ?>
 
-  <!-- Test Title -->
-  <h1 class="p-2">Home Page</h1>
-
+  <!-- TODO: Change homepage style at a later time -->
+  </br>
   <?php include 'components/random-carousel.php'; ?>
+
   <hr class="break">
   <h2 class="mx-auto pb-4" style="width: fit-content;"><u>Top Rated Artworks</u></h2>
   <?php include 'components/top-rated.php'; ?>
