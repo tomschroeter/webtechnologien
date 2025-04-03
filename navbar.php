@@ -1,5 +1,5 @@
 <!-- Placeholder Navbar -->
-<?php include 'router/router.php'; ?>
+<?php require_once 'router/router.php'; ?>
 <nav class="navbar navbar-expand-sm navbar-light bg-light">
   <a class="navbar-brand" href="#">
     <img src="assets/svgs/logo.svg" alt="Logo" style="height: 40px; width: 40px;">

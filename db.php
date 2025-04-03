@@ -1,11 +1,11 @@
 <?php
-include 'env.php';
+require_once 'env.php';
 loadEnv();
 
 $host = $_ENV['DB_HOST'] ?? "localhost";
 $user = $_ENV['DB_USERNAME'] ?? "root";
 $pass = $_ENV['DB_PASSWORD'] ?? "";
-$dbname = $_ENV['DB_NAME'] ?? "my_database";
+$dbname = $_ENV['DB_NAME'] ?? "art";
 
 // Create connection
 $conn = new mysqli($host, $user, $pass, $dbname);

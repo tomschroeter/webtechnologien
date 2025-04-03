@@ -1,7 +1,7 @@
 <?php
 function route($name, $params = [])
 {
-  $routes = include "routes.php"; // Load routes
+  $routes = require "routes.php"; // Load routes
 
   if (!isset($routes[$name])) {
     throw new Exception("Route '$name' not found.");

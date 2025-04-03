@@ -6,6 +6,7 @@ It is a PHP web app that is an art showcase site, including pages for artists, g
 
 ## Setup
 Make sure you have XAMPP installed and have added the art DB that was provided.
+Create an `.env` file and copy the structure of the `.env.template`.
 
 1. Clone the GitHub Project into (some_folder)/XAMPP/xamppfiles/htdocs
 2. Copy the images folder into the assets folder (webtechnologien/assets/images)
