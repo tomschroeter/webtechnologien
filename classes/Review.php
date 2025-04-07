@@ -26,34 +26,34 @@ class Review
     }
 
 
-    public function getReviewID()
+    public function getReviewId()
     {
         return $this->reviewId;
     }
 
-    public function setReviewID($reviewId)
+    public function setReviewId($reviewId)
     {
         $this->reviewId = $reviewId;
     }
 
 
-    public function getCustomerID()
+    public function getCustomerId()
     {
         return $this->customerId;
     }
 
-    public function setCustomerID($customerId)
+    public function setCustomerId($customerId)
     {
         $this->customerId = $customerId;
     }
 
 
-    public function getArtworkID()
+    public function getArtworkId()
     {
         return $this->artworkId;
     }
 
-    public function setArtworkID($artworkId)
+    public function setArtworkId($artworkId)
     {
         $this->artworkId = $artworkId;
     }
