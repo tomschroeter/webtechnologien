@@ -14,34 +14,34 @@ class ArtworkSubject
     }
 
 
-    public function getArtworkSubjectID()
+    public function getArtworkSubjectId()
     {
         return $this->artworkSubjectId;
     }
 
-    public function setArtworkSubjectID($artworkSubjectId)
+    public function setArtworkSubjectId($artworkSubjectId)
     {
         $this->artworkSubjectId = $artworkSubjectId;
     }
 
 
-    public function getArtworkID()
+    public function getArtworkId()
     {
         return $this->artworkId;
     }
 
-    public function setArtworkID($artworkId)
+    public function setArtworkId($artworkId)
     {
         $this->artworkId = $artworkId;
     }
 
 
-    public function getSubjectID()
+    public function getSubjectId()
     {
         return $this->subjectId;
     }
 
-    public function setSubjectID($subjectId)
+    public function setSubjectId($subjectId)
     {
         $this->subjectId = $subjectId;
     }

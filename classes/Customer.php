@@ -39,12 +39,12 @@ class Customer
     }
 
 
-    public function getCustomerID()
+    public function getCustomerId()
     {
         return $this->customerId;
     }
 
-    public function setCustomerID($customerId)
+    public function setCustomerId($customerId)
     {
         $this->customerId = $customerId;
     }

@@ -52,23 +52,23 @@ class Artwork
         $this->artworkId = $artworkId;
     }
 
-    public function getArtworkID()
+    public function getArtworkId()
     {
         return $this->artworkId;
     }
 
-    public function setArtworkID($artworkId)
+    public function setArtworkId($artworkId)
     {
         $this->artworkId = $artworkId;
     }
 
 
-    public function getArtistID()
+    public function getArtistId()
     {
         return $this->artistId;
     }
 
-    public function setArtistID($artistId)
+    public function setArtistId($artistId)
     {
         $this->artistId = $artistId;
     }
@@ -184,12 +184,12 @@ class Artwork
     }
 
 
-    public function getGalleryID()
+    public function getGalleryId()
     {
         return $this->galleryId;
     }
 
-    public function setGalleryID($galleryId)
+    public function setGalleryId($galleryId)
     {
         $this->galleryId = $galleryId;
     }

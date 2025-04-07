@@ -13,13 +13,13 @@ class Subject
     }
 
 
-    public function getSubjectID()
+    public function getSubjectId()
     {
         return $this->subjectId;
     }
 
 
-    public function setSubjectID($subjectId)
+    public function setSubjectId($subjectId)
     {
         $this->subjectId = $subjectId;
     }

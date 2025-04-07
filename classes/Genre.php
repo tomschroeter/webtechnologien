@@ -23,13 +23,13 @@ class Genre
         $this->genreId = $genreId;
     }
 
-    public function getGenreID()
+    public function getGenreId()
     {
         return $this->genreId;
     }
 
 
-    public function setGenreID($genreId)
+    public function setGenreId($genreId)
     {
         $this->genreId = $genreId;
     }

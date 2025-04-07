@@ -1,5 +1,5 @@
 <?php
-class artists
+class Artist
 {
 
 
@@ -34,12 +34,12 @@ class artists
         $this->artistId = $artistId;
     }
 
-    public function getArtistID()
+    public function getArtistId()
     {
         return $this->artistId;
     }
 
-    public function setArtistID($artistId)
+    public function setArtistId($artistId)
     {
         $this->artistId = $artistId;
     }
