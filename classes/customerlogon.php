@@ -1,6 +1,6 @@
 <?php
 
-class CustomerLogon
+class customerlogon
 { 
     private $customerId;
     private $userName;
