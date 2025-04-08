@@ -1,7 +1,7 @@
 <?php
 
 class CustomerLogon
-{
+{ 
     private $customerId;
     private $userName;
     private $pass;
