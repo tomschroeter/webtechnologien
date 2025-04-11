@@ -17,13 +17,14 @@ class Review
         $reviewDate = null,
         $reviewId = null
     ) {
-        $this->customerId = $customerId;
-        $this->artworkId = $artworkId;
-        $this->rating = $rating;
-        $this->comment = $comment;
-        $this->reviewDate = $reviewDate;
-        $this->reviewId = $reviewId;
+        $this->setCustomerId($customerId);
+        $this->setArtworkId($artworkId);
+        $this->setRating($rating);
+        $this->setComment($comment);
+        $this->setReviewDate($reviewDate);
+        $this->setReviewId($reviewId);
     }
+
 
 
     public function getReviewId()

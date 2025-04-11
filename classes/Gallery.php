@@ -21,17 +21,17 @@ class Gallery
         $latitude = null,
         $longitude = null,
         $galleryId = null
-
     ) {
-        $this->galleryName = $galleryName;
-        $this->galleryNativeName = $galleryNativeName;
-        $this->galleryCity = $galleryCity;
-        $this->galleryCountry = $galleryCountry;
-        $this->galleryWebsite = $galleryWebsite;
-        $this->latitude = $latitude;
-        $this->longitude = $longitude;
-        $this->galleryId = $galleryId;
+        $this->setGalleryName($galleryName);
+        $this->setGalleryNativeName($galleryNativeName);
+        $this->setGalleryCity($galleryCity);
+        $this->setGalleryCountry($galleryCountry);
+        $this->setGalleryWebsite($galleryWebsite);
+        $this->setLatitude($latitude);
+        $this->setLongitude($longitude);
+        $this->setGalleryId($galleryId);
     }
+
 
 
     public function getGalleryId()

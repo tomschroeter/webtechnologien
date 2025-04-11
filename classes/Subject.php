@@ -8,9 +8,10 @@ class Subject
 
     public function __construct($subjectName, $subjectId = null)
     {
-        $this->subjectName = $subjectName;
-        $this->subjectId = $subjectId;
+        $this->setSubjectName($subjectName);
+        $this->setSubjectId($subjectId);
     }
+
 
 
     public function getSubjectId()

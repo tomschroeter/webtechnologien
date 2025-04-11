@@ -26,16 +26,16 @@ class Customer
         $phone = null,
         $customerId = null
     ) {
-        $this->firstName = $firstName;
-        $this->lastName = $lastName;
-        $this->address = $address;
-        $this->city = $city;
-        $this->region = $region;
-        $this->country = $country;
-        $this->postal = $postal;
-        $this->phone = $phone;
-        $this->email = $email;
-        $this->customerId = $customerId;
+        $this->setFirstName($firstName);
+        $this->setLastName($lastName);
+        $this->setAddress($address);
+        $this->setCity($city);
+        $this->setRegion($region);
+        $this->setCountry($country);
+        $this->setPostal($postal);
+        $this->setPhone($phone);
+        $this->setEmail($email);
+        $this->setCustomerId($customerId);
     }
 
 
