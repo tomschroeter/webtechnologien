@@ -12,11 +12,11 @@
   $result = $conn->query($query);
 
   if ($result->num_rows > 0) {
-    while ($row = $result->fetch_assoc()) {
-      $formattedDate = date("F j, Y", strtotime($row["ReviewDate"]));
-      $artworkRoute = route("subjects", ["id" => $row["artwork_id"]]);
+      while ($row = $result->fetch_assoc()) {
+          $formattedDate = date("F j, Y", strtotime($row["ReviewDate"]));
+          $artworkRoute = route("subjects", ["id" => $row["artwork_id"]]);
 
-      echo "
+          echo "
       <div class=\"card\" onclick=\" window.location.href='$artworkRoute'; \" style=\"cursor: pointer;\">
         <div class=\"card-body\">
           <h4 class=\"card-title\">$row[title]</h4>
@@ -31,9 +31,9 @@
         </div>
       </div>
       ";
-    }
+      }
   } else {
-    echo "No recent reviews found.";
+      echo "No recent reviews found.";
   }
   ?>
 </div>
