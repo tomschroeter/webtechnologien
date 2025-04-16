@@ -8,11 +8,10 @@ class ArtworkSubject
 
     public function __construct($artworkId, $subjectId, $artworkSubjectId = null)
     {
-        $this->artworkId = $artworkId;
-        $this->subjectId = $subjectId;
-        $this->artworkSubjectId = $artworkSubjectId;
+        $this->setArtworkId($artworkId);
+        $this->setSubjectId($subjectId);
+        $this->setArtworkSubjectId($artworkSubjectId);
     }
-
 
     public function getArtworkSubjectId()
     {

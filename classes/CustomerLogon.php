@@ -1,7 +1,7 @@
 <?php
 
 class CustomerLogon
-{ 
+{
     private $customerId;
     private $userName;
     private $pass;
@@ -21,14 +21,14 @@ class CustomerLogon
         $dateLastModified = null,
         $customerId = null
     ) {
-        $this->userName = $userName;
-        $this->pass = $pass;
-        $this->salt = $salt;
-        $this->state = $state;
-        $this->type = $type;
-        $this->dateJoined = $dateJoined;
-        $this->dateLastModified = $dateLastModified;
-        $this->customerId = $customerId;
+        $this->setUserName($userName);
+        $this->setPass($pass);
+        $this->setSalt($salt);
+        $this->setState($state);
+        $this->setType($type);
+        $this->setDateJoined($dateJoined);
+        $this->setDateLastModified($dateLastModified);
+        $this->setCustomerId($customerId);
     }
 
 

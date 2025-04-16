@@ -16,11 +16,11 @@ class Genre
         $link = null,
         $genreId = null
     ) {
-        $this->genreName = $genreName;
-        $this->era = $era;
-        $this->description = $description;
-        $this->link = $link;
-        $this->genreId = $genreId;
+        $this->setGenreName($genreName);
+        $this->setEra($era);
+        $this->setDescription($description);
+        $this->setLink($link);
+        $this->setGenreId($genreId);
     }
 
     public function getGenreId()

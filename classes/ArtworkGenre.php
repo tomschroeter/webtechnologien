@@ -8,11 +8,10 @@ class ArtworkGenre
 
     public function __construct($artworkId, $genreId, $artworkGenreId = null)
     {
-        $this->artworkId = $artworkId;
-        $this->genreId = $genreId;
-        $this->artworkGenreId = $artworkGenreId;
+        $this->setArtworkId($artworkId);
+        $this->setGenreId($genreId);
+        $this->setArtworkGenreId($artworkGenreId);
     }
-
 
     public function getArtworkGenreId()
     {
@@ -24,7 +23,6 @@ class ArtworkGenre
         $this->artworkGenreId = $artworkGenreId;
     }
 
-
     public function getArtworkId()
     {
         return $this->artworkId;
@@ -34,7 +32,6 @@ class ArtworkGenre
     {
         $this->artworkId = $artworkId;
     }
-
 
     public function getGenreId()
     {

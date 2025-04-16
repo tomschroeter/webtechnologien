@@ -1,4 +1,5 @@
 <?php
+require_once dirname(__DIR__)."/Database.php";
 
 class Artwork
 {
@@ -18,38 +19,43 @@ class Artwork
     private $artworkLink;
     private $googleLink;
 
-    public function __construct(
-        $artistId,
-        $imageFileName,
-        $title,
-        $description,
-        $excerpt,
-        $artworkType,
-        $yearOfWork,
-        $width,
-        $height,
-        $medium,
-        $originalHome,
-        $galleryId,
-        $artworkLink = null,
-        $googleLink = null,
-        $artworkId = null
-    ) {
-        $this->artistId = $artistId;
-        $this->imageFileName = $imageFileName;
-        $this->title = $title;
-        $this->description = $description;
-        $this->excerpt = $excerpt;
-        $this->artworkType = $artworkType;
-        $this->yearOfWork = $yearOfWork;
-        $this->width = $width;
-        $this->height = $height;
-        $this->medium = $medium;
-        $this->originalHome = $originalHome;
-        $this->galleryId = $galleryId;
-        $this->artworkLink = $artworkLink;
-        $this->googleLink = $googleLink;
-        $this->artworkId = $artworkId;
+    // constructor is only used when fetching from database
+    // later logic for retrieving artist inside artwork object is also needed
+    private function __construct($record)
+    {
+        $this->artworkId     = $record['ArtWorkID'];
+        $this->artistId      = $record['ArtistID'];
+        $this->imageFileName = $record['ImageFileName'];
+        $this->title         = $record['Title'];
+        $this->description   = $record['Description'];
+        $this->excerpt       = $record['Excerpt'];
+        $this->artworkType   = $record['ArtWorkType'];
+        $this->yearOfWork    = $record['YearOfWork'];
+        $this->width         = $record['Width'];
+        $this->height        = $record['Height'];
+        $this->medium        = $record['Medium'];
+        $this->originalHome  = $record['OriginalHome'];
+        $this->galleryId     = $record['GalleryID'];
+        $this->artworkLink   = $record['ArtWorkLink'];
+        $this->googleLink    = $record['GoogleLink'];
+    }
+
+    public static function findById(int $id)
+    {
+        $sql = "
+            select *
+            from artworks
+            where ArtWorkID = :id
+        ";
+
+        $pdo = Database::getInstance()->getConnection();
+
+        // use prepared statement
+        $stmt = $pdo->prepare($sql);
+        $stmt->bindValue("id", $id);
+        $stmt->execute();
+
+        return new Artwork($stmt->fetch());
     }
 
     public function getArtworkId()
@@ -62,7 +68,6 @@ class Artwork
         $this->artworkId = $artworkId;
     }
 
-
     public function getArtistId()
     {
         return $this->artistId;
@@ -72,7 +77,6 @@ class Artwork
     {
         $this->artistId = $artistId;
     }
-
 
     public function getImageFileName()
     {
@@ -84,7 +88,6 @@ class Artwork
         $this->imageFileName = $imageFileName;
     }
 
-
     public function getTitle()
     {
         return $this->title;
@@ -94,7 +97,6 @@ class Artwork
     {
         $this->title = $title;
     }
-
 
     public function getDescription()
     {
@@ -106,7 +108,6 @@ class Artwork
         $this->description = $description;
     }
 
-
     public function getExcerpt()
     {
         return $this->excerpt;
@@ -116,7 +117,6 @@ class Artwork
     {
         $this->excerpt = $excerpt;
     }
-
 
     public function getArtworkType()
     {
@@ -128,7 +128,6 @@ class Artwork
         $this->artworkType = $artworkType;
     }
 
-
     public function getYearOfWork()
     {
         return $this->yearOfWork;
@@ -138,7 +137,6 @@ class Artwork
     {
         $this->yearOfWork = $yearOfWork;
     }
-
 
     public function getWidth()
     {
@@ -150,7 +148,6 @@ class Artwork
         $this->width = $width;
     }
 
-
     public function getHeight()
     {
         return $this->height;
@@ -160,7 +157,6 @@ class Artwork
     {
         $this->height = $height;
     }
-
 
     public function getMedium()
     {
@@ -172,7 +168,6 @@ class Artwork
         $this->medium = $medium;
     }
 
-
     public function getOriginalHome()
     {
         return $this->originalHome;
@@ -182,7 +177,6 @@ class Artwork
     {
         $this->originalHome = $originalHome;
     }
-
 
     public function getGalleryId()
     {
@@ -194,7 +188,6 @@ class Artwork
         $this->galleryId = $galleryId;
     }
 
-
     public function getArtworkLink()
     {
         return $this->artworkLink;
@@ -204,7 +197,6 @@ class Artwork
     {
         $this->artworkLink = $artworkLink;
     }
-
 
     public function getGoogleLink()
     {

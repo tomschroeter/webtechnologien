@@ -12,8 +12,8 @@
 
       $randomFiles = array_rand($allFiles, 3);
       foreach ($randomFiles as $index => $file) {
-        $activeClass = $index === 0 ? 'active' : '';
-        echo "<div class=\"carousel-item $activeClass\"><img src=\"$allFiles[$file]\" alt=\"$file\" class=\"d-block w-100 h-100 carousel-image\"></div>";
+          $activeClass = $index === 0 ? 'active' : '';
+          echo "<div class=\"carousel-item $activeClass\"><img src=\"$allFiles[$file]\" alt=\"$file\" class=\"d-block w-100 h-100 carousel-image\"></div>";
       }
       ?>
       <a class="carousel-control-prev" href="#carouselId" role="button" data-slide="prev">
