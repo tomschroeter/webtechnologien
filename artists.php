@@ -6,7 +6,7 @@
   require_once dirname(__DIR__)."/src/repositories/ArtistRepository.php";
   require_once dirname(__DIR__)."/src/navbar.php";
 
-  $artRepository = new ArtistRepository();
+  $artistRepository = new ArtistRepository();
 
   // Checks if user has submitted a valid option for changing the display order
   if (isset($_GET['sort'])) {
@@ -15,7 +15,7 @@
     $sort = 'ascending'; // set sort order to ascending if no option has been selected by the user
   }
 
-  $artists = $artRepository->getAllArtists($sort);
+  $artists = $artistRepository->getAllArtists($sort);
 ?>
 
 <body class="container">
