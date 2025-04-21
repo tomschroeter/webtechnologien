@@ -24,43 +24,7 @@ class Artist
         $this->details     = $record['Details'];
         $this->artistLink  = $record['ArtistLink'];
     }
-
-    public static function findMostReviewed(int $n = 3): ArtistWithStatsArray
-    {
-        $sql = "
-            select a.*, count(r.ReviewId) review_count
-            from artists a
-            join artworks aw on aw.ArtistID = a.ArtistID
-            join reviews r on r.ArtWorkId = aw.ArtWorkID
-            group by a.ArtistID
-            order by review_count desc
-            limit :n
-        ";
-
-        $pdo = Database::getInstance()->getConnection();
-
-        // use prepared statement
-        $stmt = $pdo->prepare($sql);
-        $stmt->bindValue("n", $n, PDO::PARAM_INT); // without type n is inserted as string
-        $stmt->execute();
-
-
-        $mostReviewedArtists = new ArtistWithStatsArray();
-
-        foreach ($stmt as $row)
-        {
-            $artist = new Artist($row);
-            $reviewCount = $row['review_count'];
-
-            $mostReviewedArtists[] = new ArtistWithStats($artist, $reviewCount);
-        }
-
-        return $mostReviewedArtists;
-    }
-
     
-
-
     public function getArtistId()
     {
         return $this->artistId;
