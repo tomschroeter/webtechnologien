@@ -1,6 +1,6 @@
 <?php
 return [
-    "home" => "",
+    "home" => "index",
     "test" => "test",
     "artists" => "artists/:id",
     "genres" => "genres/:id",
