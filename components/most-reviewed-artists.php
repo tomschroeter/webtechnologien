@@ -2,8 +2,10 @@
 	<?php
 
 	require_once dirname(__DIR__)."/classes/Artist.php";
+	require_once dirname(__DIR__)."/repositories/ArtistRepository.php";
 
-	$mostReviewedArtists = Artist::findMostReviewed(3);
+	$artistRepository = new ArtistRepository();
+	$mostReviewedArtists = $artistRepository->findMostReviewed(3);
 
 	foreach ($mostReviewedArtists as $index => $combined)
 	{
