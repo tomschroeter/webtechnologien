@@ -13,7 +13,7 @@ class Artist
     private $details;
     private $artistLink;
 
-    private function __construct($record)
+    public function __construct($record)
     {
         $this->artistId    = $record['ArtistID'];
         $this->firstName   = $record['FirstName'];
@@ -57,6 +57,9 @@ class Artist
 
         return $mostReviewedArtists;
     }
+
+    
+
 
     public function getArtistId()
     {
