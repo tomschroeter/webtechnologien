@@ -10,9 +10,9 @@
 
   // Checks if user has submitted a valid option for changing the display order
   if (isset($_GET['sort'])) {
-    $sort = $_GET['sort'];
+    $sort = ($_GET['sort'] === 'descending');
   } else {
-    $sort = 'ascending'; // set sort order to ascending if no option has been selected by the user
+    $sort = false;
   }
 
   $artists = $artistRepository->getAllArtists($sort);
@@ -24,8 +24,8 @@
     <!-- Form providing the ability to sort the order of displayed artists -->
     <form method="get">
       <select name="sort" onchange="this.form.submit()">
-          <option value="ascending" <?php echo $sort == 'ascending' ? 'selected' : ''?>>Name (aufsteigend)</option>
-          <option value="descending" <?php echo $sort == 'descending' ? 'selected' : ''?>>Name (absteigend)</option>
+          <option value="ascending" <?php echo $sort == "ascending" ? 'selected' : ''?>>Name (aufsteigend)</option>
+          <option value="descending" <?php echo $sort == "descending" ? 'selected' : ''?>>Name (absteigend)</option>
       </select>
     </form>
   <br>
