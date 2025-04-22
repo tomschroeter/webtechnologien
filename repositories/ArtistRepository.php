@@ -10,7 +10,10 @@ class ArtistRepository {
         $this->pdo = Database::getInstance()->getConnection();
     }
 
-    public function getAllArtists($sortDesc) : array {
+    /**
+     * @return Artist[]
+    */
+    public function getAllArtists(bool $sortDesc) : array {
         // Checks if input parameter is set to descending
         if ($sortDesc) {
             $sortOrder = 'DESC';
