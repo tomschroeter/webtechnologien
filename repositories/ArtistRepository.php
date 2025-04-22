@@ -12,22 +12,19 @@ class ArtistRepository {
 
     public function getAllArtists($sort) : array {
         // Checks if input parameter is valid set to ascending
-        if (!in_array($sort, ['ascending', 'descending'])) {
-            $sort = 'ascending';
+        if ($sort) {
+            $sortOrder = 'DESC';
+        } else {
+            $sortOrder = 'ASC';
         }
-        switch ($sort) {
-            case 'descending':
-                $sql = "SELECT * FROM artists ORDER BY LastName DESC, FirstName DESC";
-                break;
-            case 'ascending':
-                $sql = "SELECT * FROM artists ORDER BY LastName ASC, FirstName ASC";
-        }
-
+        
+        $sql = "SELECT * FROM artists ORDER BY LastName {$sortOrder}, FirstName {$sortOrder}";
+        
         $stmt = $this->pdo->prepare($sql);
         $stmt->execute();
         $artists = [];
         foreach ($stmt as $row) {
-            $artists[] = new Artist($row);
+            $artists[] = Artist::createArtistFromRecord($row);
         }
 
         return $artists;
@@ -55,7 +52,7 @@ class ArtistRepository {
 
         foreach ($stmt as $row)
         {
-            $artist = new Artist($row);
+            $artist = Artist::createArtistFromRecord($row);
             $reviewCount = $row['review_count'];
 
             $mostReviewedArtists[] = new ArtistWithStats($artist, $reviewCount);
