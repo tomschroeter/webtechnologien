@@ -13,18 +13,40 @@ class Artist
     private $details;
     private $artistLink;
 
-    public function __construct($record)
+    private function __construct(
+        $artistId,
+        $firstName,
+        $lastName,
+        $nationality,
+        $yearOfBirth,
+        $yearOfDeath,
+        $details,
+        $artistLink
+    ) 
     {
-        $this->artistId    = $record['ArtistID'];
-        $this->firstName   = $record['FirstName'];
-        $this->lastName    = $record['LastName'];
-        $this->nationality = $record['Nationality'];
-        $this->yearOfBirth = $record['YearOfBirth'];
-        $this->yearOfDeath = $record['YearOfDeath'];
-        $this->details     = $record['Details'];
-        $this->artistLink  = $record['ArtistLink'];
+        $this->setArtistId($artistId);
+        $this->setFirstName($firstName);
+        $this->setLastName($lastName);
+        $this->setNationality($nationality);
+        $this->setYearOfBirth($yearOfBirth);
+        $this->setYearOfDeath($yearOfDeath);
+        $this->setDetails($details);
+        $this->setArtistLink($artistLink);
     }
     
+    public static function createArtistFromRecord($record) {
+        return new self(
+            $record['ArtistID'],
+            $record['FirstName'],
+            $record['LastName'],
+            $record['Nationality'],
+            $record['YearOfBirth'],
+            $record['YearOfDeath'],
+            $record['Details'],
+            $record['ArtistLink']
+        );
+    }
+
     public function getArtistId()
     {
         return $this->artistId;
