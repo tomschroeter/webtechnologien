@@ -34,7 +34,7 @@ class Artist
         $this->setArtistLink($artistLink);
     }
     
-    public static function createArtistFromRecord($record) {
+    public static function createArtistFromRecord(array $record) : Artist {
         return new self(
             $record['ArtistID'],
             $record['FirstName'],
