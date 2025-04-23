@@ -22,5 +22,5 @@ function route($name, $params = [])
     // Remove any leftover optional placeholders (e.g., ":id" if not replaced)
     $path = preg_replace('/\/?:\w+/', '', $path);
 
-    return '/src/' . trim($path, "/"); // Ensure no double slashes + add root directory to ensure correct pathing
+    return trim($path, "/"); // Ensure no double slashes + add root directory to ensure correct pathing
 }
