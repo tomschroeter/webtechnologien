@@ -6,7 +6,7 @@
   require_once dirname(__DIR__)."/src/repositories/SubjectRepository.php";
   require_once dirname(__DIR__)."/src/navbar.php";
 
-  $subjectRepository = new SubjectRepository();
+  $subjectRepository = new SubjectRepository(new Database());
 
   $subjects = $subjectRepository->getAllSubjects();
 ?>
