@@ -13,7 +13,7 @@ class ArtworkRepository {
         $this->artistRepository = new ArtistRepository();
     }
 
-    public static function findById(int $id) : Artwork
+    public function findById(int $id) : Artwork
     {
         $sql = "
             select *
@@ -21,10 +21,8 @@ class ArtworkRepository {
             where ArtWorkID = :id
         ";
 
-        $pdo = Database::getInstance()->getConnection();
-
         // use prepared statement
-        $stmt = $pdo->prepare($sql);
+        $stmt = $this->pdo->prepare($sql);
         $stmt->bindValue("id", $id);
         $stmt->execute();
         $artwork = $stmt->fetch();
@@ -41,7 +39,7 @@ class ArtworkRepository {
         // Checks if artist with given ID exists
         $this->artistRepository->getArtistById($artistId);
 
-        $stmt->bindValue(":id", $artistId);
+        $stmt->bindValue("id", $artistId);
         $stmt->execute();
 
         $artworks = [];
