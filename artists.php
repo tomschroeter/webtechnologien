@@ -6,7 +6,7 @@
   require_once dirname(__DIR__)."/src/repositories/ArtistRepository.php";
   require_once dirname(__DIR__)."/src/navbar.php";
 
-  $artistRepository = new ArtistRepository();
+  $artistRepository = new ArtistRepository(new Database());
 
   // Checks if user has submitted a valid option for changing the display order
   if (isset($_GET['sort'])) {

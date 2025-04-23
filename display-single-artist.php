@@ -7,8 +7,9 @@
     require_once dirname(__DIR__)."/src/repositories/ArtworkRepository.php";
     require_once dirname(__DIR__)."/src/navbar.php";
 
-    $artistRepository = new ArtistRepository();
-    $artworkRepository = new ArtworkRepository();
+    $db = new Database();
+    $artistRepository = new ArtistRepository($db);
+    $artworkRepository = new ArtworkRepository($db);
 
     // Checks if id is set correctly in URL
     if (isset($_GET['id']) && is_numeric($_GET['id'])) {
