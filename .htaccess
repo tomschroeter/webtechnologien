@@ -1,3 +1,12 @@
 RewriteEngine On
 RewriteCond %{REQUEST_FILENAME} !-f
+RewriteCond %{REQUEST_FILENAME} !-d
+
+# URL artists/*** ruft display-single-artist.php auf
+RewriteRule ^artists/(.+)$ display-single-artist.php?id=$1 [L]
+
+# URL artists/ wird auf artists umgeleitet
+RewriteRule ^artists/?$ artists.php [L]
+
+# Entfernt .php in der URL
 RewriteRule ^([^\.]+)$ $1.php [NC,L]
