@@ -71,7 +71,7 @@ class ArtistRepository {
     public function getArtistById(int $artistId) : Artist {
         $sql = "SELECT * FROM artists WHERE ArtistId = :id";
         $stmt = $this->pdo->prepare($sql);
-        $stmt->bindValue(":id", $artistId, PDO::PARAM_INT);
+        $stmt->bindValue("id", $artistId, PDO::PARAM_INT);
         $stmt->execute();
         $row = $stmt->fetch();
         if ($row) {
