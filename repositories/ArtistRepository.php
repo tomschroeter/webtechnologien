@@ -63,4 +63,21 @@ class ArtistRepository {
 
         return $mostReviewedArtists;
     }
+
+
+    /**
+    * @throws Exception if artist couldn't be found
+    */
+    public function getArtistById(int $artistId) : Artist {
+        $sql = "SELECT * FROM artists WHERE ArtistId = :id";
+        $stmt = $this->pdo->prepare($sql);
+        $stmt->bindValue("id", $artistId, PDO::PARAM_INT);
+        $stmt->execute();
+        $row = $stmt->fetch();
+        if ($row) {
+            return Artist::createArtistfromRecord($row);
+        } else {
+            throw new Exception("Artist with ID {$artistId} couldn't be found");
+        }
+    }
 }

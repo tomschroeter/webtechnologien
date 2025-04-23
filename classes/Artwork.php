@@ -21,41 +21,58 @@ class Artwork
 
     // constructor is only used when fetching from database
     // later logic for retrieving artist inside artwork object is also needed
-    private function __construct($record)
+    private function __construct(
+        $artworkId,
+        $artistId,
+        $imageFileName, 
+        $title,
+        $description,
+        $excerpt,
+        $artworkType,
+        $yearOfWork,
+        $width,
+        $height,
+        $medium,
+        $originalHome,
+        $galleryId,
+        $artworkLink,
+        $googleLink)
     {
-        $this->artworkId     = $record['ArtWorkID'];
-        $this->artistId      = $record['ArtistID'];
-        $this->imageFileName = $record['ImageFileName'];
-        $this->title         = $record['Title'];
-        $this->description   = $record['Description'];
-        $this->excerpt       = $record['Excerpt'];
-        $this->artworkType   = $record['ArtWorkType'];
-        $this->yearOfWork    = $record['YearOfWork'];
-        $this->width         = $record['Width'];
-        $this->height        = $record['Height'];
-        $this->medium        = $record['Medium'];
-        $this->originalHome  = $record['OriginalHome'];
-        $this->galleryId     = $record['GalleryID'];
-        $this->artworkLink   = $record['ArtWorkLink'];
-        $this->googleLink    = $record['GoogleLink'];
+        $this->setArtworkId($artworkId); 
+        $this->setArtistId($artistId); 
+        $this->setImageFileName($imageFileName);
+        $this->setTitle($title);      
+        $this->setDescription($description); 
+        $this->setExcerpt($excerpt);   
+        $this->setArtworkType($artworkType);  
+        $this->setYearOfWork($yearOfWork);  
+        $this->setWidth($width);       
+        $this->setHeight($height);       
+        $this->setMedium($medium);    
+        $this->setOriginalHome($originalHome);  
+        $this->setGalleryId($galleryId);   
+        $this->setArtworkLink($artworkLink);
+        $this->setGoogleLink($googleLink);
     }
 
-    public static function findById(int $id)
-    {
-        $sql = "
-            select *
-            from artworks
-            where ArtWorkID = :id
-        ";
-
-        $pdo = Database::getInstance()->getConnection();
-
-        // use prepared statement
-        $stmt = $pdo->prepare($sql);
-        $stmt->bindValue("id", $id);
-        $stmt->execute();
-
-        return new Artwork($stmt->fetch());
+    public static function createArtworkFromRecord(array $record) : Artwork {
+        return new self(
+            $record['ArtWorkID'],
+            $record['ArtistID'],
+            $record['ImageFileName'],
+            $record['Title'],
+            $record['Description'],
+            $record['Excerpt'],
+            $record['ArtWorkType'],
+            $record['YearOfWork'],
+            $record['Width'],
+            $record['Height'],
+            $record['Medium'],
+            $record['OriginalHome'],
+            $record['GalleryID'],
+            $record['ArtWorkLink'],
+            $record['GoogleLink']
+        );
     }
 
     public function getArtworkId()

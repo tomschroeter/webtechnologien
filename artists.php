@@ -34,7 +34,7 @@
   <ul class="list-group mb-5">
     <?php foreach ($artists as $artist): ?>
       <li class="list-group-item d-flex justify-content-between align-items-center">
-        <a href="/src/<?php echo route('artists', ['id' => $artist->getArtistId()]) ?>"
+        <a href="<?php echo route('artists', ['id' => $artist->getArtistId()])?>"
            class="d-flex justify-content-between align-items-center w-100 text-decoration-none text-dark">
           <span><?php echo $artist->getFirstName() ?> <?= $artist->getLastName() ?></span>
           <img src="/src/assets/images/artists/square-thumb/<?php echo $artist->getArtistId()?>.jpg" alt="Künsterbild" style="max-width: 100px; max-height: 100px; object-fit: cover;">
