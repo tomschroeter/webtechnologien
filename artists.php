@@ -19,25 +19,25 @@
 ?>
 
 <body class="container">
-  <h1>Künstlerliste</h1>
-  <br>
-    <!-- Form providing the ability to sort the order of displayed artists -->
+  <!-- Form providing the ability to sort the order of displayed artists -->
+  <div class="d-flex align-items-center mt-3 mb-3">
+    <h1 class="flex-grow-1 mb-0">Künstler</h1>
     <form method="get">
-      <select name="sort" onchange="this.form.submit()">
-          <option value="ascending" <?php echo $sort == "ascending" ? 'selected' : ''?>>Name (aufsteigend)</option>
-          <option value="descending" <?php echo $sort == "descending" ? 'selected' : ''?>>Name (absteigend)</option>
+      <select name="sort" onchange="this.form.submit()" class="form-select">
+        <option value="ascending" <?php echo $sort == "ascending" ? 'selected' : ''?>>Name (aufsteigend)</option>
+        <option value="descending" <?php echo $sort == "descending" ? 'selected' : ''?>>Name (absteigend)</option>
       </select>
     </form>
-  <br>
+  </div>
 
   <!-- List to display all artists -->
-  <ul class="list-group">
+  <ul class="list-group mb-5">
     <?php foreach ($artists as $artist): ?>
       <li class="list-group-item d-flex justify-content-between align-items-center">
         <a href="/src/<?php echo route('artists', ['id' => $artist->getArtistId()]) ?>"
            class="d-flex justify-content-between align-items-center w-100 text-decoration-none text-dark">
           <span><?php echo $artist->getFirstName() ?> <?= $artist->getLastName() ?></span>
-          <img src="/src/assets/images/artists/square-thumb/<?php echo $artist->getArtistId()?>.jpg" alt="Künsterbild">
+          <img src="/src/assets/images/artists/square-thumb/<?php echo $artist->getArtistId()?>.jpg" alt="Künsterbild" style="max-width: 100px; max-height: 100px; object-fit: cover;">
         </a>
       </li>
     <?php endforeach; ?>
