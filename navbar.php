@@ -2,7 +2,7 @@
 <?php require_once dirname(__DIR__)."/src/router/router.php"; ?>
 <nav class="navbar navbar-expand-sm navbar-light bg-light">
   <a class="navbar-brand" href=<?php echo route("home") ?>>
-    <img src="/src/assets/svgs/logo.svg" alt="Logo" style="height: 40px; width: 40px;">
+    <img src="/assets/svgs/logo.svg" alt="Logo" style="height: 40px; width: 40px;">
   </a>
   <button class="navbar-toggler d-lg-none" type="button" data-toggle="collapse" data-target="#collapsibleNavId"
     aria-controls="collapsibleNavId" aria-expanded="false" aria-label="Toggle navigation">
@@ -34,7 +34,7 @@
       <li class="nav-item dropdown">
         <a class="nav-link dropdown-toggle" href="#" id="dropdownId" data-toggle="dropdown" aria-haspopup="true"
           aria-expanded="false">
-          <img src="/src/assets/svgs/profile.svg" alt="Profile" style="height: 25px; width: 25px;">
+          <img src="/assets/svgs/profile.svg" alt="Profile" style="height: 25px; width: 25px;">
         </a>
         <div class="dropdown-menu dropdown-menu-right" aria-labelledby="dropdownId">
           <!-- Unauthorized users -->
