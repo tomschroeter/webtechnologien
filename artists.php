@@ -37,7 +37,7 @@
         <a href="<?php echo route('artists', ['id' => $artist->getArtistId()])?>"
            class="d-flex justify-content-between align-items-center w-100 text-decoration-none text-dark">
           <span><?php echo $artist->getFirstName() ?> <?= $artist->getLastName() ?></span>
-          <img src="/src/assets/images/artists/square-thumb/<?php echo $artist->getArtistId()?>.jpg" alt="Künsterbild" style="max-width: 100px; max-height: 100px; object-fit: cover;">
+          <img src="/assets/images/artists/square-thumb/<?php echo $artist->getArtistId()?>.jpg" alt="Künsterbild" style="max-width: 100px; max-height: 100px; object-fit: cover;">
         </a>
       </li>
     <?php endforeach; ?>

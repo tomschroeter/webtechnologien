@@ -18,10 +18,10 @@
   <ul class="list-group mb-5">
     <?php foreach ($subjects as $subject): ?>
       <li class="list-group-item d-flex justify-content-between align-items-center">
-        <a href="/src/<?php echo route('subjects', ['id' => $subject->getSubjectId()]) ?>"
+        <a href="/<?php echo route('subjects', ['id' => $subject->getSubjectId()]) ?>"
            class="d-flex justify-content-between align-items-center w-100 text-decoration-none text-dark">
           <span><?php echo $subject->getSubjectName() ?></span>
-          <img src="/src/assets/images/subjects/square-thumbs/<?php echo $subject->getSubjectId()?>.jpg" alt="Themenbild" style="max-width: 100px; max-height: 100px; object-fit: cover;">
+          <img src="/assets/images/subjects/square-thumbs/<?php echo $subject->getSubjectId()?>.jpg" alt="Themenbild" style="max-width: 100px; max-height: 100px; object-fit: cover;">
         </a>
       </li>
     <?php endforeach; ?>
