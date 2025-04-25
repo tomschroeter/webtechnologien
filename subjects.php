@@ -21,7 +21,16 @@
         <a href="<?php echo route('subjects', ['id' => $subject->getSubjectId()]) ?>"
            class="d-flex justify-content-between align-items-center w-100 text-decoration-none text-dark">
           <span><?php echo $subject->getSubjectName() ?></span>
-          <img src="/assets/images/subjects/square-thumbs/<?php echo $subject->getSubjectId()?>.jpg" alt="Themenbild" style="max-width: 100px; max-height: 100px; object-fit: cover;">
+          <!-- Checks if artists' image exists -->
+          <?php $imagePath =  "/assets/images/subjects/square-thumbs/".$subject->getSubjectId().".jpg";
+            $placeholderPath = "/assets/placeholder/subjects/square-thumb/placeholder.svg"; 
+            if (file_exists($_SERVER['DOCUMENT_ROOT'] . $imagePath)) {
+              $correctImagePath = $imagePath;
+            } else {
+              $correctImagePath = $placeholderPath;
+            }
+          ?>
+          <img src="<?php echo $correctImagePath?>" alt="Themenbild" style="max-width: 100px; max-height: 100px; object-fit: cover;">
         </a>
       </li>
     <?php endforeach; ?>

@@ -37,7 +37,16 @@
         <a href="<?php echo route('artists', ['id' => $artist->getArtistId()])?>"
            class="d-flex justify-content-between align-items-center w-100 text-decoration-none text-dark">
           <span><?php echo $artist->getFirstName() ?> <?= $artist->getLastName() ?></span>
-          <img src="/assets/images/artists/square-thumb/<?php echo $artist->getArtistId()?>.jpg" alt="Künsterbild" style="max-width: 100px; max-height: 100px; object-fit: cover;">
+          <!-- Checks if artists' image exists -->
+          <?php $imagePath =  "/assets/images/artists/square-thumb/".$artist->getArtistId().".jpg";
+            $placeholderPath = "/assets/placeholder/artists/square-thumb/placeholder.svg"; 
+            if (file_exists($_SERVER['DOCUMENT_ROOT'] . $imagePath)) {
+              $correctImagePath = $imagePath;
+            } else {
+              $correctImagePath = $placeholderPath;
+            }
+          ?>
+          <img src="<?php echo $correctImagePath?>" alt="Künsterbild" style="max-width: 100px; max-height: 100px; object-fit: cover;">
         </a>
       </li>
     <?php endforeach; ?>
