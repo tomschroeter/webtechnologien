@@ -14,7 +14,7 @@
         <a class="nav-link" href=<?php echo route("home") ?>>Home <span class="sr-only">(current)</span></a>
       </li>
       <li class="nav-item">
-        <a class="nav-link" href="about">About</a>
+        <a class="nav-link" href=<?php echo route("about")?>>About</a>
       </li>
       <li class="nav-item dropdown">
         <a class="nav-link dropdown-toggle" href="#" id="dropdownId" data-toggle="dropdown" aria-haspopup="true"
