@@ -4,37 +4,42 @@ require_once dirname(__DIR__)."/Database.php";
 require_once dirname(__DIR__)."/classes/Artist.php";
 
 class ArtistRepository {
-    private PDO $pdo;
+    private Database $db;
 
-    public function __construct() {
-        $this->pdo = Database::getInstance()->getConnection();
+    public function __construct(Database $db) {
+        $this->db = $db;
     }
 
     /**
      * @return Artist[]
     */
-    public function getAllArtists(bool $sortDesc) : array {
+    public function getAllArtists(bool $sortDesc) : array
+    {
+        if (!$this->db->isConnected()) $this->db->connect();
+
         // Checks if input parameter is set to descending
-        if ($sortDesc) {
-            $sortOrder = 'DESC';
-        } else {
-            $sortOrder = 'ASC';
-        }
-        
+        $sortOrder = "DESC" ? $sortDesc : "ASC";
+
         $sql = "SELECT * FROM artists ORDER BY LastName {$sortOrder}, FirstName {$sortOrder}";
         
-        $stmt = $this->pdo->prepare($sql);
+        $stmt = $this->db->prepareStatement($sql);
         $stmt->execute();
+
         $artists = [];
+
         foreach ($stmt as $row) {
             $artists[] = Artist::createArtistFromRecord($row);
         }
+
+        $this->db->disconnect();
 
         return $artists;
     }
 
     public function findMostReviewed(int $n = 3): ArtistWithStatsArray
     {
+        if (!$this->db->isConnected()) $this->db->connect();
+
         $sql = "
             select a.*, count(r.ReviewId) review_count
             from artists a
@@ -46,10 +51,9 @@ class ArtistRepository {
         ";
 
         // use prepared statement
-        $stmt = $this->pdo->prepare($sql);
+        $stmt = $this->db->prepareStatement($sql);
         $stmt->bindValue("n", $n, PDO::PARAM_INT); // without type n is inserted as string
         $stmt->execute();
-
 
         $mostReviewedArtists = new ArtistWithStatsArray();
 
@@ -61,6 +65,8 @@ class ArtistRepository {
             $mostReviewedArtists[] = new ArtistWithStats($artist, $reviewCount);
         }
 
+        $this->db->disconnect();
+
         return $mostReviewedArtists;
     }
 
@@ -68,15 +74,26 @@ class ArtistRepository {
     /**
     * @throws Exception if artist couldn't be found
     */
-    public function getArtistById(int $artistId) : Artist {
+    public function getArtistById(int $artistId) : Artist
+    {
+        if (!$this->db->isConnected()) $this->db->connect();
+
         $sql = "SELECT * FROM artists WHERE ArtistId = :id";
-        $stmt = $this->pdo->prepare($sql);
+
+        $stmt = $this->db->prepareStatement($sql);
         $stmt->bindValue("id", $artistId, PDO::PARAM_INT);
         $stmt->execute();
+
         $row = $stmt->fetch();
-        if ($row) {
+
+        $this->db->disconnect();
+
+        if (isset($row))
+        {
             return Artist::createArtistfromRecord($row);
-        } else {
+        }
+        else
+        {
             throw new Exception("Artist with ID {$artistId} couldn't be found");
         }
     }
