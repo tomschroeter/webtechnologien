@@ -15,7 +15,7 @@ class ArtworkRepository {
 
     public function findById(int $id) : Artwork
     {
-        $this->db->connect();
+        if (!$this->db->isConnected()) $this->db->connect();
 
         $sql = "
             select *
@@ -40,7 +40,7 @@ class ArtworkRepository {
     */
     public function getArtworksByArtist(int $artistId) : array
     {
-        $this->db->connect();
+        if (!$this->db->isConnected()) $this->db->connect();
 
         $sql = "
             SELECT *
