@@ -4,7 +4,7 @@
 	require_once dirname(__DIR__)."/classes/Artist.php";
 	require_once dirname(__DIR__)."/repositories/ArtistRepository.php";
 
-	$artistRepository = new ArtistRepository();
+	$artistRepository = new ArtistRepository(new Database());
 	$mostReviewedArtists = $artistRepository->findMostReviewed(3);
 
 	foreach ($mostReviewedArtists as $index => $combined)

@@ -6,7 +6,7 @@
   require_once dirname(__DIR__)."/src/repositories/ArtistRepository.php";
   require_once dirname(__DIR__)."/src/navbar.php";
 
-  $artistRepository = new ArtistRepository();
+  $artistRepository = new ArtistRepository(new Database());
 
   // Checks if user has submitted a valid option for changing the display order
   if (isset($_GET['sort'])) {
@@ -37,7 +37,7 @@
         <a href="<?php echo route('artists', ['id' => $artist->getArtistId()])?>"
            class="d-flex justify-content-between align-items-center w-100 text-decoration-none text-dark">
           <span><?php echo $artist->getFirstName() ?> <?= $artist->getLastName() ?></span>
-          <img src="/src/assets/images/artists/square-thumb/<?php echo $artist->getArtistId()?>.jpg" alt="Künsterbild" style="max-width: 100px; max-height: 100px; object-fit: cover;">
+          <img src="/assets/images/artists/square-thumb/<?php echo $artist->getArtistId()?>.jpg" alt="Künsterbild" style="max-width: 100px; max-height: 100px; object-fit: cover;">
         </a>
       </li>
     <?php endforeach; ?>

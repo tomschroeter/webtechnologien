@@ -7,14 +7,15 @@
     require_once dirname(__DIR__)."/src/repositories/ArtworkRepository.php";
     require_once dirname(__DIR__)."/src/navbar.php";
 
-    $artistRepository = new ArtistRepository();
-    $artworkRepository = new ArtworkRepository();
+    $db = new Database();
+    $artistRepository = new ArtistRepository($db);
+    $artworkRepository = new ArtworkRepository($db);
 
     // Checks if id is set correctly in URL
     if (isset($_GET['id']) && is_numeric($_GET['id'])) {
         $artistId = $_GET['id'];
     } else {
-        header("Location: /src/error.php");
+        header("Location: /error.php");
         exit();
     }
 
@@ -23,7 +24,7 @@
         $artist = $artistRepository->getArtistById($artistId);
         $artworks = $artworkRepository->getArtworksByArtist($artistId);
     } catch (Exception $e) {
-        header("Location: /src/error.php");
+        header("Location: /error.php");
         exit();
     }
 ?>
@@ -35,7 +36,7 @@
         <div class="row">
             <div>
                 <!-- Displays artist image -->
-                <img src="/src/assets/images/artists/medium/<?php echo $artist->getArtistId()?>.jpg"
+                <img src="/assets/images/artists/medium/<?php echo $artist->getArtistId()?>.jpg"
                     alt="Bild von <?php echo $artist->getFirstName().' '.$artist->getLastName()?>">
             </div>
             <div class="col-md-8">
@@ -43,7 +44,7 @@
                 <p><?php echo $artist->getDetails()?></p>
 
                 <!-- Add to favourites button -->
-                <form method="post" action="/src/add-favourite.php">
+                <form method="post" action="/add-favourite.php">
                     <input type="hidden" name="artistId" value="<?php echo $artist->getArtistId()?>">
                     <button type="submit" class="btn btn-primary mt-2">Add to Favourites</button>
                 </form>
@@ -80,7 +81,7 @@
                             <!-- Artwork card including image, name and view button --->
                             <div class="card h-100">
                                 <a href="<?php echo $artworkLink?>" target="_blank">
-                                    <img src="/src/assets/images/works/square-medium/<?php echo $artwork->getImageFileName().".jpg"?>" class="card-img-top" alt="<?php echo $artwork->getTitle()?>">
+                                    <img src="/assets/images/works/square-medium/<?php echo $artwork->getImageFileName().".jpg"?>" class="card-img-top" alt="<?php echo $artwork->getTitle()?>">
                                 </a>
                                 <div class="card-body d-flex flex-column">
                                     <h5 class="card-title text-center">

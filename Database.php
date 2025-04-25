@@ -1,20 +1,18 @@
 <?php
 require_once dirname(__DIR__)."/src/env.php";
 
-// Use Singleton design pattern:
-// https://refactoring.guru/design-patterns/singleton
-
-// Better practice would be to implement a "Connection Factory"
-// Since this app will not be used by real users and wont come to the point of requiring multiple connections
-// a singleton will be sufficient:
-// https://stackoverflow.com/questions/130878/global-or-singleton-for-database-connection?rq=3
+// https://elearning.th-wildau.de/mod/resource/view.php?id=490348
 class Database
 {
-    private static $instance = null;
     private $pdo;
 
-    private function __construct()
+    public function connect()
     {
+        if ($this->isConnected())
+        {
+            throw new Exception("Already connected to DB.");
+        }
+
 		try
 		{
 			$host = $_ENV['DB_HOST'];
@@ -34,16 +32,25 @@ class Database
 		}
     }
 
-    public static function getInstance()
+    public function prepareStatement(string $sql)
     {
-        if (self::$instance === null) {
-            self::$instance = new Database();
+        if (!$this->isConnected())
+        {
+            throw new Exception("Not connected to DB.");
         }
-        return self::$instance;
+
+        return $this->pdo->prepare($sql);
     }
 
-    public function getConnection()
+    public function isConnected(): bool
     {
-        return $this->pdo;
+        return $this->pdo != null;
+    }
+
+    public function disconnect()
+    {
+        if (!$this->isConnected()) return;
+
+        $this->pdo = null;
     }
 }
