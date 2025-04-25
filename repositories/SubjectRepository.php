@@ -15,7 +15,7 @@ class SubjectRepository {
     */
     public function getAllSubjects() : array
     {
-        $this->db->connect();
+        if (!$this->db->isConnected()) $this->db->connect();
 
         $sql = "SELECT * FROM subjects ORDER BY SubjectName ASC";
         

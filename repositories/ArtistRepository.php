@@ -15,7 +15,7 @@ class ArtistRepository {
     */
     public function getAllArtists(bool $sortDesc) : array
     {
-        $this->db->connect();
+        if (!$this->db->isConnected()) $this->db->connect();
 
         // Checks if input parameter is set to descending
         $sortOrder = "DESC" ? $sortDesc : "ASC";
@@ -38,7 +38,7 @@ class ArtistRepository {
 
     public function findMostReviewed(int $n = 3): ArtistWithStatsArray
     {
-        $this->db->connect();
+        if (!$this->db->isConnected()) $this->db->connect();
 
         $sql = "
             select a.*, count(r.ReviewId) review_count
@@ -76,7 +76,7 @@ class ArtistRepository {
     */
     public function getArtistById(int $artistId) : Artist
     {
-        $this->db->connect();
+        if (!$this->db->isConnected()) $this->db->connect();
 
         $sql = "SELECT * FROM artists WHERE ArtistId = :id";
 
