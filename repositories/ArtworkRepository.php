@@ -3,6 +3,7 @@
 require_once dirname(__DIR__)."/Database.php";
 require_once dirname(__DIR__)."/classes/Artwork.php";
 require_once dirname(__DIR__)."/repositories/ArtistRepository.php";
+require_once dirname(__DIR__)."/dtos/ArtworkWithArtistName.php";
 
 class ArtworkRepository {
     private Database $db;
@@ -67,6 +68,54 @@ class ArtworkRepository {
             }
 
             $artworks[] = Artwork::createArtworkFromRecord($row);
+        }
+
+        $this->db->disconnect();
+
+        return $artworks;
+    }
+
+    /**
+     * Summary of getArtworkBySearchQuery
+     * @param string $searchQuery
+     * @param string $sortParameter
+     * @param bool $sortDesc
+     * @return ArtworkWithArtistName[]
+     */
+    public function getArtworkBySearchQuery(string $searchQuery, string $sortParameter, bool $sortDesc) : array 
+    {
+        if (!$this->db->isConnected()) $this->db->connect();
+
+        $allowedSortParameters = ['Title', 'LastName', 'YearOfWork'];
+        if (!in_array($sortParameter, $allowedSortParameters)) {
+            $sortParameter = 'Title';
+        }
+
+        $sortOrder = $sortDesc ? "DESC" : "ASC";
+        
+        $sql = "SELECT artworks.*, artists.FirstName, artists.LastName
+                FROM artworks, artists
+                WHERE artworks.ArtistID = artists.ArtistID
+                    AND Title LIKE :searchQuery
+                ORDER BY {$sortParameter} {$sortOrder}";
+
+        $stmt = $this->db->prepareStatement($sql);
+        $stmt->bindValue('searchQuery', '%' . $searchQuery . '%');
+        $stmt->execute();
+
+        $artworks = [];
+
+        foreach ($stmt as $row)
+        {
+            // Add 0 in front of image file name if name is 5 characters long
+            if (strlen($row['ImageFileName']) < 6) {
+                $row['ImageFileName'] = '0' . $row['ImageFileName'];
+            }
+
+            $artwork = Artwork::createArtworkFromRecord($row);
+            $artistFirstName = $row['FirstName'];
+            $artistLastName = $row['LastName'];
+            $artworks[] = new ArtworkWithArtistName($artwork, $artistFirstName, $artistLastName);
         }
 
         $this->db->disconnect();
