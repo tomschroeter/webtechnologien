@@ -15,7 +15,7 @@
 	if (isset($_GET['id']) && is_numeric($_GET['id'])) {
 		$artistId = $_GET['id'];
 	} else {
-		header("Location: /error.php");
+		header("Location: /error.php?error=invalidParam");
 		exit();
 	}
 
@@ -24,7 +24,7 @@
 		$artist = $artistRepository->getArtistById($artistId);
 		$artworks = $artworkRepository->getArtworksByArtist($artistId);
 	} catch (Exception $e) {
-		header("Location: /error.php");
+		header("Location: /error.php?error=invalidID");
 		exit();
 	}
 ?>
