@@ -18,7 +18,7 @@ class ArtistRepository {
         if (!$this->db->isConnected()) $this->db->connect();
 
         // Checks if input parameter is set to descending
-        $sortOrder = "DESC" ? $sortDesc : "ASC";
+        $sortOrder = $sortDesc ? "DESC" : "ASC";
 
         $sql = "SELECT * FROM artists ORDER BY LastName {$sortOrder}, FirstName {$sortOrder}";
         
