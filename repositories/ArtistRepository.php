@@ -97,4 +97,34 @@ class ArtistRepository {
             throw new Exception("Artist with ID {$artistId} couldn't be found");
         }
     }
+
+    /**
+     * Summary of getArtistBySearchQuery
+     * @param string $searchQuery
+     * @param bool $sortDesc
+     * @return Artist[]
+     */
+    public function getArtistBySearchQuery(string $searchQuery, bool $sortDesc) : array
+    {
+        if (!$this->db->isConnected()) $this->db->connect();
+
+        $sortOrder = $sortDesc ? "DESC" : "ASC";
+        
+        $sql = "SELECT * FROM artists WHERE LastName LIKE :searchQuery ORDER BY LastName {$sortOrder}";
+
+        $stmt = $this->db->prepareStatement($sql);
+        $stmt->bindValue('searchQuery', '%' . $searchQuery . '%');
+        $stmt->execute();
+
+        $artists = [];
+
+        foreach ($stmt as $row)
+        {
+            $artists[] = Artist::createArtistFromRecord($row);
+        }
+
+        $this->db->disconnect();
+
+        return $artists;
+    }
 }
