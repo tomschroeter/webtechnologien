@@ -24,8 +24,8 @@
     <h1 class="flex-grow-1 mb-0">Künstler</h1>
     <form method="get">
       <select name="sort" onchange="this.form.submit()" class="form-select">
-        <option value="ascending" <?php echo $sort == "ascending" ? 'selected' : ''?>>Name (aufsteigend)</option>
-        <option value="descending" <?php echo $sort == "descending" ? 'selected' : ''?>>Name (absteigend)</option>
+        <option value="ascending" <?php echo !$sort ? 'selected' : ''?>>Name (aufsteigend)</option>
+        <option value="descending" <?php echo $sort ? 'selected' : ''?>>Name (absteigend)</option>
       </select>
     </form>
   </div>
@@ -36,7 +36,7 @@
       <li class="list-group-item d-flex justify-content-between align-items-center">
         <a href="<?php echo route('artists', ['id' => $artist->getArtistId()])?>"
            class="d-flex justify-content-between align-items-center w-100 text-decoration-none text-dark">
-          <span><?php echo $artist->getFirstName() ?> <?= $artist->getLastName() ?></span>
+          <span><?php echo $artist->getFirstName()?> <?php echo $artist->getLastName()?></span>
           <!-- Checks if artists' image exists -->
           <?php $imagePath =  "/assets/images/artists/square-thumb/".$artist->getArtistId().".jpg";
             $placeholderPath = "/assets/placeholder/artists/square-thumb/placeholder.svg"; 

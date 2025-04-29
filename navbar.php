@@ -1,6 +1,6 @@
 <!-- Placeholder Navbar -->
 <?php require_once dirname(__DIR__)."/src/router/router.php"; ?>
-<nav class="navbar navbar-expand-sm navbar-light bg-light">
+<nav class="navbar sticky-top navbar-expand-sm navbar-light bg-light">
   <a class="navbar-brand" href=<?php echo route("home") ?>>
     <img src="/assets/svgs/logo.svg" alt="Logo" style="height: 40px; width: 40px;">
   </a>
@@ -26,8 +26,8 @@
         </div>
       </li>
     </ul>
-    <form class="form-inline my-2 my-lg-0">
-      <input class="form-control mr-sm-2" type="text" placeholder="Search">
+    <form class="form-inline my-2 my-lg-0" action="search.php" method="GET">
+      <input class="form-control mr-sm-2" name="searchQuery" type="text" placeholder="Search">
       <button class="btn btn-outline-success my-2 my-sm-0" type="submit">Search</button>
     </form>
     <ul class="navbar-nav mt-2 mt-lg-0 mx-4">
