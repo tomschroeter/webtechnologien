@@ -86,10 +86,13 @@ class ArtworkRepository {
     {
         if (!$this->db->isConnected()) $this->db->connect();
 
-        $allowedSortParameters = ['Title', 'LastName', 'YearOfWork'];
-        if (!in_array($sortParameter, $allowedSortParameters)) {
-            $sortParameter = 'Title';
-        }
+        // Mapping of sort parameter to prevent SQL injections
+        $sortMap = [
+            'title' => 'artworks.Title',
+            'lastname' => 'artists.LastName',
+            'yearofwork' => 'artworks.YearOfWork'
+        ];
+        $sortField = $sortMap[strtolower($sortParameter)] ?? 'artworks.Title';
 
         $sortOrder = $sortDesc ? "DESC" : "ASC";
         
@@ -97,7 +100,7 @@ class ArtworkRepository {
                 FROM artworks, artists
                 WHERE artworks.ArtistID = artists.ArtistID
                     AND Title LIKE :searchQuery
-                ORDER BY {$sortParameter} {$sortOrder}";
+                ORDER BY {$sortField} {$sortOrder}";
 
         $stmt = $this->db->prepareStatement($sql);
         $stmt->bindValue('searchQuery', '%' . $searchQuery . '%');
