@@ -21,7 +21,7 @@
         <a href="<?php echo route('subjects', ['id' => $subject->getSubjectId()]) ?>"
            class="d-flex justify-content-between align-items-center w-100 text-decoration-none text-dark">
           <span><?php echo $subject->getSubjectName() ?></span>
-          <!-- Checks if artists' image exists -->
+          <!-- Checks if subject image exists -->
           <?php $imagePath =  "/assets/images/subjects/square-thumbs/".$subject->getSubjectId().".jpg";
             $placeholderPath = "/assets/placeholder/subjects/square-thumb/placeholder.svg"; 
             if (file_exists($_SERVER['DOCUMENT_ROOT'] . $imagePath)) {
