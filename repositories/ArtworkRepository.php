@@ -162,10 +162,14 @@ class ArtworkRepository {
 
         foreach ($stmt as $row)
         {
+            // Add 0 in front of image file name if name is 5 characters long
+            if (strlen($row['ImageFileName']) < 6) {
+                $row['ImageFileName'] = '0' . $row['ImageFileName'];
+            }
+
             $artworks[] = Artwork::createArtworkFromRecord($row);
         }
 
         return $artworks;
     }
-
 }
