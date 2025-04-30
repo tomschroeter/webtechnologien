@@ -143,7 +143,7 @@
 			<?php foreach($artworkSearchResults as $index => $combined):?>
 				<li class="list-group-item d-flex align-items-center">
 					<!-- Ref link to display single artwork -->
-					<a href="<?php echo route('artwork', ['id' => $combined->getArtwork()->getArtworkId()])?>"
+					<a href="<?php echo route('artworks', ['id' => $combined->getArtwork()->getArtworkId()])?>"
 						class="d-flex justify-content-between align-items-center flex-grow-1 text-decoration-none text-dark">
 
 						<!-- Display artwork title, artist name and year of publishment -->

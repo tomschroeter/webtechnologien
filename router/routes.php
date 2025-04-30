@@ -3,7 +3,7 @@ return [
     "home" => "index",
     "test" => "test",
     "artists" => "artists/:id",
-    "artwork" => "artwork/:id",
+    "artworks" => "artworks/:id",
     "genres" => "genres/:id",
     "subjects" => "subjects/:id",
     "register" => "register",

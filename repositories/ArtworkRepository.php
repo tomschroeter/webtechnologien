@@ -125,4 +125,51 @@ class ArtworkRepository {
 
         return $artworks;
     }
+
+    /**
+     * Get all artworks with optional sorting
+     * 
+     * @param string $sortBy Field to sort by (title, artist, year)
+     * @param string $sortOrder Sort direction (asc, desc)
+     * @return array Array of Artwork objects
+     */
+    public function getAllArtworks($sortBy = 'title', $sortOrder = 'asc')
+    {
+        if (!$this->db->isConnected()) $this->db->connect();
+
+        $sql = "";
+
+        switch ($sortBy) {
+            case 'artist':
+                // Join with artists table to sort by artist name
+                $sql = "SELECT a.* FROM artworks a 
+                        LEFT JOIN artists ar ON a.ArtistID = ar.ArtistID 
+                        ORDER BY ar.LastName " . ($sortOrder === 'desc' ? 'DESC' : 'ASC');
+                break;
+            case 'year':
+                $sql = "SELECT * FROM artworks ORDER BY YearOfWork " . ($sortOrder === 'desc' ? 'DESC' : 'ASC');
+                break;
+            case 'title':
+            default:
+                $sql = "SELECT * FROM artworks ORDER BY Title " . ($sortOrder === 'desc' ? 'DESC' : 'ASC');
+                break;
+        }
+
+        $stmt = $this->db->prepareStatement($sql);
+        $stmt->execute();
+
+        $artworks = [];
+
+        foreach ($stmt as $row)
+        {
+            // Add 0 in front of image file name if name is 5 characters long
+            if (strlen($row['ImageFileName']) < 6) {
+                $row['ImageFileName'] = '0' . $row['ImageFileName'];
+            }
+
+            $artworks[] = Artwork::createArtworkFromRecord($row);
+        }
+
+        return $artworks;
+    }
 }
