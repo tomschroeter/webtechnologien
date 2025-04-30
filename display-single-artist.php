@@ -83,7 +83,7 @@
 					<div class="row mt-4">
 						<?php foreach ($artworks as $artwork):?>
 							<!-- Creates new URL to display single artwork --->
-							<?php $artworkLink = route('artwork', ['id' => $artwork->getArtworkId()])?>
+							<?php $artworkLink = route('artworks', ['id' => $artwork->getArtworkId()])?>
 							<!-- List of artworks -->
 							<div class="col-md-3 mb-4">
 								<!-- Artwork card including image, name and view button --->
