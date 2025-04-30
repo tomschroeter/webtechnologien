@@ -23,6 +23,16 @@ class Genre
         $this->setGenreId($genreId);
     }
 
+    public static function createGenreFromRecord(array $record) : Genre {
+        return new self(
+            genreName: $record['GenreName'],
+            era: $record['Era'],
+            description: $record['Description'],
+            link: $record['Link'],
+            genreId: $record['GenreID'],
+        );
+    }
+
     public function getGenreId()
     {
         return $this->genreId;
