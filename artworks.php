@@ -49,7 +49,7 @@
       </form>
 
       <!-- Sort order selector -->
-      <form method="get" class="mx-2">
+      <form method="get">
         <!-- Preserve the current sort field when changing order -->
         <input type="hidden" name="sort" value="<?php echo $sortBy ?>">
         <select name="order" onchange="this.form.submit()" class="form-select">
