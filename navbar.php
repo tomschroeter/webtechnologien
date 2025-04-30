@@ -9,22 +9,30 @@
     <span class="navbar-toggler-icon"></span>
   </button>
   <div class="collapse navbar-collapse" id="collapsibleNavId">
+    <?php
+      $currentScript = basename($_SERVER['SCRIPT_NAME'], '.php');
+      $currentRoute = $currentScript === 'index' ? 'home' : $currentScript;
+    ?>
     <ul class="navbar-nav mr-auto mt-2 mt-lg-0">
-      <li class="nav-item active">
-        <a class="nav-link" href=<?php echo route("home") ?>>Home <span class="sr-only">(current)</span></a>
+      <li class="nav-item <?php echo ($currentRoute === 'home') ? 'active' : ''; ?>">
+      <a class="nav-link" href=<?php echo route("home") ?>>Home <?php if ($currentRoute === 'home'): ?><span class="sr-only">(current)</span><?php endif; ?></a>
       </li>
-      <li class="nav-item">
-        <a class="nav-link" href=<?php echo route("about")?>>About</a>
+      <li class="nav-item <?php echo ($currentRoute === 'about') ? 'active' : ''; ?>">
+      <a class="nav-link" href=<?php echo route("about")?>>About <?php if ($currentRoute === 'about'): ?><span class="sr-only">(current)</span><?php endif; ?></a>
       </li>
-      <li class="nav-item dropdown">
-        <a class="nav-link dropdown-toggle" href="#" id="dropdownId" data-toggle="dropdown" aria-haspopup="true"
-          aria-expanded="false">Browse</a>
-        <div class="dropdown-menu" aria-labelledby="dropdownId">
-          <a class="dropdown-item" href=<?php echo route("artists") ?>>Artists</a>
-          <a class="dropdown-item" href=<?php echo route("artworks") ?>>Artworks</a>
-          <a class="dropdown-item" href=<?php echo route("genres") ?>>Genres</a>
-          <a class="dropdown-item" href=<?php echo route("subjects") ?>>Subjects</a>
-        </div>
+      <?php
+      $browseRoutes = ['artists', 'artworks', 'genres', 'subjects'];
+      $isBrowseActive = in_array($currentRoute, $browseRoutes);
+      ?>
+      <li class="nav-item dropdown <?php echo $isBrowseActive ? 'active' : ''; ?>">
+      <a class="nav-link dropdown-toggle" href="#" id="dropdownId" data-toggle="dropdown" aria-haspopup="true"
+        aria-expanded="false">Browse</a>
+      <div class="dropdown-menu" aria-labelledby="dropdownId">
+        <a class="dropdown-item <?php echo ($currentRoute === 'artists') ? 'active' : ''; ?>" href=<?php echo route("artists") ?>>Artists</a>
+        <a class="dropdown-item <?php echo ($currentRoute === 'artworks') ? 'active' : ''; ?>" href=<?php echo route("artworks") ?>>Artworks</a>
+        <a class="dropdown-item <?php echo ($currentRoute === 'genres') ? 'active' : ''; ?>" href=<?php echo route("genres") ?>>Genres</a>
+        <a class="dropdown-item <?php echo ($currentRoute === 'subjects') ? 'active' : ''; ?>" href=<?php echo route("subjects") ?>>Subjects</a>
+      </div>
       </li>
     </ul>
     <form class="form-inline my-2 my-lg-0" action="search.php" method="GET">
