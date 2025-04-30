@@ -3,7 +3,7 @@
 
 <?php require_once dirname(__DIR__)."/src/head.php"; ?>
 
-<body>
+<body class="container">
   <?php require_once dirname(__DIR__)."/src/navbar.php"; ?>
 
   <!-- TODO: Change homepage style at a later time -->
