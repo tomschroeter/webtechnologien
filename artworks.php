@@ -36,18 +36,9 @@
   <div class="d-flex align-items-center mt-3 mb-3">
     <h1 class="flex-grow-1 mb-0">Kunstwerke</h1>
     <div class="d-flex gap-2">
-      <!-- Sort order selector -->
-      <form method="get" class="me-2">
-        <!-- Preserve the current sort field when changing order -->
-        <input type="hidden" name="sort" value="<?php echo $sortBy ?>">
-        <select name="order" onchange="this.form.submit()" class="form-select">
-          <option value="asc" <?php echo $sortOrder == 'asc' ? 'selected' : ''?>>Aufsteigend</option>
-          <option value="desc" <?php echo $sortOrder == 'desc' ? 'selected' : ''?>>Absteigend</option>
-        </select>
-      </form>
-      
+
       <!-- Sort field selector -->
-      <form method="get">
+      <form method="get" class="mx-2">
         <!-- Preserve the current sort order when changing field -->
         <input type="hidden" name="order" value="<?php echo $sortOrder ?>">
         <select name="sort" onchange="this.form.submit()" class="form-select">
@@ -56,6 +47,17 @@
           <option value="year" <?php echo $sortBy == 'year' ? 'selected' : ''?>>Jahr</option>
         </select>
       </form>
+
+      <!-- Sort order selector -->
+      <form method="get" class="mx-2">
+        <!-- Preserve the current sort field when changing order -->
+        <input type="hidden" name="sort" value="<?php echo $sortBy ?>">
+        <select name="order" onchange="this.form.submit()" class="form-select">
+          <option value="asc" <?php echo $sortOrder == 'asc' ? 'selected' : ''?>>Aufsteigend</option>
+          <option value="desc" <?php echo $sortOrder == 'desc' ? 'selected' : ''?>>Absteigend</option>
+        </select>
+      </form>
+
     </div>
   </div>
   
