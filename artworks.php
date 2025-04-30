@@ -65,7 +65,7 @@
   <ul class="list-group mb-5">
     <?php foreach ($artworks as $artwork): ?>
       <li class="list-group-item d-flex justify-content-between align-items-center">
-        <a href="<?php echo route('artwork', ['id' => $artwork->getArtworkID()])?>"
+        <a href="<?php echo route('artworks', ['id' => $artwork->getArtworkID()])?>"
            class="d-flex justify-content-between align-items-center w-100 text-decoration-none text-dark">
           <div>
             <h5 class="mb-1"><?php echo $artwork->getTitle()?></h5>

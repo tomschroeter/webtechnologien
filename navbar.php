@@ -21,6 +21,7 @@
           aria-expanded="false">Browse</a>
         <div class="dropdown-menu" aria-labelledby="dropdownId">
           <a class="dropdown-item" href=<?php echo route("artists") ?>>Artists</a>
+          <a class="dropdown-item" href=<?php echo route("artworks") ?>>Artworks</a>
           <a class="dropdown-item" href=<?php echo route("genres") ?>>Genres</a>
           <a class="dropdown-item" href=<?php echo route("subjects") ?>>Subjects</a>
         </div>
