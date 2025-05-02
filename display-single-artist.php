@@ -1,7 +1,10 @@
 <!DOCTYPE html>
 <?php
 session_start();
+
 $_SESSION['customerId'] = 1; // TEST-Nutzer ID = 1
+$_SESSION['isAdmin'] = true; // Temporär
+
 ?>
 
 <html lang="en">
@@ -150,6 +153,15 @@ try {
 											<strong>Rating:</strong> <?= $review->getRating() ?>/5<br>
 											<strong>Comment:</strong> <?= htmlspecialchars($review->getComment()) ?><br>
 											<small class="text-muted"><?= $review->getReviewDate() ?></small>
+											<!-- Show Delete button only for admins -->
+											<?php if ($_SESSION['isAdmin'] ?? false): ?>
+												<form method="POST" action="delete-review.php" onsubmit="return confirm('Are you sure you want to delete this review?')">
+													<input type="hidden" name="reviewId" value="<?= $review->getReviewId() ?>">
+													<input type="hidden" name="artworkId" value="<?= $review->getArtworkId() ?>">
+													<button type="submit" class="btn btn-sm btn-danger mt-2">Delete</button>
+												</form>
+											<?php endif; ?>
+
 										</div>
 									<?php endforeach; ?>
 								</div>
@@ -157,7 +169,7 @@ try {
 							<?php else: ?>
 								<p class="text-muted mt-2">No reviews yet.</p>
 							<?php endif; ?>
-							
+
 							<h5 class="card-title text-center">
 								<a href="<?php echo $artworkLink ?>" target="_blank" class="text-body"><?php echo $artwork->getTitle() ?></a>
 							</h5>
