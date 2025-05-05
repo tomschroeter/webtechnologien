@@ -10,20 +10,21 @@ class Review
     private $reviewDate;
 
     public function __construct(
-        $customerId,
+        $reviewId = null,
         $artworkId,
-        $rating,
-        $comment,
+        $customerId,
         $reviewDate = null,
-        $reviewId = null
+        $rating,
+        $comment
     ) {
-        $this->setCustomerId($customerId);
+        $this->setReviewId($reviewId);
         $this->setArtworkId($artworkId);
+        $this->setCustomerId($customerId);
+        $this->setReviewDate($reviewDate);
         $this->setRating($rating);
         $this->setComment($comment);
-        $this->setReviewDate($reviewDate);
-        $this->setReviewId($reviewId);
     }
+    
 
 
 

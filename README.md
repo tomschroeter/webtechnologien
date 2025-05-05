@@ -38,7 +38,7 @@ When setting routes in `routes.php` make sure that:
 
 # Unsere Termine
 ### Erster Pflicht-Besprechungstermin
-📅 07.05.2025 </br>
+📅 30.04.2025 </br>
 🕞 15:25 Uhr
 - [ ] done?
 
