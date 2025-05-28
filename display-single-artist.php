@@ -2,31 +2,31 @@
 <html lang="en">
 
 <?php
-	require_once dirname(__DIR__)."/src/head.php";
-	require_once dirname(__DIR__)."/src/repositories/ArtistRepository.php";
-	require_once dirname(__DIR__)."/src/repositories/ArtworkRepository.php";
-	require_once dirname(__DIR__)."/src/navbar.php";
+    require_once dirname(__DIR__)."/src/head.php";
+require_once dirname(__DIR__)."/src/repositories/ArtistRepository.php";
+require_once dirname(__DIR__)."/src/repositories/ArtworkRepository.php";
+require_once dirname(__DIR__)."/src/navbar.php";
 
-	$db = new Database();
-	$artistRepository = new ArtistRepository($db);
-	$artworkRepository = new ArtworkRepository($db);
+$db = new Database();
+$artistRepository = new ArtistRepository($db);
+$artworkRepository = new ArtworkRepository($db);
 
-	// Checks if id is set correctly in URL
-	if (isset($_GET['id']) && is_numeric($_GET['id'])) {
-		$artistId = $_GET['id'];
-	} else {
-		header("Location: /error.php?error=invalidParam");
-		exit();
-	}
+// Checks if id is set correctly in URL
+if (isset($_GET['id']) && is_numeric($_GET['id'])) {
+    $artistId = $_GET['id'];
+} else {
+    header("Location: /error.php?error=invalidParam");
+    exit();
+}
 
-	// Checks if artist exists in database
-	try {
-		$artist = $artistRepository->getArtistById($artistId);
-		$artworks = $artworkRepository->getArtworksByArtist($artistId);
-	} catch (Exception $e) {
-		header("Location: /error.php?error=invalidID");
-		exit();
-	}
+// Checks if artist exists in database
+try {
+    $artist = $artistRepository->getArtistById($artistId);
+    $artworks = $artworkRepository->getArtworksByArtist($artistId);
+} catch (Exception $e) {
+    header("Location: /error.php?error=invalidID&type=artist");
+    exit();
+}
 ?>
 
 <body class="container">
@@ -38,13 +38,13 @@
 				<!-- Displays artist image -->
 					<!-- Checks if artists' image exists -->
 					<?php $imagePath =  "/assets/images/artists/medium/".$artist->getArtistId().".jpg";
-						$placeholderPath = "/assets/placeholder/artists/medium/placeholder.svg"; 
-						if (file_exists($_SERVER['DOCUMENT_ROOT'] . $imagePath)) {
-							$correctImagePath = $imagePath;
-						} else {
-							$correctImagePath = $placeholderPath;
-						}
-					?>
+$placeholderPath = "/assets/placeholder/artists/medium/placeholder.svg";
+if (file_exists($_SERVER['DOCUMENT_ROOT'] . $imagePath)) {
+    $correctImagePath = $imagePath;
+} else {
+    $correctImagePath = $placeholderPath;
+}
+?>
 					<img src="<?php echo $correctImagePath?>" alt="Bild von <?php echo $artist->getFirstName().' '.$artist->getLastName()?>">
 				</div>
 				<div class="col-md-8">
@@ -66,7 +66,9 @@
 							</thead>
 							<tr>
 								<th>Date:</th>
-								<td><?php echo $artist->getYearOfBirth()?><?php if ($artist->getYearOfDeath()) echo " - " . $artist->getYearOfDeath()?></td>
+								<td><?php echo $artist->getYearOfBirth()?><?php if ($artist->getYearOfDeath()) {
+								    echo " - " . $artist->getYearOfDeath();
+								}?></td>
 							</tr>
 							<tr>
 								<th>Nationality:</th>
@@ -90,13 +92,13 @@
 								<div class="card h-100">
 									<!-- Checks if artworks' image exists -->
 									<?php $imagePath =  "/assets/images/works/square-medium/".$artwork->getImageFileName().".jpg";
-										$placeholderPath = "/assets/placeholder/works/square-medium/placeholder.svg"; 
-										if (file_exists($_SERVER['DOCUMENT_ROOT'] . $imagePath)) {
-												$correctImagePath = $imagePath;
-										} else {
-												$correctImagePath = $placeholderPath;
-										}
-									?>
+						    $placeholderPath = "/assets/placeholder/works/square-medium/placeholder.svg";
+						    if (file_exists($_SERVER['DOCUMENT_ROOT'] . $imagePath)) {
+						        $correctImagePath = $imagePath;
+						    } else {
+						        $correctImagePath = $placeholderPath;
+						    }
+						    ?>
 									<a href="<?php echo $artworkLink?>" target="_blank">
 									<img src="<?php echo $correctImagePath?>" class="card-img-top" alt="<?php echo $artwork->getTitle()?>">
 									</a>
