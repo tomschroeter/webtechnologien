@@ -1,11 +1,12 @@
 <?php
+
 class ArtworkWithArtistName
 {
     private $artwork;
     private $artistFirstName;
     private $artistLastName;
 
-    public function __construct(Artwork $artwork,  string|null $artistFirstName, string|null $artistLastName)
+    public function __construct(Artwork $artwork, string|null $artistFirstName, string|null $artistLastName)
     {
         $this->artwork = $artwork;
         $this->artistFirstName = $artistFirstName;
@@ -36,13 +37,12 @@ class ArtworkWithArtistName
 class ArtworkWithArtistNameArray extends \ArrayObject
 {
     public function offsetSet($key, $val)
-	{
-        if ($val instanceof ArtworkWithArtistName)
-		{
+    {
+        if ($val instanceof ArtworkWithArtistName) {
             return parent::offsetSet($key, $val);
         }
 
-		// Backslash means using the Standard PHP Library ArrayObject class (same for \ArrayObject)
+        // Backslash means using the Standard PHP Library ArrayObject class (same for \ArrayObject)
         throw new \InvalidArgumentException('Value must be a ArtworkWithArtistName instance');
     }
 }

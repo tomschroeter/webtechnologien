@@ -1,4 +1,5 @@
 <?php
+
 return [
     "home" => "index",
     "test" => "test",
@@ -13,4 +14,3 @@ return [
     "admin_users" => "admin/manage-users",
     "about" => "about",
 ];
-?>

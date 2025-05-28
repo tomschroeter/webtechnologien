@@ -1,60 +1,60 @@
 <!DOCTYPE html>
 <html lang="en">
 
-<?php 
-	require_once dirname(__DIR__) . "/src/head.php";
-	require_once dirname(__DIR__) . "/src/navbar.php";
-	require_once dirname(__DIR__) . "/src/classes/Artist.php";
-	require_once dirname(__DIR__) . "/src/classes/Artwork.php";
-	require_once dirname(__DIR__) . "/src/Database.php";
-	require_once dirname(__DIR__) . "/src/repositories/ArtistRepository.php";
-	require_once dirname(__DIR__) . "/src/repositories/ArtworkRepository.php";
-	require_once dirname(__DIR__) . "/src/dtos/ArtworkWithArtistName.php";
+<?php
+    require_once dirname(__DIR__) . "/src/head.php";
+require_once dirname(__DIR__) . "/src/navbar.php";
+require_once dirname(__DIR__) . "/src/classes/Artist.php";
+require_once dirname(__DIR__) . "/src/classes/Artwork.php";
+require_once dirname(__DIR__) . "/src/Database.php";
+require_once dirname(__DIR__) . "/src/repositories/ArtistRepository.php";
+require_once dirname(__DIR__) . "/src/repositories/ArtworkRepository.php";
+require_once dirname(__DIR__) . "/src/dtos/ArtworkWithArtistName.php";
 
-	$db = new Database();
-	$artistRepository = new ArtistRepository($db);
-	$artworkRepository = new ArtworkRepository($db);
+$db = new Database();
+$artistRepository = new ArtistRepository($db);
+$artworkRepository = new ArtworkRepository($db);
 
-	// Checks if search query has been submitted
-	if (isset($_GET['searchQuery'])) {
-		$searchQuery = trim($_GET['searchQuery']);
-	} else {
-		header("Location: /error.php?error=missingParam");
-		exit();
-	} 
+// Checks if search query has been submitted
+if (isset($_GET['searchQuery'])) {
+    $searchQuery = trim($_GET['searchQuery']);
+} else {
+    header("Location: /error.php?error=missingParam");
+    exit();
+}
 
-	// Checks if search query has valid size (>= 3 characters)
-	if (strlen($searchQuery) < 3) {
-		header("Location: /error.php?error=tooShort");
-		exit();
-	}
+// Checks if search query has valid size (>= 3 characters)
+if (strlen($searchQuery) < 3) {
+    header("Location: /error.php?error=tooShort");
+    exit();
+}
 
-	// Checks if sort parameter for displayed artworks is set
-	if (isset($_GET['sortParameter'])) {
-		$sortParameter = $_GET['sortParameter'];
-	} else {
-		$sortParameter = "Title"; // search by title by default
-	}
+// Checks if sort parameter for displayed artworks is set
+if (isset($_GET['sortParameter'])) {
+    $sortParameter = $_GET['sortParameter'];
+} else {
+    $sortParameter = "Title"; // search by title by default
+}
 
-	// Checks if user sets sort order for displayed artists 
-	if (isset($_GET['sortArtist'])) {
+// Checks if user sets sort order for displayed artists
+if (isset($_GET['sortArtist'])) {
     $sortArtist = ($_GET['sortArtist'] === 'descending');
-  } else {
+} else {
     $sortArtist = false; // sort from a-z by default
-  }
+}
 
-	// Checks if user sets sort order for displayed artworks
-	if (isset($_GET['sortArtwork'])) {
-		$sortArtwork = ($_GET['sortArtwork'] === 'descending');
-	} else {
-		$sortArtwork = false; // sort from lowest to highest by default
-	}
+// Checks if user sets sort order for displayed artworks
+if (isset($_GET['sortArtwork'])) {
+    $sortArtwork = ($_GET['sortArtwork'] === 'descending');
+} else {
+    $sortArtwork = false; // sort from lowest to highest by default
+}
 
-	// Get results for all artists that fit the search query
-	$artistSearchResults = $artistRepository->getArtistBySearchQuery($searchQuery, $sortArtist);
+// Get results for all artists that fit the search query
+$artistSearchResults = $artistRepository->getArtistBySearchQuery($searchQuery, $sortArtist);
 
-	// Get results for all artworks that fit the search query 
-	$artworkSearchResults = $artworkRepository->getArtworkBySearchQuery($searchQuery, $sortParameter, $sortArtwork);
+// Get results for all artworks that fit the search query
+$artworkSearchResults = $artworkRepository->getArtworkBySearchQuery($searchQuery, $sortParameter, $sortArtwork);
 ?>
 
 <body class="container">
@@ -80,7 +80,7 @@
 
 			<!-- List to display all artists that fit the search query -->
 			<ul class="list-group">
-			<?php foreach($artistSearchResults as $artist): ?>
+			<?php foreach ($artistSearchResults as $artist): ?>
 				<li class="list-group-item d-flex justify-content-between align-items-center">
 					<!-- Ref link to display single artist -->
 					<a href="<?php echo route('artists', ['id' => $artist->getArtistId()]) ?>"
@@ -91,13 +91,13 @@
 
 						<!-- Checks if artists' image exists -->
 						<?php $imagePath = "/assets/images/artists/square-thumb/".$artist->getArtistId().".jpg";
-								$placeholderPath = "/assets/placeholder/artists/square-thumb/placeholder.svg"; 
-								if (file_exists($_SERVER['DOCUMENT_ROOT'] . $imagePath)) {
-									$correctImagePath = $imagePath;
-								} else {
-									$correctImagePath = $placeholderPath;
-								}
-							?>
+			    $placeholderPath = "/assets/placeholder/artists/square-thumb/placeholder.svg";
+			    if (file_exists($_SERVER['DOCUMENT_ROOT'] . $imagePath)) {
+			        $correctImagePath = $imagePath;
+			    } else {
+			        $correctImagePath = $placeholderPath;
+			    }
+			    ?>
 							<img src="<?php echo $correctImagePath?>" alt="Künsterbild">
 						</a>
 						
@@ -140,7 +140,7 @@
 
 			<!-- List to display all artworks that fit the search query -->	
 			<ul class="list-group">
-			<?php foreach($artworkSearchResults as $index => $combined):?>
+			<?php foreach ($artworkSearchResults as $index => $combined):?>
 				<li class="list-group-item d-flex align-items-center">
 					<!-- Ref link to display single artwork -->
 					<a href="<?php echo route('artworks', ['id' => $combined->getArtwork()->getArtworkId()])?>"
@@ -148,18 +148,18 @@
 
 						<!-- Display artwork title, artist name and year of publishment -->
 						<?php echo '"' . $combined->getArtwork()->getTitle() . '" ' .
-							"by " . $combined->getArtistFirstName() . " " . $combined->getArtistLastName() . "," . 
-							" veröffentlicht " . $combined->getArtwork()->getYearOfWork()?>
+			    "by " . $combined->getArtistFirstName() . " " . $combined->getArtistLastName() . "," .
+			    " veröffentlicht " . $combined->getArtwork()->getYearOfWork()?>
 
 						<!-- Checks if artworks' image exists -->
 						<?php $imagePath = "/assets/images/works/square-small/".$combined->getArtwork()->getImageFileName().".jpg";
-						$placeholderPath = "/assets/placeholder/works/square-small/placeholder.svg"; 
-						if (file_exists($_SERVER['DOCUMENT_ROOT'] . $imagePath)) {
-							$correctImagePath = $imagePath;
-						} else {
-							$correctImagePath = $placeholderPath;
-						}
-						?>
+			    $placeholderPath = "/assets/placeholder/works/square-small/placeholder.svg";
+			    if (file_exists($_SERVER['DOCUMENT_ROOT'] . $imagePath)) {
+			        $correctImagePath = $imagePath;
+			    } else {
+			        $correctImagePath = $placeholderPath;
+			    }
+			    ?>
 						<img src="<?php echo $correctImagePath?>" alt="Kunstwerk">
 					</a>
 
