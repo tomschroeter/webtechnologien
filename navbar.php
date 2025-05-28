@@ -11,8 +11,8 @@
   <div class="collapse navbar-collapse" id="collapsibleNavId">
     <?php
       $currentScript = basename($_SERVER['SCRIPT_NAME'], '.php');
-      $currentRoute = $currentScript === 'index' ? 'home' : $currentScript;
-    ?>
+$currentRoute = $currentScript === 'index' ? 'home' : $currentScript;
+?>
     <ul class="navbar-nav mr-auto mt-2 mt-lg-0">
       <li class="nav-item <?php echo ($currentRoute === 'home') ? 'active' : ''; ?>">
       <a class="nav-link" href=<?php echo route("home") ?>>Home <?php if ($currentRoute === 'home'): ?><span class="sr-only">(current)</span><?php endif; ?></a>
@@ -21,9 +21,9 @@
       <a class="nav-link" href=<?php echo route("about")?>>About <?php if ($currentRoute === 'about'): ?><span class="sr-only">(current)</span><?php endif; ?></a>
       </li>
       <?php
-      $browseRoutes = ['artists', 'artworks', 'genres', 'subjects'];
-      $isBrowseActive = in_array($currentRoute, $browseRoutes);
-      ?>
+  $browseRoutes = ['artists', 'artworks', 'genres', 'subjects'];
+$isBrowseActive = in_array($currentRoute, $browseRoutes);
+?>
       <li class="nav-item dropdown <?php echo $isBrowseActive ? 'active' : ''; ?>">
       <a class="nav-link dropdown-toggle" href="#" id="dropdownId" data-toggle="dropdown" aria-haspopup="true"
         aria-expanded="false">Browse</a>

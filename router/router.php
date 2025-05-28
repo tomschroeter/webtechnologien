@@ -1,4 +1,5 @@
 <?php
+
 function route($name, $params = [])
 {
     $routes = require dirname(__DIR__)."/router/routes.php"; // Load routes

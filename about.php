@@ -3,7 +3,7 @@
 
 <?php
   require_once dirname(__DIR__)."/src/head.php";
-  require_once dirname(__DIR__)."/src/navbar.php";
+require_once dirname(__DIR__)."/src/navbar.php";
 ?>
 
 <body class="container">

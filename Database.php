@@ -1,4 +1,5 @@
 <?php
+
 require_once dirname(__DIR__)."/src/env.php";
 
 // https://elearning.th-wildau.de/mod/resource/view.php?id=490348
@@ -8,34 +9,29 @@ class Database
 
     public function connect()
     {
-        if ($this->isConnected())
-        {
+        if ($this->isConnected()) {
             throw new Exception("Already connected to DB.");
         }
 
-		try
-		{
-			$host = $_ENV['DB_HOST'];
-			$user = $_ENV['DB_USERNAME'];
-			$pass = $_ENV['DB_PASSWORD'];
-			$dbname = $_ENV['DB_NAME'];
+        try {
+            $host = $_ENV['DB_HOST'];
+            $user = $_ENV['DB_USERNAME'];
+            $pass = $_ENV['DB_PASSWORD'];
+            $dbname = $_ENV['DB_NAME'];
 
-			$connectionString = "mysql:host=" . $host . ";dbname=" . $dbname;
+            $connectionString = "mysql:host=" . $host . ";dbname=" . $dbname;
 
-			$this->pdo = new PDO($connectionString, $user, $pass);
-			$this->pdo->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
-		}
-		catch (PDOException $e)
-		{
-			$this->pdo;
-			exit("Database connection failed: " . $e->getMessage());
-		}
+            $this->pdo = new PDO($connectionString, $user, $pass);
+            $this->pdo->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
+        } catch (PDOException $e) {
+            $this->pdo;
+            exit("Database connection failed: " . $e->getMessage());
+        }
     }
 
     public function prepareStatement(string $sql)
     {
-        if (!$this->isConnected())
-        {
+        if (!$this->isConnected()) {
             throw new Exception("Not connected to DB.");
         }
 
@@ -49,7 +45,9 @@ class Database
 
     public function disconnect()
     {
-        if (!$this->isConnected()) return;
+        if (!$this->isConnected()) {
+            return;
+        }
 
         $this->pdo = null;
     }

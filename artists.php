@@ -3,19 +3,19 @@
 
 <?php
   require_once dirname(__DIR__)."/src/head.php";
-  require_once dirname(__DIR__)."/src/repositories/ArtistRepository.php";
-  require_once dirname(__DIR__)."/src/navbar.php";
+require_once dirname(__DIR__)."/src/repositories/ArtistRepository.php";
+require_once dirname(__DIR__)."/src/navbar.php";
 
-  $artistRepository = new ArtistRepository(new Database());
+$artistRepository = new ArtistRepository(new Database());
 
-  // Checks if user has submitted a valid option for changing the display order
-  if (isset($_GET['sort'])) {
+// Checks if user has submitted a valid option for changing the display order
+if (isset($_GET['sort'])) {
     $sort = ($_GET['sort'] === 'descending');
-  } else {
+} else {
     $sort = false;
-  }
+}
 
-  $artists = $artistRepository->getAllArtists($sort);
+$artists = $artistRepository->getAllArtists($sort);
 ?>
 
 <body class="container">
@@ -39,13 +39,13 @@
           <span><?php echo $artist->getFirstName()?> <?php echo $artist->getLastName()?></span>
           <!-- Checks if artists' image exists -->
           <?php $imagePath =  "/assets/images/artists/square-thumb/".$artist->getArtistId().".jpg";
-            $placeholderPath = "/assets/placeholder/artists/square-thumb/placeholder.svg"; 
-            if (file_exists($_SERVER['DOCUMENT_ROOT'] . $imagePath)) {
-              $correctImagePath = $imagePath;
-            } else {
-              $correctImagePath = $placeholderPath;
-            }
-          ?>
+        $placeholderPath = "/assets/placeholder/artists/square-thumb/placeholder.svg";
+        if (file_exists($_SERVER['DOCUMENT_ROOT'] . $imagePath)) {
+            $correctImagePath = $imagePath;
+        } else {
+            $correctImagePath = $placeholderPath;
+        }
+        ?>
           <img src="<?php echo $correctImagePath?>" alt="Künsterbild" style="max-width: 100px; max-height: 100px; object-fit: cover;">
         </a>
       </li>

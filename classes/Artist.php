@@ -1,4 +1,5 @@
 <?php
+
 require_once dirname(__DIR__)."/Database.php";
 require_once dirname(__DIR__)."/dtos/ArtistWithStats.php";
 
@@ -22,8 +23,7 @@ class Artist
         $yearOfDeath,
         $details,
         $artistLink
-    ) 
-    {
+    ) {
         $this->setArtistId($artistId);
         $this->setFirstName($firstName);
         $this->setLastName($lastName);
@@ -33,8 +33,9 @@ class Artist
         $this->setDetails($details);
         $this->setArtistLink($artistLink);
     }
-    
-    public static function createArtistFromRecord(array $record) : Artist {
+
+    public static function createArtistFromRecord(array $record): Artist
+    {
         return new self(
             $record['ArtistID'],
             $record['FirstName'],
