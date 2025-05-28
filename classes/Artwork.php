@@ -1,4 +1,5 @@
 <?php
+
 require_once dirname(__DIR__)."/Database.php";
 
 class Artwork
@@ -24,7 +25,7 @@ class Artwork
     private function __construct(
         $artworkId,
         $artistId,
-        $imageFileName, 
+        $imageFileName,
         $title,
         $description,
         $excerpt,
@@ -36,26 +37,27 @@ class Artwork
         $originalHome,
         $galleryId,
         $artworkLink,
-        $googleLink)
-    {
-        $this->setArtworkId($artworkId); 
-        $this->setArtistId($artistId); 
+        $googleLink
+    ) {
+        $this->setArtworkId($artworkId);
+        $this->setArtistId($artistId);
         $this->setImageFileName($imageFileName);
-        $this->setTitle($title);      
-        $this->setDescription($description); 
-        $this->setExcerpt($excerpt);   
-        $this->setArtworkType($artworkType);  
-        $this->setYearOfWork($yearOfWork);  
-        $this->setWidth($width);       
-        $this->setHeight($height);       
-        $this->setMedium($medium);    
-        $this->setOriginalHome($originalHome);  
-        $this->setGalleryId($galleryId);   
+        $this->setTitle($title);
+        $this->setDescription($description);
+        $this->setExcerpt($excerpt);
+        $this->setArtworkType($artworkType);
+        $this->setYearOfWork($yearOfWork);
+        $this->setWidth($width);
+        $this->setHeight($height);
+        $this->setMedium($medium);
+        $this->setOriginalHome($originalHome);
+        $this->setGalleryId($galleryId);
         $this->setArtworkLink($artworkLink);
         $this->setGoogleLink($googleLink);
     }
 
-    public static function createArtworkFromRecord(array $record) : Artwork {
+    public static function createArtworkFromRecord(array $record): Artwork
+    {
         return new self(
             $record['ArtWorkID'],
             $record['ArtistID'],

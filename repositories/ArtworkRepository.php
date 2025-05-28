@@ -3,20 +3,27 @@
 require_once dirname(__DIR__)."/Database.php";
 require_once dirname(__DIR__)."/classes/Artwork.php";
 require_once dirname(__DIR__)."/repositories/ArtistRepository.php";
+require_once dirname(__DIR__)."/repositories/SubjectRepository.php";
 require_once dirname(__DIR__)."/dtos/ArtworkWithArtistName.php";
 
-class ArtworkRepository {
+class ArtworkRepository
+{
     private Database $db;
     private ArtistRepository $artistRepository;
+    private SubjectRepository $subjectRepository;
 
-    public function __construct(Database $db) {
+    public function __construct(Database $db)
+    {
         $this->db = $db;
         $this->artistRepository = new ArtistRepository($db);
+        $this->subjectRepository = new SubjectRepository($db);
     }
 
-    public function findById(int $id) : Artwork
+    public function findById(int $id): Artwork
     {
-        if (!$this->db->isConnected()) $this->db->connect();
+        if (!$this->db->isConnected()) {
+            $this->db->connect();
+        }
 
         $sql = "
             select *
@@ -39,9 +46,11 @@ class ArtworkRepository {
     /**
     * @return Artwork[]
     */
-    public function getArtworksByArtist(int $artistId) : array
+    public function getArtworksByArtist(int $artistId): array
     {
-        if (!$this->db->isConnected()) $this->db->connect();
+        if (!$this->db->isConnected()) {
+            $this->db->connect();
+        }
 
         $sql = "
             SELECT *
@@ -76,15 +85,59 @@ class ArtworkRepository {
     }
 
     /**
+    * @return Artwork[]
+    */
+    public function getArtworksBySubject(int $subjectId): array
+    {
+        if (!$this->db->isConnected()) {
+            $this->db->connect();
+        }
+
+        $sql = "
+            SELECT *
+            FROM artworks, subjects, artworksubjects
+            WHERE artworks.ArtworkID = artworksubjects.ArtworkID
+            AND artworksubjects.SubjectID = subjects.SubjectID
+            AND subjects.SubjectId = :id
+        ";
+
+        $stmt = $this->db->prepareStatement($sql);
+
+        // Checks if artist with given ID exists
+        $this->subjectRepository->getSubjectById($subjectId);
+
+        $stmt->bindValue("id", $subjectId);
+        $stmt->execute();
+
+        $artworks = [];
+
+        foreach ($stmt as $row) {
+
+            // Add 0 in front of image file name if name is 5 characters long
+            if (strlen($row['ImageFileName']) < 6) {
+                $row['ImageFileName'] = '0' . $row['ImageFileName'];
+            }
+
+            $artworks[] = Artwork::createArtworkFromRecord($row);
+        }
+
+        $this->db->disconnect();
+
+        return $artworks;
+    }
+
+    /**
      * Summary of getArtworkBySearchQuery
      * @param string $searchQuery
      * @param string $sortParameter
      * @param bool $sortDesc
      * @return ArtworkWithArtistName[]
      */
-    public function getArtworkBySearchQuery(string $searchQuery, string $sortParameter, bool $sortDesc) : array 
+    public function getArtworkBySearchQuery(string $searchQuery, string $sortParameter, bool $sortDesc): array
     {
-        if (!$this->db->isConnected()) $this->db->connect();
+        if (!$this->db->isConnected()) {
+            $this->db->connect();
+        }
 
         // Mapping of sort parameter to prevent SQL injections
         $sortMap = [
@@ -95,7 +148,7 @@ class ArtworkRepository {
         $sortField = $sortMap[strtolower($sortParameter)] ?? 'artworks.Title';
 
         $sortOrder = $sortDesc ? "DESC" : "ASC";
-        
+
         $sql = "SELECT artworks.*, artists.FirstName, artists.LastName
                 FROM artworks, artists
                 WHERE artworks.ArtistID = artists.ArtistID
@@ -108,8 +161,7 @@ class ArtworkRepository {
 
         $artworks = [];
 
-        foreach ($stmt as $row)
-        {
+        foreach ($stmt as $row) {
             // Add 0 in front of image file name if name is 5 characters long
             if (strlen($row['ImageFileName']) < 6) {
                 $row['ImageFileName'] = '0' . $row['ImageFileName'];
@@ -128,14 +180,16 @@ class ArtworkRepository {
 
     /**
      * Get all artworks with optional sorting
-     * 
+     *
      * @param string $sortBy Field to sort by (title, artist, year)
      * @param string $sortOrder Sort direction (asc, desc)
      * @return array Array of Artwork objects
      */
     public function getAllArtworks($sortBy = 'title', $sortOrder = 'asc')
     {
-        if (!$this->db->isConnected()) $this->db->connect();
+        if (!$this->db->isConnected()) {
+            $this->db->connect();
+        }
 
         $sql = "";
 
@@ -160,8 +214,7 @@ class ArtworkRepository {
 
         $artworks = [];
 
-        foreach ($stmt as $row)
-        {
+        foreach ($stmt as $row) {
             // Add 0 in front of image file name if name is 5 characters long
             if (strlen($row['ImageFileName']) < 6) {
                 $row['ImageFileName'] = '0' . $row['ImageFileName'];

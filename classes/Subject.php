@@ -12,7 +12,8 @@ class Subject
         $this->setSubjectId($subjectId);
     }
 
-    public static function createSubjectFromRecord(array $record) : Subject {
+    public static function createSubjectFromRecord(array $record): Subject
+    {
         return new self(
             subjectName: $record['SubjectName'],
             subjectId: $record['SubjectId'],

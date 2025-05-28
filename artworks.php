@@ -3,32 +3,32 @@
 
 <?php
     require_once dirname(__DIR__)."/src/head.php";
-    require_once dirname(__DIR__)."/src/repositories/ArtworkRepository.php";
-    require_once dirname(__DIR__)."/src/repositories/ArtistRepository.php";
-    require_once dirname(__DIR__)."/src/navbar.php";
+require_once dirname(__DIR__)."/src/repositories/ArtworkRepository.php";
+require_once dirname(__DIR__)."/src/repositories/ArtistRepository.php";
+require_once dirname(__DIR__)."/src/navbar.php";
 
-    $db = new Database();
+$db = new Database();
 
-    $artworkRepository = new ArtworkRepository($db);
-    $artistRepository = new ArtistRepository($db);
+$artworkRepository = new ArtworkRepository($db);
+$artistRepository = new ArtistRepository($db);
 
-    // Get sort parameters from URL
-    $sortBy = isset($_GET['sort']) ? $_GET['sort'] : 'title';
-    $sortOrder = isset($_GET['order']) ? $_GET['order'] : 'asc';
+// Get sort parameters from URL
+$sortBy = isset($_GET['sort']) ? $_GET['sort'] : 'title';
+$sortOrder = isset($_GET['order']) ? $_GET['order'] : 'asc';
 
-    // Validate sort parameters
-    $validSortFields = ['title', 'artist', 'year'];
-    if (!in_array($sortBy, $validSortFields)) {
+// Validate sort parameters
+$validSortFields = ['title', 'artist', 'year'];
+if (!in_array($sortBy, $validSortFields)) {
     $sortBy = 'title';
-    }
+}
 
-    $validSortOrders = ['asc', 'desc'];
-    if (!in_array($sortOrder, $validSortOrders)) {
+$validSortOrders = ['asc', 'desc'];
+if (!in_array($sortOrder, $validSortOrders)) {
     $sortOrder = 'asc';
-    }
+}
 
-    // Get artworks with the sort parameters
-    $artworks = $artworkRepository->getAllArtworks($sortBy, $sortOrder);
+// Get artworks with the sort parameters
+$artworks = $artworkRepository->getAllArtworks($sortBy, $sortOrder);
 ?>
 
 <body class="container">
@@ -72,10 +72,10 @@
           <div>
             <h5 class="mb-1"><?php echo $artwork->getTitle()?></h5>
             <p class="mb-1">
-              <?php 
+              <?php
                 $artist = $artistRepository->getArtistById($artwork->getArtistID());
-                echo $artist ? $artist->getFirstName() . ' ' . $artist->getLastName() : 'Unbekannter Künstler';
-              ?>
+        echo $artist ? $artist->getFirstName() . ' ' . $artist->getLastName() : 'Unbekannter Künstler';
+        ?>
               <?php if ($artwork->getYearOfWork()): ?>
                 <span class="text-muted">(<?php echo $artwork->getYearOfWork()?>)</span>
               <?php endif; ?>
@@ -83,14 +83,14 @@
           </div>
           <!-- Check if artwork image exists -->
           <?php $imagePath = "/assets/images/works/square-small/".$artwork->getImageFileName().".jpg";
-            $placeholderPath = "/assets/placeholder/works/square-small/placeholder.svg"; 
+        $placeholderPath = "/assets/placeholder/works/square-small/placeholder.svg";
 
-            if (file_exists($_SERVER['DOCUMENT_ROOT'] . $imagePath)) {
-              $correctImagePath = $imagePath;
-            } else {
-              $correctImagePath = $placeholderPath;
-            }
-          ?>
+        if (file_exists($_SERVER['DOCUMENT_ROOT'] . $imagePath)) {
+            $correctImagePath = $imagePath;
+        } else {
+            $correctImagePath = $placeholderPath;
+        }
+        ?>
           <img src="<?php echo $correctImagePath?>" alt="<?php echo $artwork->getTitle()?>" 
                style="max-width: 100px; max-height: 100px; object-fit: cover;">
         </a>
