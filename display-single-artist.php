@@ -86,7 +86,11 @@ try {
 		<h2 class="mt-5">Artworks by <?php echo $artist->getFirstName() ?> <?php echo $artist->getLastName() ?></h2>
 		<div class="row mt-4">
 			<?php foreach ($artworks as $artwork): ?>
+
+
+				<!-- Creates new URL to display single artwork --->
 				<?php $artworkLink = "/display-single-artwork.php?id=" . $artwork->getArtworkId(); ?>
+				<!-- List of artworks -->
 				<div class="col-md-3 mb-4">
 					<div class="card h-100">
 						<!-- Artwork image -->
@@ -100,67 +104,6 @@ try {
 						</a>
 
 						<div class="card-body d-flex flex-column">
-							<!-- Checks if user is logged in -->
-							<?php if (isset($_SESSION['customerId'])): ?>
-
-								<!-- Loads ReviewRepository and checks if user already reviewed this artwork -->
-								<?php
-								require_once dirname(__DIR__) . "/src/repositories/ReviewRepository.php";
-								$reviewRepo = new ReviewRepository($db);
-								$alreadyReviewed = $reviewRepo->hasUserReviewed($_SESSION['customerId'], $artwork->getArtworkId());
-								?>
-
-								<!-- Displays review form if user has not reviewed yet -->
-								<?php if (!$alreadyReviewed): ?>
-									<form method="POST" action="add-review.php" class="mt-2">
-										<input type="hidden" name="artworkId" value="<?= $artwork->getArtworkId() ?>">
-										<label for="rating">Rating (1–5):</label>
-										<input type="number" name="rating" min="1" max="5" required class="form-control mb-1">
-										<label for="comment">Comment:</label>
-										<textarea name="comment" required class="form-control mb-2"></textarea>
-										<button type="submit" class="btn btn-sm btn-success">Submit Review</button>
-									</form>
-									<!-- Message if user has already submitted a review -->
-								<?php else: ?>
-									<p class="text-muted mt-2">You have already reviewed this artwork.</p>
-								<?php endif; ?>
-
-								<!-- Message if user is not logged in -->
-							<?php else: ?>
-								<p class="text-muted mt-2">Log in to leave a review.</p>
-							<?php endif; ?>
-
-							<!-- Loads and displays all reviews for this artwork -->
-							<?php
-							$reviews = $reviewRepo->getAllReviewsForArtwork($artwork->getArtworkId());
-							?>
-
-							<!-- If there are reviews, display them -->
-							<?php if (count($reviews) > 0): ?>
-								<div class="mt-3">
-									<h6>Reviews:</h6>
-									<?php foreach ($reviews as $review): ?>
-										<div class="border rounded p-2 mb-2 bg-light">
-											<strong>Rating:</strong> <?= $review->getRating() ?>/5<br>
-											<strong>Comment:</strong> <?= htmlspecialchars($review->getComment()) ?><br>
-											<small class="text-muted"><?= $review->getReviewDate() ?></small>
-											<!-- Show Delete button only for admins -->
-											<?php if ($_SESSION['isAdmin'] ?? false): ?>
-												<form method="POST" action="delete-review.php" onsubmit="return confirm('Are you sure you want to delete this review?')">
-													<input type="hidden" name="reviewId" value="<?= $review->getReviewId() ?>">
-													<input type="hidden" name="artworkId" value="<?= $review->getArtworkId() ?>">
-													<button type="submit" class="btn btn-sm btn-danger mt-2">Delete</button>
-												</form>
-											<?php endif; ?>
-
-										</div>
-									<?php endforeach; ?>
-								</div>
-								<!-- If no reviews exist -->
-							<?php else: ?>
-								<p class="text-muted mt-2">No reviews yet.</p>
-							<?php endif; ?>
-
 							<h5 class="card-title text-center">
 								<a href="<?php echo $artworkLink ?>" target="_blank" class="text-body">
 									<?php echo $artwork->getTitle() ?>
