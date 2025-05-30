@@ -291,20 +291,23 @@ if (file_exists($_SERVER['DOCUMENT_ROOT'] . $imagePath)) {
         <?php if ($gallery): ?>
             <div class="row mt-4">
                 <div class="col-12">
-                    <h3 class="d-flex justify-content-between align-items-center" 
-                        style="cursor: pointer;" 
-                        data-toggle="collapse" 
-                        data-target="#galleryCollapse" 
-                        aria-expanded="false" 
-                        aria-controls="galleryCollapse">
-                        Museum Information
-                        <i class="fas fa-chevron-down" id="galleryArrow"></i>
-                    </h3>
-                    <div class="accordion" id="galleryAccordion">
-                        <div class="card border-0">
-                            <div id="galleryCollapse" class="collapse" aria-labelledby="galleryHeading" 
-                                 data-parent="#galleryAccordion">
-                                <div class="card-body p-0">
+                    <div class="accordion" id="museumAccordion">
+                        <div class="card">
+                            <div class="card-header" id="museumHeading">
+                                <h3 class="mb-0">
+                                    <button class="btn btn-link text-decoration-none text-dark d-flex justify-content-between align-items-center w-100" 
+                                            type="button" 
+                                            data-toggle="collapse" 
+                                            data-target="#museumCollapse" 
+                                            aria-expanded="false" 
+                                            aria-controls="museumCollapse">
+                                        Museum Information
+                                        <i class="fas fa-chevron-down" id="museumArrow"></i>
+                                    </button>
+                                </h3>
+                            </div>
+                            <div id="museumCollapse" class="collapse" aria-labelledby="museumHeading" data-parent="#museumAccordion">
+                                <div class="card-body">
                                     <table class="table table-striped table-bordered mb-0">
                                         <tr>
                                             <th width="150">Museum:</th>
@@ -398,18 +401,12 @@ if (file_exists($_SERVER['DOCUMENT_ROOT'] . $imagePath)) {
     
     <script>
     // Handle accordion arrow rotation for museum information
-    $('#galleryCollapse').on('show.bs.collapse', function () {
-        $('#galleryArrow').removeClass('fa-chevron-down').addClass('fa-chevron-up');
+    $('#museumCollapse').on('show.bs.collapse', function () {
+        $('#museumArrow').removeClass('fa-chevron-down').addClass('fa-chevron-up');
     });
     
-    $('#galleryCollapse').on('hide.bs.collapse', function () {
-        $('#galleryArrow').removeClass('fa-chevron-up').addClass('fa-chevron-down');
-    });
-    
-    // Handle click on heading to toggle collapse
-    $('h3[data-toggle="collapse"]').on('click', function() {
-        var target = $(this).attr('data-target');
-        $(target).collapse('toggle');
+    $('#museumCollapse').on('hide.bs.collapse', function () {
+        $('#museumArrow').removeClass('fa-chevron-up').addClass('fa-chevron-down');
     });
     </script>
 </body>
