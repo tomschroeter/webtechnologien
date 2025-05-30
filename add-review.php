@@ -1,56 +1,54 @@
 <?php
-// Session starten, aber nur wenn noch keine läuft
 if (session_status() === PHP_SESSION_NONE) {
     session_start();
 }
 
-// TEST: Temporär gesetzter Nutzer (für Tests, bis Login existiert)
+// Simulate logged-in user (TEMP)
 $_SESSION['customerId'] = 1;
 
-// Prüfen, ob User gesetzt ist (sicherheitscheck)
-if (!isset($_SESSION['customerId'])) {
-    die("Not logged in – customerId missing in session.");
-}
-
-require_once "bootstrap.php"; // Initialisiert DB & Klassen
+require_once "bootstrap.php";
 require_once "classes/Review.php";
 require_once "repositories/ReviewRepository.php";
 
-// Formulardaten holen
-$artworkId = $_POST['artworkId'] ?? null;
-$customerId = $_SESSION['customerId'];
-$rating = isset($_POST['rating']) ? (int)$_POST['rating'] : null;
-$comment = trim($_POST['comment'] ?? '');
-
-// Validierung
-if (!$artworkId || !$rating || $rating < 1 || $rating > 5 || empty($comment)) {
-    die("Invalid review data.");
+// Validate session
+if (!isset($_SESSION['customerId'])) {
+    header("Location: error.php?error=notLoggedIn");
+    exit;
 }
 
-// DB und Repository initialisieren
+$artworkId = $_POST['artworkId'] ?? null;
+$rating = isset($_POST['rating']) ? (int)$_POST['rating'] : null;
+$comment = trim($_POST['comment'] ?? '');
+$customerId = $_SESSION['customerId'];
+
+// Basic input validation
+if (!$artworkId || !$rating || $rating < 1 || $rating > 5 || empty($comment)) {
+    header("Location: error.php?error=invalidReviewData");
+    exit;
+}
+
 $db = new Database();
 $repo = new ReviewRepository($db);
 
-// Prüfen, ob der User dieses Artwork schon bewertet hat
+// Prevent duplicate review
 if ($repo->hasUserReviewed($customerId, $artworkId)) {
-    die("You have already reviewed this artwork.");
+    header("Location: error.php?error=duplicateReview");
+    exit;
 }
 
-// Review-Objekt erstellen
+// Create Review object
 $review = new Review(
-    null,                      // ReviewId (wird von DB generiert)
+    null,               // ReviewId (auto-generated)
     $artworkId,
     $customerId,
-    date('Y-m-d H:i:s'), 
+    date('Y-m-d H:i:s'),
     $rating,
     $comment
 );
 
-// In DB speichern
+// Save to database
 $repo->addReview($review);
 
-// Zurück zur Artwork-Seite
+// Redirect back
 header("Location: " . $_SERVER['HTTP_REFERER']);
 exit;
-
-
