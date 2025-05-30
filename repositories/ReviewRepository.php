@@ -91,4 +91,19 @@ public function getAllReviewsForArtwork(int $artworkId): array {
     return $reviews;
 }
 
+/**
+ * Deletes a review by ID
+ */
+public function deleteReview(int $reviewId): void {
+    if (!$this->db->isConnected()) $this->db->connect();
+
+    $sql = "DELETE FROM reviews WHERE ReviewId = :id";
+    $stmt = $this->db->prepareStatement($sql);
+    $stmt->bindValue("id", $reviewId, PDO::PARAM_INT);
+    $stmt->execute();
+
+    $this->db->disconnect();
+}
+
+
 }
