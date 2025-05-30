@@ -1,0 +1,94 @@
+<?php
+
+require_once dirname(__DIR__) . "/Database.php";
+require_once dirname(__DIR__) . "/classes/Review.php";
+
+class ReviewRepository {
+    private Database $db;
+
+    public function __construct(Database $db) {
+        $this->db = $db;
+    }
+
+    /**
+     * Fügt eine neue Bewertung hinzu.
+     */
+    public function addReview(Review $review): void {
+        if (!$this->db->isConnected()) $this->db->connect();
+
+        $sql = "
+            INSERT INTO reviews (ArtWorkId, CustomerId, ReviewDate, Rating, Comment)
+            VALUES (:artworkId, :customerId, :reviewDate, :rating, :comment)
+        ";
+
+        $stmt = $this->db->prepareStatement($sql);
+        $stmt->bindValue("artworkId", $review->getArtworkId(), PDO::PARAM_INT);
+        $stmt->bindValue("customerId", $review->getCustomerId(), PDO::PARAM_INT);
+        $stmt->bindValue("reviewDate", $review->getReviewDate());
+        $stmt->bindValue("rating", $review->getRating(), PDO::PARAM_INT);
+        $stmt->bindValue("comment", $review->getComment());
+
+        $stmt->execute();
+
+        $this->db->disconnect();
+    }
+
+    /**
+     * Prüft, ob der User das Artwork bereits bewertet hat.
+     */
+    public function hasUserReviewed(int $customerId, int $artworkId): bool {
+        if (!$this->db->isConnected()) $this->db->connect();
+
+        $sql = "
+            SELECT COUNT(*) as review_count
+            FROM reviews
+            WHERE CustomerId = :customerId AND ArtWorkId = :artworkId
+        ";
+
+        $stmt = $this->db->prepareStatement($sql);
+        $stmt->bindValue("customerId", $customerId, PDO::PARAM_INT);
+        $stmt->bindValue("artworkId", $artworkId, PDO::PARAM_INT);
+        $stmt->execute();
+
+        $result = $stmt->fetch();
+
+        $this->db->disconnect();
+
+        return $result && $result["review_count"] > 0;
+    }
+
+    /**
+ * Holt alle Reviews zu einem bestimmten Artwork
+ * @return Review[]
+ */
+public function getAllReviewsForArtwork(int $artworkId): array {
+    if (!$this->db->isConnected()) $this->db->connect();
+
+    $sql = "
+        SELECT * FROM reviews
+        WHERE ArtWorkId = :artworkId
+        ORDER BY ReviewDate DESC
+    ";
+
+    $stmt = $this->db->prepareStatement($sql);
+    $stmt->bindValue("artworkId", $artworkId, PDO::PARAM_INT);
+    $stmt->execute();
+
+    $reviews = [];
+
+    foreach ($stmt as $row) {
+        $reviews[] = new Review(
+            $row['ReviewId'],
+            $row['ArtWorkId'],
+            $row['CustomerId'],
+            $row['ReviewDate'],
+            $row['Rating'],
+            $row['Comment']
+        );
+    }
+
+    $this->db->disconnect();
+    return $reviews;
+}
+
+}
