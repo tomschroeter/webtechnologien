@@ -10,9 +10,14 @@ require_once dirname(__DIR__) . "/src/repositories/ArtistRepository.php";
 require_once dirname(__DIR__) . "/src/repositories/GenreRepository.php";
 require_once dirname(__DIR__) . "/src/repositories/SubjectRepository.php";
 require_once dirname(__DIR__) . "/src/repositories/GalleryRepository.php";
+require_once dirname(__DIR__) . "/src/repositories/ReviewRepository.php";
+require_once dirname(__DIR__) . "/src/dtos/ReviewStats.php";
 require_once dirname(__DIR__) . "/src/router/router.php";
 
 session_start();
+
+$_SESSION['customerId'] = 1; // TEMP: simulate logged-in user
+$_SESSION['isAdmin'] = true; // TEMP: simulate admin privileges
 
 $db = new Database();
 $artworkRepository = new ArtworkRepository($db);
@@ -20,6 +25,7 @@ $artistRepository = new ArtistRepository($db);
 $genreRepository = new GenreRepository($db);
 $subjectRepository = new SubjectRepository($db);
 $galleryRepository = new GalleryRepository($db);
+$reviewRepo = new ReviewRepository($db);
 
 // Handle Add/Remove Favorites
 if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['action'])) {
@@ -77,8 +83,8 @@ try {
 try {
     $genres = $artworkRepository->getGenresByArtwork($artworkId);
     $subjects = $artworkRepository->getSubjectsByArtwork($artworkId);
-    $reviews = $artworkRepository->getReviewsByArtwork($artworkId);
-    $reviewStats = $artworkRepository->getReviewStats($artworkId);
+    $reviews = $reviewRepo->getAllReviewsWithCustomerInfo($artworkId);
+    $reviewStats = $reviewRepo->getReviewStats($artworkId);
 
     $gallery = null;
     if ($artwork->getGalleryId()) {
@@ -89,7 +95,7 @@ try {
     $genres = [];
     $subjects = [];
     $reviews = [];
-    $reviewStats = ['averageRating' => 0, 'totalReviews' => 0];
+    $reviewStats = new ReviewStats(0.0, 0);
     $gallery = null;
 }
 
@@ -155,10 +161,10 @@ if (file_exists($_SERVER['DOCUMENT_ROOT'] . $imagePath)) {
                 </a></h3>
                 
                 <div class="mb-3">
-                    <?php if ($reviewStats['totalReviews'] > 0): ?>
+                    <?php if ($reviewStats->hasReviews()): ?>
                         <div class="d-flex align-items-center">
-                            <span class="h5 mb-0 mr-2">Rating: <?php echo $reviewStats['averageRating'] ?>/10</span>
-                            <small class="text-muted">(based on <?php echo $reviewStats['totalReviews'] ?> review<?php echo $reviewStats['totalReviews'] > 1 ? 's' : '' ?>)</small>
+                            <span class="h5 mb-0 mr-2">Rating: <?php echo $reviewStats->getFormattedAverageRatingOutOf5() ?></span>
+                            <small class="text-muted">(based on <?php echo $reviewStats->getReviewText() ?>)</small>
                         </div>
                     <?php else: ?>
                         <span class="text-muted">No reviews yet</span>
@@ -188,7 +194,12 @@ if (file_exists($_SERVER['DOCUMENT_ROOT'] . $imagePath)) {
                 <table class="table table-bordered">
                     <thead class="thead-dark">
                         <tr>
-                            <th colspan="2">Artwork Details</th>
+                            <th>Artwork Details</th>
+                            <th class="text-right">
+                                <?php if ($artwork->getArtworkLink()): ?>
+                                    <a href="<?php echo htmlspecialchars($artwork->getArtworkLink()) ?>" target="_blank" class="btn btn-light btn-sm text-decoration-none">More Info</a>
+                                <?php endif; ?>
+                            </th>
                         </tr>
                     </thead>
                     <tbody>
@@ -213,10 +224,10 @@ if (file_exists($_SERVER['DOCUMENT_ROOT'] . $imagePath)) {
                             </tr>
                         <?php endif; ?>
                         
-                        <?php if ($artwork->getArtworkType()): ?>
+                        <?php if ($artwork->getOriginalHome()): ?>
                             <tr>
-                                <th>Type:</th>
-                                <td><?php echo htmlspecialchars($artwork->getArtworkType()) ?></td>
+                                <th>Home:</th>
+                                <td><?php echo htmlspecialchars($artwork->getOriginalHome()) ?></td>
                             </tr>
                         <?php endif; ?>
                         
@@ -241,13 +252,6 @@ if (file_exists($_SERVER['DOCUMENT_ROOT'] . $imagePath)) {
                                            class="text-decoration-none"><?php echo htmlspecialchars($subject->getSubjectName()) ?></a><?php if ($index < count($subjects) - 1): ?>, <?php endif; ?>
                                     <?php endforeach; ?>
                                 </td>
-                            </tr>
-                        <?php endif; ?>
-                        
-                        <?php if ($artwork->getArtworkLink()): ?>
-                            <tr>
-                                <th>More Info:</th>
-                                <td><a href="<?php echo htmlspecialchars($artwork->getArtworkLink()) ?>" target="_blank" class="text-decoration-none">External Link</a></td>
                             </tr>
                         <?php endif; ?>
                         
@@ -354,37 +358,67 @@ if (file_exists($_SERVER['DOCUMENT_ROOT'] . $imagePath)) {
             <div class="col-12">
                 <h3>Reviews</h3>
                 
-                <!-- Add Review Form for Authenticated Users -->
-                <!-- TODO: Add authentication check and review form here -->
+                <?php
+                // TODO: Add authentication check
+                // Review form (only if user is logged in and hasn't reviewed yet)
+                
+                if (isset($_SESSION['customerId'])):
+
+                    $alreadyReviewed = $reviewRepo->hasUserReviewed($_SESSION['customerId'], $artworkId);
+                    
+                    if (!$alreadyReviewed): ?>
+                        <form method="POST" action="add-review.php" class="mb-3">
+                            <input type="hidden" name="artworkId" value="<?= $artworkId ?>">
+                            <label for="rating">Rating (1–5):</label>
+                            <input type="number" name="rating" min="1" max="5" required class="form-control mb-2">
+                            <label for="comment">Comment:</label>
+                            <textarea name="comment" required class="form-control mb-2"></textarea>
+                            <button type="submit" class="btn btn-success">Submit Review</button>
+                        </form>
+                    <?php else: ?>
+                        <p class="text-muted">You have already reviewed this artwork.</p>
+                    <?php endif; ?>
+                <?php else: ?>
+                    <p class="text-muted">Please log in to leave a review.</p>
+                <?php endif; ?>
+
                 
                 <?php if (!empty($reviews)): ?>
                     <div class="mt-3">
-                        <?php foreach ($reviews as $review): ?>
+                        <?php foreach ($reviews as $reviewWithCustomerInfo): ?>
                             <div class="card mb-3">
                                 <div class="card-body">
                                     <div class="d-flex justify-content-between align-items-start">
                                         <div>
                                             <h6 class="card-subtitle mb-2 text-muted">
-                                                <?php echo htmlspecialchars($review['customerName']) ?> - 
-                                                <?php echo htmlspecialchars($review['customerCity'] . ' (' . $review['customerCountry'] . ')') ?>
+                                                <?php echo htmlspecialchars($reviewWithCustomerInfo->getCustomerFullName()) ?> - 
+                                                <?php echo htmlspecialchars($reviewWithCustomerInfo->getCustomerLocation()) ?>
                                             </h6>
                                             <div class="mb-2">
-                                                <strong>Rating: <?php echo $review['rating'] ?>/10</strong>
+                                                <strong>Rating: <?php echo $reviewWithCustomerInfo->getReview()->getRating() ?>/5</strong>
                                             </div>
                                             <p class="card-text"><?php 
-                                                $comment = $review['comment'];
+                                                $comment = $reviewWithCustomerInfo->getReview()->getComment();
                                                 // Decode HTML entities and strip any remaining HTML tags
                                                 $comment = html_entity_decode($comment, ENT_QUOTES | ENT_HTML5, 'UTF-8');
                                                 $comment = strip_tags($comment); // Remove any HTML tags
                                                 echo nl2br(htmlspecialchars($comment, ENT_QUOTES, 'UTF-8')); 
                                             ?></p>
                                             <small class="text-muted">
-                                                <?php echo date('F j, Y', strtotime($review['reviewDate'])) ?>
+                                                <?php echo date('F j, Y', strtotime($reviewWithCustomerInfo->getReview()->getReviewDate())) ?>
                                             </small>
                                         </div>
                                         
-                                        <!-- Admin Delete Button -->
-                                        <!-- TODO: Add admin check and delete functionality -->
+                                        <!-- Show delete option for admins in top right corner -->
+                                        <?php if ($_SESSION['isAdmin'] ?? false): ?>
+                                            <div>
+                                                <form method="POST" action="delete-review.php" onsubmit="return confirm('Delete this review?')">
+                                                    <input type="hidden" name="reviewId" value="<?php echo $reviewWithCustomerInfo->getReview()->getReviewId() ?>">
+                                                    <input type="hidden" name="artworkId" value="<?php echo $reviewWithCustomerInfo->getReview()->getArtworkId() ?>">
+                                                    <button type="submit" class="btn btn-sm btn-danger">Delete</button>
+                                                </form>
+                                            </div>
+                                        <?php endif; ?>
                                     </div>
                                 </div>
                             </div>
