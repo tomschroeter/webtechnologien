@@ -224,13 +224,6 @@ if (file_exists($_SERVER['DOCUMENT_ROOT'] . $imagePath)) {
                             </tr>
                         <?php endif; ?>
                         
-                        <?php if ($artwork->getOriginalHome()): ?>
-                            <tr>
-                                <th>Home:</th>
-                                <td><?php echo htmlspecialchars($artwork->getOriginalHome()) ?></td>
-                            </tr>
-                        <?php endif; ?>
-                        
                         <?php if (!empty($genres)): ?>
                             <tr>
                                 <th>Genres:</th>
@@ -295,6 +288,9 @@ if (file_exists($_SERVER['DOCUMENT_ROOT'] . $imagePath)) {
         <?php if ($gallery): ?>
             <div class="row mt-4">
                 <div class="col-12">
+                    <?php if ($artwork->getOriginalHome()): ?>
+                        <h3 class="mb-4">Home</h3>
+                    <?php endif; ?>
                     <div class="accordion" id="museumAccordion">
                         <div class="card">
                             <div class="card-header" id="museumHeading">

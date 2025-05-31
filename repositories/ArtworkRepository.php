@@ -42,6 +42,12 @@ class ArtworkRepository
 
         $artwork = $stmt->fetch();
 
+        // Check if artwork was found
+        if ($artwork === false) {
+            $this->db->disconnect();
+            throw new Exception("Artwork with ID {$id} not found");
+        }
+
         // Add 0 in front of image file name if name is 5 characters long
         if (strlen($artwork['ImageFileName']) < 6) {
             $artwork['ImageFileName'] = '0' . $artwork['ImageFileName'];
