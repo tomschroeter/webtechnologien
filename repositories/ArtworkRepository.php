@@ -2,8 +2,12 @@
 
 require_once dirname(__DIR__)."/Database.php";
 require_once dirname(__DIR__)."/classes/Artwork.php";
+require_once dirname(__DIR__)."/classes/Gallery.php";
+require_once dirname(__DIR__)."/classes/Genre.php";
+require_once dirname(__DIR__)."/classes/Subject.php";
 require_once dirname(__DIR__)."/repositories/ArtistRepository.php";
 require_once dirname(__DIR__)."/repositories/SubjectRepository.php";
+require_once dirname(__DIR__)."/repositories/GenreRepository.php";
 require_once dirname(__DIR__)."/dtos/ArtworkWithArtistName.php";
 
 class ArtworkRepository
@@ -37,6 +41,17 @@ class ArtworkRepository
         $stmt->execute();
 
         $artwork = $stmt->fetch();
+
+        // Check if artwork was found
+        if ($artwork === false) {
+            $this->db->disconnect();
+            throw new Exception("Artwork with ID {$id} not found");
+        }
+
+        // Add 0 in front of image file name if name is 5 characters long
+        if (strlen($artwork['ImageFileName']) < 6) {
+            $artwork['ImageFileName'] = '0' . $artwork['ImageFileName'];
+        }
 
         $this->db->disconnect();
 
@@ -113,6 +128,48 @@ class ArtworkRepository
 
         foreach ($stmt as $row) {
 
+            // Add 0 in front of image file name if name is 5 characters long
+            if (strlen($row['ImageFileName']) < 6) {
+                $row['ImageFileName'] = '0' . $row['ImageFileName'];
+            }
+
+            $artworks[] = Artwork::createArtworkFromRecord($row);
+        }
+
+        $this->db->disconnect();
+
+        return $artworks;
+    }
+
+    /**
+    * @return Artwork[]
+    */
+    public function getArtworksByGenre(int $genreId): array
+    {
+        if (!$this->db->isConnected()) {
+            $this->db->connect();
+        }
+
+        $sql = "
+            SELECT *
+            FROM artworks, genres, artworkgenres
+            WHERE artworks.ArtworkID = artworkgenres.ArtworkID
+            AND artworkgenres.GenreID = genres.GenreID
+            AND genres.GenreID = :id
+        ";
+
+        $stmt = $this->db->prepareStatement($sql);
+
+        // Checks if genre with given ID exists (will throw exception if not found)
+        $genreRepository = new GenreRepository($this->db);
+        $genreRepository->getGenreById($genreId);
+
+        $stmt->bindValue("id", $genreId);
+        $stmt->execute();
+
+        $artworks = [];
+
+        foreach ($stmt as $row) {
             // Add 0 in front of image file name if name is 5 characters long
             if (strlen($row['ImageFileName']) < 6) {
                 $row['ImageFileName'] = '0' . $row['ImageFileName'];
@@ -224,5 +281,69 @@ class ArtworkRepository
         }
 
         return $artworks;
+    }
+
+    /**
+     * Get genres for a specific artwork
+     * @param int $artworkId
+     * @return Genre[]
+     */
+    public function getGenresByArtwork(int $artworkId): array
+    {
+        if (!$this->db->isConnected()) {
+            $this->db->connect();
+        }
+
+        $sql = "
+            SELECT g.*
+            FROM genres g
+            JOIN artworkgenres ag ON g.GenreID = ag.GenreID  
+            WHERE ag.ArtworkID = :artworkId
+            ORDER BY g.GenreName ASC
+        ";
+
+        $stmt = $this->db->prepareStatement($sql);
+        $stmt->bindValue("artworkId", $artworkId, PDO::PARAM_INT);
+        $stmt->execute();
+
+        $genres = [];
+        foreach ($stmt as $row) {
+            $genres[] = Genre::createGenreFromRecord($row);
+        }
+
+        $this->db->disconnect();
+        return $genres;
+    }
+
+    /**
+     * Get subjects for a specific artwork
+     * @param int $artworkId
+     * @return Subject[]
+     */
+    public function getSubjectsByArtwork(int $artworkId): array
+    {
+        if (!$this->db->isConnected()) {
+            $this->db->connect();
+        }
+
+        $sql = "
+            SELECT s.*
+            FROM subjects s
+            JOIN artworksubjects ars ON s.SubjectID = ars.SubjectID
+            WHERE ars.ArtworkID = :artworkId
+            ORDER BY s.SubjectName ASC
+        ";
+
+        $stmt = $this->db->prepareStatement($sql);
+        $stmt->bindValue("artworkId", $artworkId, PDO::PARAM_INT);
+        $stmt->execute();
+
+        $subjects = [];
+        foreach ($stmt as $row) {
+            $subjects[] = Subject::createSubjectFromRecord($row);
+        }
+
+        $this->db->disconnect();
+        return $subjects;
     }
 }

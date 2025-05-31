@@ -21,7 +21,6 @@ class Artwork
     private $googleLink;
 
     // constructor is only used when fetching from database
-    // later logic for retrieving artist inside artwork object is also needed
     private function __construct(
         $artworkId,
         $artistId,

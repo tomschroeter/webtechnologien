@@ -12,24 +12,38 @@ class Gallery
     private $galleryWebsite;
 
 
-    public function __construct(
+    private function __construct(
+        $galleryId,
         $galleryName,
         $galleryNativeName,
         $galleryCity,
         $galleryCountry,
-        $galleryWebsite,
-        $latitude = null,
-        $longitude = null,
-        $galleryId = null
+        $latitude,
+        $longitude,
+        $galleryWebsite
     ) {
+        $this->setGalleryId($galleryId);
         $this->setGalleryName($galleryName);
         $this->setGalleryNativeName($galleryNativeName);
         $this->setGalleryCity($galleryCity);
         $this->setGalleryCountry($galleryCountry);
-        $this->setGalleryWebsite($galleryWebsite);
         $this->setLatitude($latitude);
         $this->setLongitude($longitude);
-        $this->setGalleryId($galleryId);
+        $this->setGalleryWebsite($galleryWebsite);
+    }
+
+    public static function createGalleryFromRecord(array $record): Gallery
+    {
+        return new self(
+            $record['GalleryID'],
+            $record['GalleryName'],
+            $record['GalleryNativeName'],
+            $record['GalleryCity'],
+            $record['GalleryCountry'],
+            $record['Latitude'],
+            $record['Longitude'],
+            $record['GalleryWebSite']
+        );
     }
 
 

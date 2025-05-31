@@ -36,4 +36,33 @@ class GenreRepository
 
         return $genres;
     }
+
+    /**
+     * Get genre by ID
+     * @param int $genreId
+     * @return Genre
+     * @throws Exception if genre couldn't be found
+     */
+    public function getGenreById(int $genreId): Genre
+    {
+        if (!$this->db->isConnected()) {
+            $this->db->connect();
+        }
+
+        $sql = "SELECT * FROM genres WHERE GenreID = :id";
+
+        $stmt = $this->db->prepareStatement($sql);
+        $stmt->bindValue("id", $genreId, PDO::PARAM_INT);
+        $stmt->execute();
+
+        $row = $stmt->fetch();
+
+        $this->db->disconnect();
+
+        if ($row !== false) {
+            return Genre::createGenreFromRecord($row);
+        } else {
+            throw new Exception("Genre with ID {$genreId} couldn't be found");
+        }
+    }
 }
