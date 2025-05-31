@@ -17,6 +17,9 @@ RewriteRule ^subjects/?$ subjects.php [L]
 # URL artworks/*** ruft display-single-artwork.php auf
 RewriteRule ^artworks/(.+)$ display-single-artwork.php?id=$1 [L]
 
+# URL artworks/*** ruft display-single-artwork.php auf
+RewriteRule ^artworks2/(.+)$ display-single-artwork-copy.php?id=$1 [L]
+
 # URL artworks/ wird auf artworks umgeleitet
 RewriteRule ^artworks/?$ artworks.php [L]
 
