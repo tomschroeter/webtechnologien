@@ -14,7 +14,7 @@ class SubjectRepository
 
     /**
      * @return Subject[]
-    */
+     */
     public function getAllSubjects(): array
     {
         if (!$this->db->isConnected()) {
@@ -61,5 +61,37 @@ class SubjectRepository
         } else {
             throw new Exception("Subject with ID {$subjectId} couldn't be found");
         }
+    }
+
+    /**
+     * Get subjects for a specific artwork
+     * @param int $artworkId
+     * @return Subject[]
+     */
+    public function getSubjectsByArtwork(int $artworkId): array
+    {
+        if (!$this->db->isConnected()) {
+            $this->db->connect();
+        }
+
+        $sql = "
+            SELECT s.*
+            FROM subjects s
+            JOIN artworksubjects ars ON s.SubjectID = ars.SubjectID
+            WHERE ars.ArtworkID = :artworkId
+            ORDER BY s.SubjectName ASC
+        ";
+
+        $stmt = $this->db->prepareStatement($sql);
+        $stmt->bindValue("artworkId", $artworkId, PDO::PARAM_INT);
+        $stmt->execute();
+
+        $subjects = [];
+        foreach ($stmt as $row) {
+            $subjects[] = Subject::createSubjectFromRecord($row);
+        }
+
+        $this->db->disconnect();
+        return $subjects;
     }
 }

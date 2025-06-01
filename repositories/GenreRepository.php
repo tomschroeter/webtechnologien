@@ -14,7 +14,7 @@ class GenreRepository
 
     /**
      * @return Genre[]
-    */
+     */
     public function getAllGenres(): array
     {
         if (!$this->db->isConnected()) {
@@ -34,6 +34,67 @@ class GenreRepository
 
         $this->db->disconnect();
 
+        return $genres;
+    }
+
+    /**
+     * Get genre by ID
+     * @param int $genreId
+     * @return Genre
+     * @throws Exception if genre couldn't be found
+     */
+    public function getGenreById(int $genreId): Genre
+    {
+        if (!$this->db->isConnected()) {
+            $this->db->connect();
+        }
+
+        $sql = "SELECT * FROM genres WHERE GenreID = :id";
+
+        $stmt = $this->db->prepareStatement($sql);
+        $stmt->bindValue("id", $genreId, PDO::PARAM_INT);
+        $stmt->execute();
+
+        $row = $stmt->fetch();
+
+        $this->db->disconnect();
+
+        if ($row !== false) {
+            return Genre::createGenreFromRecord($row);
+        } else {
+            throw new Exception("Genre with ID {$genreId} couldn't be found");
+        }
+    }
+
+    /**
+     * Get genres for a specific artwork
+     * @param int $artworkId
+     * @return Genre[]
+     */
+    public function getGenresByArtwork(int $artworkId): array
+    {
+        if (!$this->db->isConnected()) {
+            $this->db->connect();
+        }
+
+        $sql = "
+            SELECT g.*
+            FROM genres g
+            JOIN artworkgenres ag ON g.GenreID = ag.GenreID  
+            WHERE ag.ArtworkID = :artworkId
+            ORDER BY g.GenreName ASC
+        ";
+
+        $stmt = $this->db->prepareStatement($sql);
+        $stmt->bindValue("artworkId", $artworkId, PDO::PARAM_INT);
+        $stmt->execute();
+
+        $genres = [];
+        foreach ($stmt as $row) {
+            $genres[] = Genre::createGenreFromRecord($row);
+        }
+
+        $this->db->disconnect();
         return $genres;
     }
 }

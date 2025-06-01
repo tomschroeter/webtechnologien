@@ -24,9 +24,18 @@ class Review
         $this->setRating($rating);
         $this->setComment($comment);
     }
-    
 
-
+    public static function createReviewFromRecord(array $record): Review
+    {
+        return new self(
+            $record['ReviewId'],
+            $record['ArtWorkId'],
+            $record['CustomerId'],
+            $record['ReviewDate'],
+            $record['Rating'],
+            $record['Comment']
+        );
+    }
 
     public function getReviewId()
     {
