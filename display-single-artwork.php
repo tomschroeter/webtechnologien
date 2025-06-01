@@ -321,10 +321,18 @@ if (file_exists($_SERVER['DOCUMENT_ROOT'] . $imagePath)) {
                                             </tr>
                                         <?php endif; ?>
                                         
-                                        <tr>
-                                            <th>Location:</th>
-                                            <td><?php echo htmlspecialchars($gallery->getGalleryCity() . ', ' . $gallery->getGalleryCountry()) ?></td>
-                                        </tr>
+                                        <?php if ($gallery->getGalleryCity() || $gallery->getGalleryCountry()): ?>
+                                            <tr>
+                                                <th>Location:</th>
+                                                <td><?php 
+                                                    $locationParts = array_filter([
+                                                        $gallery->getGalleryCity(),
+                                                        $gallery->getGalleryCountry()
+                                                    ]);
+                                                    echo htmlspecialchars(implode(', ', $locationParts));
+                                                ?></td>
+                                            </tr>
+                                        <?php endif; ?>
                                         
                                         <?php if ($gallery->getGalleryWebSite()): ?>
                                             <tr>
