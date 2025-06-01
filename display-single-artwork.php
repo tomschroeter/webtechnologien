@@ -132,23 +132,24 @@ if (file_exists($_SERVER['DOCUMENT_ROOT'] . $imagePath)) {
                     <img src="<?php echo $correctImagePath ?>" 
                          alt="<?php echo htmlspecialchars($artwork->getTitle()) ?>" 
                          class="img-fluid" 
-                         style="max-width: 100%; cursor: pointer;">
+                         style="width: 100%; height: 400px; object-fit: contain; cursor: pointer; border: 1px solid #ddd; background-color: #f8f9fa;">
                 </a>
                 
                 <!-- Modal for large image -->
                 <div class="modal fade" id="imageModal" tabindex="-1" role="dialog" aria-labelledby="imageModalLabel" aria-hidden="true">
-                    <div class="modal-dialog modal-lg" role="document">
-                        <div class="modal-content">
+                    <div class="modal-dialog modal-lg" role="document" style="height: 95vh; margin: 2.5vh auto;">
+                        <div class="modal-content" style="height: 100%;">
                             <div class="modal-header">
                                 <h5 class="modal-title" id="imageModalLabel"><?php echo htmlspecialchars($artwork->getTitle()) ?></h5>
                                 <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                                     <span aria-hidden="true">&times;</span>
                                 </button>
                             </div>
-                            <div class="modal-body text-center">
+                            <div class="modal-body text-center d-flex align-items-center justify-content-center" style="flex: 1; padding: 20px;">
                                 <img src="<?php echo $correctLargeImagePath ?>" 
                                      alt="<?php echo htmlspecialchars($artwork->getTitle()) ?>" 
-                                     class="img-fluid">
+                                     class="img-fluid"
+                                     style="height: 100%; width: auto; object-fit: contain;">
                             </div>
                         </div>
                     </div>
