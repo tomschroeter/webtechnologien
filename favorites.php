@@ -89,9 +89,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['action']) && $_POST['
                             <?php 
                             // Fix image filename padding
                             $imageFileName = $artwork->getImageFileName();
-                            if (strlen($imageFileName) < 6) {
-                                $imageFileName = '0' . $imageFileName;
-                            }
                             
                             $imagePath = "/assets/images/works/medium/" . $imageFileName . ".jpg";
                             $placeholderPath = "/assets/placeholder/works/medium/placeholder.svg";
@@ -124,9 +121,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['action']) && $_POST['
                                         Remove from Favorites
                                     </button>
                                 </form>
-                                
-                                <a href="<?php echo route('artworks', ['id' => $artwork->getArtworkId()]) ?>" 
-                                   class="btn btn-primary btn-sm">View Details</a>
                             </div>
                         </div>
                     </div>
