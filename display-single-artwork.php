@@ -81,8 +81,8 @@ try {
 
 // Fetch additional data
 try {
-    $genres = $artworkRepository->getGenresByArtwork($artworkId);
-    $subjects = $artworkRepository->getSubjectsByArtwork($artworkId);
+    $genres = $genreRepository->getGenresByArtwork($artworkId);
+    $subjects = $subjectRepository->getSubjectsByArtwork($artworkId);
     $reviews = $reviewRepo->getAllReviewsWithCustomerInfo($artworkId);
     $reviewStats = $reviewRepo->getReviewStats($artworkId);
 

@@ -3,8 +3,6 @@
 require_once dirname(__DIR__)."/Database.php";
 require_once dirname(__DIR__)."/classes/Artwork.php";
 require_once dirname(__DIR__)."/classes/Gallery.php";
-require_once dirname(__DIR__)."/classes/Genre.php";
-require_once dirname(__DIR__)."/classes/Subject.php";
 require_once dirname(__DIR__)."/repositories/ArtistRepository.php";
 require_once dirname(__DIR__)."/repositories/SubjectRepository.php";
 require_once dirname(__DIR__)."/repositories/GenreRepository.php";
@@ -14,13 +12,11 @@ class ArtworkRepository
 {
     private Database $db;
     private ArtistRepository $artistRepository;
-    private SubjectRepository $subjectRepository;
 
     public function __construct(Database $db)
     {
         $this->db = $db;
         $this->artistRepository = new ArtistRepository($db);
-        $this->subjectRepository = new SubjectRepository($db);
     }
 
     public function findById(int $id): Artwork
@@ -118,8 +114,9 @@ class ArtworkRepository
 
         $stmt = $this->db->prepareStatement($sql);
 
-        // Checks if artist with given ID exists
-        $this->subjectRepository->getSubjectById($subjectId);
+        // Checks if subject with given ID exists (will throw exception if not found)
+        $subjectRepository = new SubjectRepository($this->db);
+        $subjectRepository->getSubjectById($subjectId);
 
         $stmt->bindValue("id", $subjectId);
         $stmt->execute();
@@ -242,7 +239,7 @@ class ArtworkRepository
      * @param string $sortOrder Sort direction (asc, desc)
      * @return array Array of Artwork objects
      */
-    public function getAllArtworks($sortBy = 'title', $sortOrder = 'asc')
+    public function getAllArtworks($sortBy = 'title', $sortOrder = 'asc'): array
     {
         if (!$this->db->isConnected()) {
             $this->db->connect();
@@ -280,70 +277,8 @@ class ArtworkRepository
             $artworks[] = Artwork::createArtworkFromRecord($row);
         }
 
+        $this->db->disconnect();
+
         return $artworks;
-    }
-
-    /**
-     * Get genres for a specific artwork
-     * @param int $artworkId
-     * @return Genre[]
-     */
-    public function getGenresByArtwork(int $artworkId): array
-    {
-        if (!$this->db->isConnected()) {
-            $this->db->connect();
-        }
-
-        $sql = "
-            SELECT g.*
-            FROM genres g
-            JOIN artworkgenres ag ON g.GenreID = ag.GenreID  
-            WHERE ag.ArtworkID = :artworkId
-            ORDER BY g.GenreName ASC
-        ";
-
-        $stmt = $this->db->prepareStatement($sql);
-        $stmt->bindValue("artworkId", $artworkId, PDO::PARAM_INT);
-        $stmt->execute();
-
-        $genres = [];
-        foreach ($stmt as $row) {
-            $genres[] = Genre::createGenreFromRecord($row);
-        }
-
-        $this->db->disconnect();
-        return $genres;
-    }
-
-    /**
-     * Get subjects for a specific artwork
-     * @param int $artworkId
-     * @return Subject[]
-     */
-    public function getSubjectsByArtwork(int $artworkId): array
-    {
-        if (!$this->db->isConnected()) {
-            $this->db->connect();
-        }
-
-        $sql = "
-            SELECT s.*
-            FROM subjects s
-            JOIN artworksubjects ars ON s.SubjectID = ars.SubjectID
-            WHERE ars.ArtworkID = :artworkId
-            ORDER BY s.SubjectName ASC
-        ";
-
-        $stmt = $this->db->prepareStatement($sql);
-        $stmt->bindValue("artworkId", $artworkId, PDO::PARAM_INT);
-        $stmt->execute();
-
-        $subjects = [];
-        foreach ($stmt as $row) {
-            $subjects[] = Subject::createSubjectFromRecord($row);
-        }
-
-        $this->db->disconnect();
-        return $subjects;
     }
 }
