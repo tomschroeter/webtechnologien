@@ -180,13 +180,13 @@ if (file_exists($_SERVER['DOCUMENT_ROOT'] . $imagePath)) {
                         <input type="hidden" name="action" value="remove_from_favorites">
                         <input type="hidden" name="artworkId" value="<?php echo $artwork->getArtworkId() ?>">
                         <button type="submit" class="btn btn-outline-danger">
-                            <i class="bi bi-heart-fill"></i> Remove from Favorites
+                            ♥ Remove from Favorites
                         </button>
                     <?php else: ?>
                         <input type="hidden" name="action" value="add_to_favorites">
                         <input type="hidden" name="artworkId" value="<?php echo $artwork->getArtworkId() ?>">
                         <button type="submit" class="btn btn-primary">
-                            <i class="bi bi-heart"></i> Add to Favorites
+                            ♡ Add to Favorites
                         </button>
                     <?php endif; ?>
                 </form>
@@ -302,7 +302,7 @@ if (file_exists($_SERVER['DOCUMENT_ROOT'] . $imagePath)) {
                                             aria-expanded="false" 
                                             aria-controls="museumCollapse">
                                         Museum Information
-                                        <i class="fas fa-chevron-down" id="museumArrow"></i>
+                                        <span id="museumArrow">▼</span>
                                     </button>
                                 </h3>
                             </div>
@@ -432,11 +432,11 @@ if (file_exists($_SERVER['DOCUMENT_ROOT'] . $imagePath)) {
     <script>
     // Handle accordion arrow rotation for museum information
     $('#museumCollapse').on('show.bs.collapse', function () {
-        $('#museumArrow').removeClass('fa-chevron-down').addClass('fa-chevron-up');
+        $('#museumArrow').text('▲');
     });
     
     $('#museumCollapse').on('hide.bs.collapse', function () {
-        $('#museumArrow').removeClass('fa-chevron-up').addClass('fa-chevron-down');
+        $('#museumArrow').text('▼');
     });
     </script>
 </body>
