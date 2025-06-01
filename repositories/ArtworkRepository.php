@@ -2,21 +2,21 @@
 
 require_once dirname(__DIR__)."/Database.php";
 require_once dirname(__DIR__)."/classes/Artwork.php";
+require_once dirname(__DIR__)."/classes/Gallery.php";
 require_once dirname(__DIR__)."/repositories/ArtistRepository.php";
 require_once dirname(__DIR__)."/repositories/SubjectRepository.php";
+require_once dirname(__DIR__)."/repositories/GenreRepository.php";
 require_once dirname(__DIR__)."/dtos/ArtworkWithArtistName.php";
 
 class ArtworkRepository
 {
     private Database $db;
     private ArtistRepository $artistRepository;
-    private SubjectRepository $subjectRepository;
 
     public function __construct(Database $db)
     {
         $this->db = $db;
         $this->artistRepository = new ArtistRepository($db);
-        $this->subjectRepository = new SubjectRepository($db);
     }
 
     public function findById(int $id): Artwork
@@ -37,6 +37,17 @@ class ArtworkRepository
         $stmt->execute();
 
         $artwork = $stmt->fetch();
+
+        // Check if artwork was found
+        if ($artwork === false) {
+            $this->db->disconnect();
+            throw new Exception("Artwork with ID {$id} not found");
+        }
+
+        // Add 0 in front of image file name if name is 5 characters long
+        if (strlen($artwork['ImageFileName']) < 6) {
+            $artwork['ImageFileName'] = '0' . $artwork['ImageFileName'];
+        }
 
         $this->db->disconnect();
 
@@ -103,8 +114,9 @@ class ArtworkRepository
 
         $stmt = $this->db->prepareStatement($sql);
 
-        // Checks if artist with given ID exists
-        $this->subjectRepository->getSubjectById($subjectId);
+        // Checks if subject with given ID exists (will throw exception if not found)
+        $subjectRepository = new SubjectRepository($this->db);
+        $subjectRepository->getSubjectById($subjectId);
 
         $stmt->bindValue("id", $subjectId);
         $stmt->execute();
@@ -113,6 +125,48 @@ class ArtworkRepository
 
         foreach ($stmt as $row) {
 
+            // Add 0 in front of image file name if name is 5 characters long
+            if (strlen($row['ImageFileName']) < 6) {
+                $row['ImageFileName'] = '0' . $row['ImageFileName'];
+            }
+
+            $artworks[] = Artwork::createArtworkFromRecord($row);
+        }
+
+        $this->db->disconnect();
+
+        return $artworks;
+    }
+
+    /**
+    * @return Artwork[]
+    */
+    public function getArtworksByGenre(int $genreId): array
+    {
+        if (!$this->db->isConnected()) {
+            $this->db->connect();
+        }
+
+        $sql = "
+            SELECT *
+            FROM artworks, genres, artworkgenres
+            WHERE artworks.ArtworkID = artworkgenres.ArtworkID
+            AND artworkgenres.GenreID = genres.GenreID
+            AND genres.GenreID = :id
+        ";
+
+        $stmt = $this->db->prepareStatement($sql);
+
+        // Checks if genre with given ID exists (will throw exception if not found)
+        $genreRepository = new GenreRepository($this->db);
+        $genreRepository->getGenreById($genreId);
+
+        $stmt->bindValue("id", $genreId);
+        $stmt->execute();
+
+        $artworks = [];
+
+        foreach ($stmt as $row) {
             // Add 0 in front of image file name if name is 5 characters long
             if (strlen($row['ImageFileName']) < 6) {
                 $row['ImageFileName'] = '0' . $row['ImageFileName'];
@@ -185,7 +239,7 @@ class ArtworkRepository
      * @param string $sortOrder Sort direction (asc, desc)
      * @return array Array of Artwork objects
      */
-    public function getAllArtworks($sortBy = 'title', $sortOrder = 'asc')
+    public function getAllArtworks($sortBy = 'title', $sortOrder = 'asc'): array
     {
         if (!$this->db->isConnected()) {
             $this->db->connect();
@@ -222,6 +276,8 @@ class ArtworkRepository
 
             $artworks[] = Artwork::createArtworkFromRecord($row);
         }
+
+        $this->db->disconnect();
 
         return $artworks;
     }
