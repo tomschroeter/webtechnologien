@@ -290,28 +290,28 @@ if (file_exists($_SERVER['DOCUMENT_ROOT'] . $imagePath)) {
             <div class="row mt-4">
                 <div class="col-12">
                     <?php if ($artwork->getOriginalHome()): ?>
-                        <h3 class="mb-4">Home</h3>
+                        <h3 class="mb-4">Gallery</h3>
                     <?php endif; ?>
-                    <div class="accordion" id="museumAccordion">
+                    <div class="accordion" id="generalAccordion">
                         <div class="card">
-                            <div class="card-header" id="museumHeading">
+                            <div class="card-header" id="generalHeading">
                                 <h3 class="mb-0">
                                     <button class="btn btn-link text-decoration-none text-dark d-flex justify-content-between align-items-center w-100" 
                                             type="button" 
                                             data-toggle="collapse" 
-                                            data-target="#museumCollapse" 
+                                            data-target="#generalCollapse" 
                                             aria-expanded="false" 
-                                            aria-controls="museumCollapse">
-                                        Museum Information
-                                        <span id="museumArrow">▼</span>
+                                            aria-controls="generalCollapse">
+                                        General Information
+                                        <span id="generalArrow">▼</span>
                                     </button>
                                 </h3>
                             </div>
-                            <div id="museumCollapse" class="collapse" aria-labelledby="museumHeading" data-parent="#museumAccordion">
+                            <div id="generalCollapse" class="collapse" aria-labelledby="generalHeading" data-parent="#generalAccordion">
                                 <div class="card-body">
                                     <table class="table table-striped table-bordered mb-0">
                                         <tr>
-                                            <th width="150">Museum:</th>
+                                            <th width="150">Name:</th>
                                             <td><?php echo htmlspecialchars($gallery->getGalleryName()) ?></td>
                                         </tr>
                                         
@@ -324,7 +324,7 @@ if (file_exists($_SERVER['DOCUMENT_ROOT'] . $imagePath)) {
                                         
                                         <?php if ($gallery->getGalleryCity() || $gallery->getGalleryCountry()): ?>
                                             <tr>
-                                                <th>Location:</th>
+                                                <th>City:</th>
                                                 <td><?php 
                                                     $locationParts = array_filter([
                                                         $gallery->getGalleryCity(),
@@ -439,13 +439,13 @@ if (file_exists($_SERVER['DOCUMENT_ROOT'] . $imagePath)) {
     <?php require_once 'bootstrap.php'; ?>
     
     <script>
-    // Handle accordion arrow rotation for museum information
-    $('#museumCollapse').on('show.bs.collapse', function () {
-        $('#museumArrow').text('▲');
+    // Handle accordion arrow rotation for general museum information
+    $('#generalCollapse').on('show.bs.collapse', function () {
+        $('#generalArrow').text('▲');
     });
     
-    $('#museumCollapse').on('hide.bs.collapse', function () {
-        $('#museumArrow').text('▼');
+    $('#generalCollapse').on('hide.bs.collapse', function () {
+        $('#generalArrow').text('▼');
     });
     </script>
 </body>
