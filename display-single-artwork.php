@@ -334,7 +334,7 @@ if (file_exists($_SERVER['DOCUMENT_ROOT'] . $imagePath)) {
                                                 ?></td>
                                             </tr>
                                         <?php endif; ?>
-                                        
+
                                         <?php if ($gallery->getGalleryWebSite()): ?>
                                             <tr>
                                                 <th>Website:</th>
@@ -343,14 +343,103 @@ if (file_exists($_SERVER['DOCUMENT_ROOT'] . $imagePath)) {
                                                 </a></td>
                                             </tr>
                                         <?php endif; ?>
-                                        
-                                        <?php if ($gallery->getLatitude() && $gallery->getLongitude()): ?>
-                                            <tr>
-                                                <th>Coordinates:</th>
-                                                <td><?php echo htmlspecialchars($gallery->getLatitude() . ', ' . $gallery->getLongitude()) ?></td>
-                                            </tr>
-                                        <?php endif; ?>
                                     </table>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        <?php endif; ?>
+
+
+        <?php if ($gallery->getLatitude() && $gallery->getLongitude()): ?>
+            <div class="row mt-4">
+                <div class="col-12">
+                    <div class="accordion" id="locationAccordion">
+                        <div class="card">
+                            <div class="card-header" id="locationHeading">
+                                <h3 class="mb-0">
+                                    <button class="btn btn-link text-decoration-none text-dark d-flex justify-content-between align-items-center w-100" 
+                                            type="button" 
+                                            data-toggle="collapse" 
+                                            data-target="#locationCollapse" 
+                                            aria-expanded="false" 
+                                            aria-controls="locationCollapse">
+                                        Location
+                                        <span id="locationArrow">▼</span>
+                                    </button>
+                                </h3>
+                            </div>
+                            <div id="locationCollapse" class="collapse" aria-labelledby="locationHeading" data-parent="#locationAccordion">
+                                <div class="card-body">
+                                    <?php
+                                        $latitude = $gallery->getLatitude();
+                                        $longitude = $gallery->getLongitude();
+                                    ?>
+
+                                    <div id="map" style="height: 300px; width: 100%; border: 1px solid #ccc; border-radius: 8px;"></div>
+                                    
+                                    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+                                    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+                                    
+                                    <script>
+                                        document.addEventListener("DOMContentLoaded", function () {
+                                            var lat = <?php echo json_encode($latitude); ?>;
+                                            var lon = <?php echo json_encode($longitude); ?>;
+                                            
+                                            var mapInstance = null; // Contains the Leaflet map instance
+                                            var markerInstance = null; // Need to be kept outside to enable opening the popup a second time
+                                            var isMapIninitialized = false; // Flag to check if map has been initialized
+
+                                            // This workaround is needed to display the map inside the accordion element
+                                            // Weird artifacts will occur otherwise
+                                            // This works because the map is only initialized when the accordion panel is fully shown
+                                            var locationCollapseElement = document.getElementById('locationCollapse');
+
+                                            if (locationCollapseElement) {
+                                                // Listen for the 'shown.bs.collapse' event, which fires after the accordion panel is fully visible
+                                                $(locationCollapseElement).on('shown.bs.collapse', function () {
+                                                    var mapDiv = document.getElementById('map');
+                                                    if (!mapDiv) {
+                                                        console.error("Map container #map not found when accordion was shown.");
+                                                        return;
+                                                    }
+
+                                                    // Initialize the map for the first time
+                                                    if (!isMapIninitialized) {
+                                                        mapInstance = L.map('map').setView([lat, lon], 13);
+
+                                                        L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+                                                            maxZoom: 19,
+                                                            attribution: '© <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
+                                                        }).addTo(mapInstance);
+
+                                                        markerInstance = L.marker([lat, lon]).addTo(mapInstance);
+                    
+                                                        var galleryName = <?php echo json_encode($gallery->getGalleryName()); ?>;
+                                                        var popupContent = galleryName + '<br>Latitude: ' + lat + '<br>Longitude: ' + lon;
+                                                        markerInstance.bindPopup(popupContent);
+                                                        
+                                                        markerInstance.on('click', function () {
+                                                            markerInstance.openPopup();
+                                                        });
+
+                                                        isMapIninitialized = true;
+                                                    }
+                                                    else {
+                                                        // If map was already initialized before: recalculate its size and set location to pin again
+                                                        if (mapInstance) {
+                                                            mapInstance.invalidateSize();
+                                                            mapInstance.setView([lat, lon], 13);
+                                                        }
+                                                    }
+                                                });
+                                            } else {
+                                                console.error("Accordion collapse element #locationCollapse not found.");
+                                            }
+                                        });
+                                    </script>
                                 </div>
                             </div>
                         </div>
@@ -446,6 +535,15 @@ if (file_exists($_SERVER['DOCUMENT_ROOT'] . $imagePath)) {
     
     $('#generalCollapse').on('hide.bs.collapse', function () {
         $('#generalArrow').text('▼');
+    });
+
+    // Handle accordion arrow rotation for location museum information
+    $('#locationCollapse').on('show.bs.collapse', function () {
+        $('#locationArrow').text('▲');
+    });
+    
+    $('#locationCollapse').on('hide.bs.collapse', function () {
+        $('#locationArrow').text('▼');
     });
     </script>
 </body>
