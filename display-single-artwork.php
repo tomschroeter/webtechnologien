@@ -292,9 +292,9 @@ if (file_exists($_SERVER['DOCUMENT_ROOT'] . $imagePath)) {
                     <?php if ($artwork->getOriginalHome()): ?>
                         <h3 class="mb-4">Gallery</h3>
                     <?php endif; ?>
-                    <div class="accordion" id="generalAccordion">
-                        <div class="card">
-                            <div class="card-header" id="generalHeading">
+                    <div class="card" id="generalAccordion">
+                        <div class="accordion">
+                            <div class="card-header" id="generalHeading" style="border-bottom: 0;">
                                 <h3 class="mb-0">
                                     <button class="btn btn-link text-decoration-none text-dark d-flex justify-content-between align-items-center w-100" 
                                             type="button" 
@@ -356,9 +356,9 @@ if (file_exists($_SERVER['DOCUMENT_ROOT'] . $imagePath)) {
         <?php if ($gallery->getLatitude() && $gallery->getLongitude()): ?>
             <div class="row mt-4">
                 <div class="col-12">
-                    <div class="accordion" id="locationAccordion">
-                        <div class="card">
-                            <div class="card-header" id="locationHeading">
+                    <div class="card" id="locationAccordion">
+                        <div class="accordion">
+                            <div class="card-header" id="locationHeading" style="border-bottom: 0;">
                                 <h3 class="mb-0">
                                     <button class="btn btn-link text-decoration-none text-dark d-flex justify-content-between align-items-center w-100" 
                                             type="button" 
