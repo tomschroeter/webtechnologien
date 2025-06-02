@@ -418,7 +418,7 @@ if (file_exists($_SERVER['DOCUMENT_ROOT'] . $imagePath)) {
                                                         markerInstance = L.marker([lat, lon]).addTo(mapInstance);
                     
                                                         var galleryName = <?php echo json_encode($gallery->getGalleryName()); ?>;
-                                                        var popupContent = galleryName + '<br>Latitude: ' + lat + '<br>Longitude: ' + lon;
+                                                        var popupContent = '<strong>' + galleryName + '</strong><br>Latitude: ' + lat + '<br>Longitude: ' + lon;
                                                         markerInstance.bindPopup(popupContent);
                                                         
                                                         markerInstance.on('click', function () {
