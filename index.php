@@ -1,3 +1,7 @@
+<?php
+session_start();
+$_SESSION['isAdmin'] = true; // temporär
+?>
 <!DOCTYPE html>
 <html lang="en">
 

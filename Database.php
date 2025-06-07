@@ -29,6 +29,10 @@ class Database
         }
     }
 
+    public function getPdo(): PDO
+{
+    return $this->pdo;
+}
     public function prepareStatement(string $sql)
     {
         if (!$this->isConnected()) {
