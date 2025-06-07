@@ -390,7 +390,7 @@ if (file_exists($_SERVER['DOCUMENT_ROOT'] . $imagePath)) {
                                             
                                             var mapInstance = null; // Contains the Leaflet map instance
                                             var markerInstance = null; // Need to be kept outside to enable opening the popup a second time
-                                            var isMapIninitialized = false; // Flag to check if map has been initialized
+                                            var isMapInitialized = false; // Flag to check if map has been initialized
 
                                             // This workaround is needed to display the map inside the accordion element
                                             // Weird artifacts will occur otherwise
@@ -407,7 +407,7 @@ if (file_exists($_SERVER['DOCUMENT_ROOT'] . $imagePath)) {
                                                     }
 
                                                     // Initialize the map for the first time
-                                                    if (!isMapIninitialized) {
+                                                    if (!isMapInitialized) {
                                                         mapInstance = L.map('map').setView([lat, lon], 13);
 
                                                         L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
@@ -425,7 +425,7 @@ if (file_exists($_SERVER['DOCUMENT_ROOT'] . $imagePath)) {
                                                             markerInstance.openPopup();
                                                         });
 
-                                                        isMapIninitialized = true;
+                                                        isMapInitialized = true;
                                                     }
                                                     else {
                                                         // If map was already initialized before: recalculate its size and set location to pin again
