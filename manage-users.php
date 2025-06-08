@@ -2,8 +2,8 @@
 session_start();
 
 if (!($_SESSION['isAdmin'] ?? false)) {
-    header("Location: error.php?error=unauthorized");
-    exit;
+  header("Location: error.php?error=unauthorized");
+  exit;
 }
 
 require_once dirname(__DIR__) . "/src/bootstrap.php";
@@ -14,43 +14,43 @@ $db->connect();
 
 // Handle user updates (promote/demote or activate/deactivate)
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-    $customerId = (int)($_POST['customerId'] ?? 0);
-    $action = $_POST['action'] ?? '';
+  $customerId = (int)($_POST['customerId'] ?? 0);
+  $action = $_POST['action'] ?? '';
 
-    if ($customerId === (int)$_SESSION['customerId'] && $action === 'demote') {
-        header("Location: manage-users.php?error=selfdemote");
-        exit;
+  if ($customerId === (int)$_SESSION['customerId'] && $action === 'demote') {
+    header("Location: manage-users.php?error=selfdemote");
+    exit;
+  }
+
+  if ($customerId && in_array($action, ['promote', 'demote', 'deactivate', 'activate'])) {
+    $typeUpdate = "";
+    $stateUpdate = "";
+
+    if ($action === 'promote') {
+      $typeUpdate = "Type = 1";
+    } elseif ($action === 'demote') {
+      $typeUpdate = "Type = 0";
+    } elseif ($action === 'deactivate') {
+      $stateUpdate = "State = 0";
+    } elseif ($action === 'activate') {
+      $stateUpdate = "State = 1";
     }
 
-    if ($customerId && in_array($action, ['promote', 'demote', 'deactivate', 'activate'])) {
-        $typeUpdate = "";
-        $stateUpdate = "";
-
-        if ($action === 'promote') {
-            $typeUpdate = "Type = 1";
-        } elseif ($action === 'demote') {
-            $typeUpdate = "Type = 0";
-        } elseif ($action === 'deactivate') {
-            $stateUpdate = "State = 0";
-        } elseif ($action === 'activate') {
-            $stateUpdate = "State = 1";
-        }
-
-        if ($typeUpdate) {
-            $stmt = $db->prepareStatement("UPDATE customerlogon SET $typeUpdate WHERE CustomerID = :id");
-            $stmt->bindValue("id", $customerId, PDO::PARAM_INT);
-            $stmt->execute();
-        }
-
-        if ($stateUpdate) {
-            $stmt = $db->prepareStatement("UPDATE customerlogon SET $stateUpdate WHERE CustomerID = :id");
-            $stmt->bindValue("id", $customerId, PDO::PARAM_INT);
-            $stmt->execute();
-        }
-
-        header("Location: manage-users.php");
-        exit;
+    if ($typeUpdate) {
+      $stmt = $db->prepareStatement("UPDATE customerlogon SET $typeUpdate WHERE CustomerID = :id");
+      $stmt->bindValue("id", $customerId, PDO::PARAM_INT);
+      $stmt->execute();
     }
+
+    if ($stateUpdate) {
+      $stmt = $db->prepareStatement("UPDATE customerlogon SET $stateUpdate WHERE CustomerID = :id");
+      $stmt->bindValue("id", $customerId, PDO::PARAM_INT);
+      $stmt->execute();
+    }
+
+    header("Location: manage-users.php");
+    exit;
+  }
 }
 
 // Load all users
@@ -64,7 +64,9 @@ $db->disconnect();
 <!DOCTYPE html>
 <html lang="en">
 <?php require_once dirname(__DIR__) . "/src/head.php"; ?>
+
 <body class="container mt-5">
+  <?php require_once dirname(__DIR__) . "/src/navbar.php"; ?>
   <h1>User Management</h1>
 
   <?php if (isset($_GET['error']) && $_GET['error'] === 'selfdemote'): ?>
@@ -112,4 +114,5 @@ $db->disconnect();
 
   <?php require_once dirname(__DIR__) . "/src/bootstrap.php"; ?>
 </body>
+
 </html>

@@ -35,14 +35,13 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         exit;
     }
 
-    $salt = $user['Salt'];
     $storedHash = $user['Pass'];
-    $enteredHash = hash("sha256", $salt . $password);
 
-    if ($enteredHash !== $storedHash) {
+    if (!password_verify($password, $storedHash)) {
         header("Location: login.php?error=invalid");
         exit;
     }
+
 
     // === Login erfolgreich
     $_SESSION['customerId'] = $user['CustomerId'];
