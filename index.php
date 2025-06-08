@@ -12,10 +12,6 @@ $_SESSION['isAdmin'] = true; // temporär
 
   <!-- Login Modal (only visible to non-logged-in users) -->
   <?php if (!isset($_SESSION['username'])): ?>
-    <!-- Trigger Button (optional) -->
-    <div class="text-right mt-3">
-      <button class="btn btn-outline-primary" data-toggle="modal" data-target="#loginModal">Login</button>
-    </div>
 
     <!-- Modal -->
     <div class="modal fade" id="loginModal" tabindex="-1" role="dialog" aria-labelledby="loginModalLabel"

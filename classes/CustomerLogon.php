@@ -14,7 +14,6 @@ class CustomerLogon
     public function __construct(
         $userName,
         $pass,
-        $salt = null,
         $state = 1,
         $type = 0,
         $dateJoined = null,
@@ -23,7 +22,6 @@ class CustomerLogon
     ) {
         $this->setUserName($userName);
         $this->setPass($pass);
-        $this->setSalt($salt);
         $this->setState($state);
         $this->setType($type);
         $this->setDateJoined($dateJoined);
@@ -62,17 +60,6 @@ class CustomerLogon
     public function setPass($pass)
     {
         $this->pass = $pass;
-    }
-
-
-    public function getSalt()
-    {
-        return $this->salt;
-    }
-
-    public function setSalt($salt)
-    {
-        $this->salt = $salt;
     }
 
 
