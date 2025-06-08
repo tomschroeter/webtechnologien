@@ -14,15 +14,15 @@ $db->connect();
 
 // Handle user updates (promote/demote or activate/deactivate)
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-  $customerId = (int)($_POST['customerId'] ?? 0);
+  $customerID = (int)($_POST['customerId'] ?? 0);
   $action = $_POST['action'] ?? '';
 
-  if ($customerId === (int)$_SESSION['customerId'] && $action === 'demote') {
+  if ($customerID === (int)$_SESSION['customerId'] && $action === 'demote') {
     header("Location: manage-users.php?error=selfdemote");
     exit;
   }
 
-  if ($customerId && in_array($action, ['promote', 'demote', 'deactivate', 'activate'])) {
+  if ($customerID && in_array($action, ['promote', 'demote', 'deactivate', 'activate'])) {
     $typeUpdate = "";
     $stateUpdate = "";
 
@@ -38,13 +38,13 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
     if ($typeUpdate) {
       $stmt = $db->prepareStatement("UPDATE customerlogon SET $typeUpdate WHERE CustomerID = :id");
-      $stmt->bindValue("id", $customerId, PDO::PARAM_INT);
+      $stmt->bindValue("id", $customerID, PDO::PARAM_INT);
       $stmt->execute();
     }
 
     if ($stateUpdate) {
       $stmt = $db->prepareStatement("UPDATE customerlogon SET $stateUpdate WHERE CustomerID = :id");
-      $stmt->bindValue("id", $customerId, PDO::PARAM_INT);
+      $stmt->bindValue("id", $customerID, PDO::PARAM_INT);
       $stmt->execute();
     }
 
@@ -54,7 +54,12 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 }
 
 // Load all users
-$stmt = $db->prepareStatement("SELECT c.CustomerID, FirstName, LastName, Email, UserName, Type, State FROM customers c JOIN customerlogon cl ON c.CustomerID = cl.CustomerID ORDER BY LastName, FirstName");
+$stmt = $db->prepareStatement("
+  SELECT c.CustomerID, FirstName, LastName, Email, UserName, Type, State
+  FROM customers c
+  JOIN customerlogon cl ON c.CustomerID = cl.CustomerID
+  ORDER BY LastName, FirstName
+");
 $stmt->execute();
 $users = $stmt->fetchAll();
 
@@ -93,18 +98,26 @@ $db->disconnect();
           <td><?= $user['Type'] == 1 ? 'Admin' : 'User' ?></td>
           <td><?= $user['State'] == 1 ? 'Active' : 'Inactive' ?></td>
           <td>
-            <form method="POST" class="d-inline">
-              <input type="hidden" name="customerId" value="<?= $user['CustomerID'] ?>">
-              <?php if ($user['Type'] == 0): ?>
+            <a class="btn btn-sm btn-primary" href="edit-user.php?id=<?= $user['CustomerID'] ?>">Edit</a>
+
+            <?php if ($user['Type'] == 0): ?>
+              <form method="POST" class="d-inline" onsubmit="return confirm('Are you sure you want to promote this user?')">
+                <input type="hidden" name="customerId" value="<?= $user['CustomerID'] ?>">
                 <button name="action" value="promote" class="btn btn-sm btn-success">Promote</button>
+              </form>
               <?php elseif ($_SESSION['customerId'] != $user['CustomerID']): ?>
+              <form method="POST" class="d-inline" onsubmit="return confirm('Are you sure you want to demote this user?')">
+                <input type="hidden" name="customerId" value="<?= $user['CustomerID'] ?>">
                 <button name="action" value="demote" class="btn btn-sm btn-warning">Demote</button>
-              <?php endif; ?>
-              <?php if ($user['State'] == 1): ?>
-                <button name="action" value="deactivate" class="btn btn-sm btn-secondary">Deactivate</button>
-              <?php else: ?>
-                <button name="action" value="activate" class="btn btn-sm btn-primary">Activate</button>
-              <?php endif; ?>
+              </form>
+            <?php endif; ?>
+
+            <form method="POST" class="d-inline" onsubmit="return confirm('Are you sure you want to change status?')">
+              <input type="hidden" name="customerId" value="<?= $user['CustomerID'] ?>">
+              <button name="action" value="<?= $user['State'] == 1 ? 'deactivate' : 'activate' ?>"
+                class="btn btn-sm btn-<?= $user['State'] == 1 ? 'secondary' : 'primary' ?>">
+                <?= $user['State'] == 1 ? 'Deactivate' : 'Activate' ?>
+              </button>
             </form>
           </td>
         </tr>
@@ -114,5 +127,4 @@ $db->disconnect();
 
   <?php require_once dirname(__DIR__) . "/src/bootstrap.php"; ?>
 </body>
-
 </html>
