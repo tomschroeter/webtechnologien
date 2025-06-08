@@ -5,27 +5,59 @@ $_SESSION['isAdmin'] = true; // temporär
 <!DOCTYPE html>
 <html lang="en">
 
-<?php require_once dirname(__DIR__)."/src/head.php"; ?>
+<?php require_once dirname(__DIR__) . "/src/head.php"; ?>
 
 <body class="container">
-  <?php require_once dirname(__DIR__)."/src/navbar.php"; ?>
+  <?php require_once dirname(__DIR__) . "/src/navbar.php"; ?>
 
-  <!-- TODO: Change homepage style at a later time -->
-  <!-- TODO: Rewrite compontents to use new query logic -->
-  </br>
-  <?php // require_once 'components/random-carousel.php';?>
+  <!-- Login Modal (only visible to non-logged-in users) -->
+  <?php if (!isset($_SESSION['username'])): ?>
+    <!-- Trigger Button (optional) -->
+    <div class="text-right mt-3">
+      <button class="btn btn-outline-primary" data-toggle="modal" data-target="#loginModal">Login</button>
+    </div>
+
+    <!-- Modal -->
+    <div class="modal fade" id="loginModal" tabindex="-1" role="dialog" aria-labelledby="loginModalLabel"
+      aria-hidden="true">
+      <div class="modal-dialog" role="document">
+        <form method="POST" action="login.php" class="modal-content">
+          <div class="modal-header">
+            <h5 class="modal-title" id="loginModalLabel">Login</h5>
+            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+              <span aria-hidden="true">&times;</span>
+            </button>
+          </div>
+          <div class="modal-body">
+            <div class="form-group">
+              <input name="username" class="form-control" placeholder="Benutzername" required>
+            </div>
+            <div class="form-group">
+              <input name="password" type="password" class="form-control" placeholder="Passwort" required>
+            </div>
+          </div>
+          <div class="modal-footer">
+            <button type="submit" class="btn btn-primary">Login</button>
+            <button type="button" class="btn btn-secondary" data-dismiss="modal">Abbrechen</button>
+          </div>
+        </form>
+      </div>
+    </div>
+  <?php endif; ?>
 
   <hr class="break">
   <h2 class="mx-auto pb-4" style="width: fit-content;"><u>Top Rated Artworks</u></h2>
-  <?php // require_once 'components/top-rated.php';?>
+  <?php // require_once 'components/top-rated.php'; 
+  ?>
 
   <hr class="break">
   <h2 class="mx-auto pb-4" style="width: fit-content;"><u>Most Reviewed Artists</u></h2>
-  <?php require_once dirname(__DIR__)."/src/components/most-reviewed-artists.php"; ?>
+  <?php require_once dirname(__DIR__) . "/src/components/most-reviewed-artists.php"; ?>
 
   <hr class="break">
   <h2 class="mx-auto pb-4" style="width: fit-content;"><u>Recent Reviews</u></h2>
-  <?php // require_once 'components/recent-reviews.php'?>
+  <?php // require_once 'components/recent-reviews.php'; 
+  ?>
 
   <?php require_once 'bootstrap.php'; ?>
 </body>
