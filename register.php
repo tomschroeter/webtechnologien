@@ -72,15 +72,14 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $hashed = password_hash($password, PASSWORD_DEFAULT);
 
     // === Insert in customerlogon
-    $logon = new CustomerLogon($username, $hashed, $salt, 1, 0, date("Y-m-d H:i:s"), date("Y-m-d H:i:s"), $customerId);
+    $logon = new CustomerLogon($username, $hashed, 1, 0, date("Y-m-d H:i:s"), date("Y-m-d H:i:s"), $customerId);
     $stmt = $db->prepareStatement("
-        INSERT INTO customerlogon (CustomerId, UserName, Pass, Salt, State, Type, DateJoined, DateLastModified)
-        VALUES (:id, :user, :pass, :salt, :state, :type, :joined, :modified)
+        INSERT INTO customerlogon (CustomerId, UserName, Pass, State, Type, DateJoined, DateLastModified)
+        VALUES (:id, :user, :pass, :state, :type, :joined, :modified)
     ");
     $stmt->bindValue("id", $logon->getCustomerId(), PDO::PARAM_INT);
     $stmt->bindValue("user", $logon->getUserName());
     $stmt->bindValue("pass", $logon->getPass());
-    $stmt->bindValue("salt", $logon->getSalt());
     $stmt->bindValue("state", $logon->getState());
     $stmt->bindValue("type", $logon->getType());
     $stmt->bindValue("joined", $logon->getDateJoined());
