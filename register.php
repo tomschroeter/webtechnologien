@@ -69,8 +69,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $customerId = $nextId;
 
     // === Passwort hash + salt
-    $salt = bin2hex(random_bytes(8));
-    $hashed = hash("sha256", $salt . $password);
+    $hashed = password_hash($password, PASSWORD_DEFAULT);
 
     // === Insert in customerlogon
     $logon = new CustomerLogon($username, $hashed, $salt, 1, 0, date("Y-m-d H:i:s"), date("Y-m-d H:i:s"), $customerId);
@@ -99,6 +98,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 <?php require_once "head.php"; ?>
 
 <body class="container mt-5">
+    <?php require_once "navbar.php"; ?>
     <h1>Register</h1>
 
     <?php if ($error === 'validation'): ?>
