@@ -31,7 +31,7 @@ try {
 
 <body class="container">
   <br>
-  <h1> <?php echo $genre->getGenreName() ?></h1>
+  <a href=<?php echo $genre->getLink() ?> class="h1"> <?php echo $genre->getGenreName() ?></a>
   <div class="container mt-3">
     <div class="row">
       <!-- Displays genre image -->
@@ -44,6 +44,9 @@ try {
       }
       ?>
       <img src="<?php echo $correctImagePath ?>" alt="Bild von <?php echo $genre->getGenreName() ?>">
+      <div class="col">
+        <?php echo $genre->getDescription(); ?>
+      </div>
     </div>
     <h2 class="mt-5">Artworks for <?php echo $genre->getGenreName() ?></h2>
     <div class="row mt-4">
