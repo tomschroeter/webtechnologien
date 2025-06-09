@@ -24,14 +24,14 @@ try {
   $genre = $genreRepository->getGenreById($genreId);
   $artworks = $artworkRepository->getArtworksByGenre($genreId);
 } catch (Exception $e) {
-  header("Location: /error.php?error=invalidID&type=subject");
+  header("Location: /error.php?error=invalidID&type=genre");
   exit();
 }
 ?>
 
 <body class="container">
   <br>
-  <a href=<?php echo $genre->getLink() ?> class="h1"> <?php echo $genre->getGenreName() ?></a>
+  <h1><?php echo $genre->getGenreName() ?></h1>
   <div class="container mt-3">
     <div class="row">
       <!-- Displays genre image -->
@@ -46,6 +46,9 @@ try {
       <img src="<?php echo $correctImagePath ?>" alt="Bild von <?php echo $genre->getGenreName() ?>">
       <div class="col">
         <?php echo $genre->getDescription(); ?>
+        <div class="mt-2">
+          <b>Learn more:</b> <a href=<?php echo $genre->getLink() ?>>Wikipedia</a>
+        </div>
       </div>
     </div>
     <h2 class="mt-5">Artworks for <?php echo $genre->getGenreName() ?></h2>
