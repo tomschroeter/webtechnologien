@@ -35,12 +35,11 @@ class ArtistWithStats
 class ArtistWithStatsArray extends \ArrayObject
 {
     public function offsetSet(mixed $key, mixed $val): void
-{
-    if (!$val instanceof ArtistWithStats) {
-        throw new \InvalidArgumentException('Value must be an ArtistWithStats instance');
+    {
+        if (!$val instanceof ArtistWithStats) {
+            throw new \InvalidArgumentException('Value must be an ArtistWithStats instance');
+        }
+
+        parent::offsetSet($key, $val);
     }
-
-    parent::offsetSet($key, $val);
-}
-
 }
