@@ -5,12 +5,16 @@ require_once "bootstrap.php";
 require_once "classes/Customer.php";
 require_once "classes/CustomerLogon.php";
 require_once "Database.php";
+require_once "repositories/CustomerLogonRepository.php";
 
 $db = new Database();
 $db->connect();
+$repo = new CustomerLogonRepository($db);
 
 $error = $_GET['error'] ?? null;
 $success = $_GET['success'] ?? null;
+
+$firstName = $lastName = $address = $city = $region = $country = $postal = $phone = $email = $username = '';
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $firstName = trim($_POST['firstName'] ?? '');
@@ -28,67 +32,22 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $validPassword = preg_match('/^(?=.*[A-Z])(?=.*\d)(?=.*[\W_]).{6,}$/', $password);
 
     if (!$lastName || !$city || !$address || !$country || !filter_var($email, FILTER_VALIDATE_EMAIL) || !$validPassword) {
-        header("Location: register.php?error=validation");
+        $error = 'validation';
+    } elseif ($repo->userExists($username)) {
+        $error = 'exists';
+    } else {
+        $customerId = $repo->getNextCustomerId();
+        $customer = new Customer($firstName, $lastName, $address, $city, $country, $postal, $email, $region, $phone);
+        $repo->insertCustomer($customer, $customerId);
+
+        $hashed = password_hash($password, PASSWORD_DEFAULT);
+        $logon = new CustomerLogon($username, $hashed, 1, 0, date("Y-m-d H:i:s"), date("Y-m-d H:i:s"), $customerId);
+        $repo->insertLogon($logon);
+
+        $db->disconnect();
+        header("Location: register.php?success=1");
         exit;
     }
-
-    $stmt = $db->prepareStatement("SELECT COUNT(*) FROM customerlogon WHERE UserName = :username");
-    $stmt->bindValue("username", $username);
-    $stmt->execute();
-    if ($stmt->fetchColumn() > 0) {
-        header("Location: register.php?error=exists");
-        exit;
-    }
-
-    // === Manuell nächste CustomerId ermitteln
-    $stmt = $db->prepareStatement("SELECT MAX(CustomerId) + 1 AS nextId FROM customers");
-    $stmt->execute();
-    $nextId = $stmt->fetchColumn();
-    if (!$nextId) {
-        $nextId = 1;
-    }
-
-    // === Insert in customers
-    $customer = new Customer($firstName, $lastName, $address, $city, $country, $postal, $email, $region, $phone);
-    $stmt = $db->prepareStatement("
-        INSERT INTO customers (CustomerId, FirstName, LastName, Address, City, Region, Country, Postal, Phone, Email)
-        VALUES (:id, :first, :last, :address, :city, :region, :country, :postal, :phone, :email)
-    ");
-    $stmt->bindValue("id", $nextId, PDO::PARAM_INT);
-    $stmt->bindValue("first", $customer->getFirstName());
-    $stmt->bindValue("last", $customer->getLastName());
-    $stmt->bindValue("address", $customer->getAddress());
-    $stmt->bindValue("city", $customer->getCity());
-    $stmt->bindValue("region", $customer->getRegion());
-    $stmt->bindValue("country", $customer->getCountry());
-    $stmt->bindValue("postal", $customer->getPostal());
-    $stmt->bindValue("phone", $customer->getPhone());
-    $stmt->bindValue("email", $customer->getEmail());
-    $stmt->execute();
-
-    $customerId = $nextId;
-
-    // === Passwort hash + salt
-    $hashed = password_hash($password, PASSWORD_DEFAULT);
-
-    // === Insert in customerlogon
-    $logon = new CustomerLogon($username, $hashed, 1, 0, date("Y-m-d H:i:s"), date("Y-m-d H:i:s"), $customerId);
-    $stmt = $db->prepareStatement("
-        INSERT INTO customerlogon (CustomerId, UserName, Pass, State, Type, DateJoined, DateLastModified)
-        VALUES (:id, :user, :pass, :state, :type, :joined, :modified)
-    ");
-    $stmt->bindValue("id", $logon->getCustomerId(), PDO::PARAM_INT);
-    $stmt->bindValue("user", $logon->getUserName());
-    $stmt->bindValue("pass", $logon->getPass());
-    $stmt->bindValue("state", $logon->getState());
-    $stmt->bindValue("type", $logon->getType());
-    $stmt->bindValue("joined", $logon->getDateJoined());
-    $stmt->bindValue("modified", $logon->getDateLastModified());
-    $stmt->execute();
-
-    $db->disconnect();
-    header("Location: register.php?success=1");
-    exit;
 }
 ?>
 
@@ -111,20 +70,19 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         <div class="alert alert-success">Registration successful! You can now <a href="login.php">log in</a>.</div>
     <?php endif; ?>
 
-
     <form method="POST" class="mt-4">
-        <div class="form-group"><input name="firstName" class="form-control" placeholder="First Name"></div>
-        <div class="form-group"><input name="lastName" class="form-control" placeholder="Last Name*" required></div>
-        <div class="form-group"><input name="address" class="form-control" placeholder="Address*" required></div>
-        <div class="form-group"><input name="city" class="form-control" placeholder="City*" required></div>
-        <div class="form-group"><input name="region" class="form-control" placeholder="Region (optional)"></div>
-        <div class="form-group"><input name="country" class="form-control" placeholder="Country*" required></div>
-        <div class="form-group"><input name="postal" class="form-control" placeholder="Postal Code"></div>
-        <div class="form-group"><input name="phone" class="form-control" placeholder="Phone (optional)"></div>
-        <div class="form-group"><input name="email" type="email" class="form-control" placeholder="Email*" required></div>
+        <div class="form-group"><input name="firstName" class="form-control" placeholder="First Name" value="<?= htmlspecialchars($firstName ?? '') ?>"></div>
+        <div class="form-group"><input name="lastName" class="form-control" placeholder="Last Name*" required value="<?= htmlspecialchars($lastName ?? '') ?>"></div>
+        <div class="form-group"><input name="address" class="form-control" placeholder="Address*" required value="<?= htmlspecialchars($address ?? '') ?>"></div>
+        <div class="form-group"><input name="city" class="form-control" placeholder="City*" required value="<?= htmlspecialchars($city ?? '') ?>"></div>
+        <div class="form-group"><input name="region" class="form-control" placeholder="Region (optional)" value="<?= htmlspecialchars($region ?? '') ?>"></div>
+        <div class="form-group"><input name="country" class="form-control" placeholder="Country*" required value="<?= htmlspecialchars($country ?? '') ?>"></div>
+        <div class="form-group"><input name="postal" class="form-control" placeholder="Postal Code" value="<?= htmlspecialchars($postal ?? '') ?>"></div>
+        <div class="form-group"><input name="phone" class="form-control" placeholder="Phone (optional)" value="<?= htmlspecialchars($phone ?? '') ?>"></div>
+        <div class="form-group"><input name="email" type="email" class="form-control" placeholder="Email*" required value="<?= htmlspecialchars($email ?? '') ?>"></div>
 
         <hr>
-        <div class="form-group"><input name="username" class="form-control" placeholder="Username*" required></div>
+        <div class="form-group"><input name="username" class="form-control" placeholder="Username*" required value="<?= htmlspecialchars($username ?? '') ?>"></div>
         <div class="form-group"><input name="password" type="password" class="form-control" placeholder="Password (min. 6 chars)*" required></div>
 
         <button type="submit" class="btn btn-primary">Register</button>

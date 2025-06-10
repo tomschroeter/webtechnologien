@@ -8,11 +8,13 @@ if (!($_SESSION['isAdmin'] ?? false)) {
 
 require_once dirname(__DIR__) . "/src/bootstrap.php";
 require_once dirname(__DIR__) . "/src/Database.php";
+require_once dirname(__DIR__) . "/src/repositories/CustomerLogonRepository.php";
 
 $db = new Database();
 $db->connect();
+$repo = new CustomerLogonRepository($db);
 
-// Handle user updates (promote/demote or activate/deactivate)
+// Handle user updates
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
   $customerID = (int)($_POST['customerId'] ?? 0);
   $action = $_POST['action'] ?? '';
@@ -23,29 +25,14 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
   }
 
   if ($customerID && in_array($action, ['promote', 'demote', 'deactivate', 'activate'])) {
-    $typeUpdate = "";
-    $stateUpdate = "";
-
     if ($action === 'promote') {
-      $typeUpdate = "Type = 1";
+      $repo->updateUserType($customerID, 1);
     } elseif ($action === 'demote') {
-      $typeUpdate = "Type = 0";
-    } elseif ($action === 'deactivate') {
-      $stateUpdate = "State = 0";
+      $repo->updateUserType($customerID, 0);
     } elseif ($action === 'activate') {
-      $stateUpdate = "State = 1";
-    }
-
-    if ($typeUpdate) {
-      $stmt = $db->prepareStatement("UPDATE customerlogon SET $typeUpdate WHERE CustomerID = :id");
-      $stmt->bindValue("id", $customerID, PDO::PARAM_INT);
-      $stmt->execute();
-    }
-
-    if ($stateUpdate) {
-      $stmt = $db->prepareStatement("UPDATE customerlogon SET $stateUpdate WHERE CustomerID = :id");
-      $stmt->bindValue("id", $customerID, PDO::PARAM_INT);
-      $stmt->execute();
+      $repo->updateUserState($customerID, 1);
+    } elseif ($action === 'deactivate') {
+      $repo->updateUserState($customerID, 0);
     }
 
     header("Location: manage-users.php");
@@ -53,17 +40,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
   }
 }
 
-// Load all users
-$stmt = $db->prepareStatement("
-  SELECT c.CustomerID, FirstName, LastName, Email, UserName, Type, State
-  FROM customers c
-  JOIN customerlogon cl ON c.CustomerID = cl.CustomerID
-  ORDER BY LastName, FirstName
-");
-$stmt->execute();
-$users = $stmt->fetchAll();
-
-$db->disconnect();
+$users = $repo->getAllUsersWithLogonData();
 ?>
 
 <!DOCTYPE html>
@@ -105,7 +82,7 @@ $db->disconnect();
                 <input type="hidden" name="customerId" value="<?= $user['CustomerID'] ?>">
                 <button name="action" value="promote" class="btn btn-sm btn-success">Promote</button>
               </form>
-              <?php elseif ($_SESSION['customerId'] != $user['CustomerID']): ?>
+            <?php elseif ($_SESSION['customerId'] != $user['CustomerID']): ?>
               <form method="POST" class="d-inline" onsubmit="return confirm('Are you sure you want to demote this user?')">
                 <input type="hidden" name="customerId" value="<?= $user['CustomerID'] ?>">
                 <button name="action" value="demote" class="btn btn-sm btn-warning">Demote</button>
@@ -127,4 +104,5 @@ $db->disconnect();
 
   <?php require_once dirname(__DIR__) . "/src/bootstrap.php"; ?>
 </body>
+
 </html>
