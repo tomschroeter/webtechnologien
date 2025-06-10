@@ -3,9 +3,11 @@ session_start();
 
 require_once "bootstrap.php";
 require_once "Database.php";
+require_once "repositories/CustomerLogonRepository.php";
 
 $db = new Database();
 $db->connect();
+$repo = new CustomerLogonRepository($db);
 
 // Meldungen verarbeiten
 $error = $_GET['error'] ?? null;
@@ -16,38 +18,21 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $username = trim($_POST['username'] ?? '');
     $password = $_POST['password'] ?? '';
 
-    // Basic Validierung
     if (!$username || !$password) {
         header("Location: login.php?error=missing");
         exit;
     }
 
-    // Nutzer aus DB laden
-    $stmt = $db->prepareStatement("
-        SELECT * FROM customerlogon WHERE UserName = :username AND State = 1
-    ");
-    $stmt->bindValue("username", $username);
-    $stmt->execute();
-    $user = $stmt->fetch();
+    $user = $repo->getActiveUserByUsername($username);
 
-    if (!$user) {
+    if (!$user || !password_verify($password, $user['Pass'])) {
         header("Location: login.php?error=invalid");
         exit;
     }
 
-    $storedHash = $user['Pass'];
-
-    if (!password_verify($password, $storedHash)) {
-        header("Location: login.php?error=invalid");
-        exit;
-    }
-
-
-    // === Login erfolgreich
     $_SESSION['customerId'] = $user['CustomerId'];
     $_SESSION['username'] = $user['UserName'];
     $_SESSION['isAdmin'] = $user['Type'] == 1;
-
 
     header("Location: index.php");
     exit;
@@ -59,6 +44,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 <?php require_once "head.php"; ?>
 
 <body class="container mt-5">
+    <?php require_once dirname(__DIR__) . "/src/navbar.php"; ?>
     <h1>Login</h1>
 
     <?php if ($error === 'missing'): ?>

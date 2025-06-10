@@ -2,6 +2,7 @@
 session_start();
 require_once "bootstrap.php";
 require_once "Database.php";
+require_once "repositories/CustomerLogonRepository.php";
 
 if (!($_SESSION['isAdmin'] ?? false)) {
     header("Location: /error.php?error=unauthorized");
@@ -10,6 +11,7 @@ if (!($_SESSION['isAdmin'] ?? false)) {
 
 $db = new Database();
 $db->connect();
+$repo = new CustomerLogonRepository($db);
 
 $id = $_GET['id'] ?? null;
 if (!$id || !is_numeric($id)) {
@@ -17,15 +19,7 @@ if (!$id || !is_numeric($id)) {
     exit;
 }
 
-$stmt = $db->prepareStatement("
-    SELECT c.FirstName, c.LastName, c.Email, cl.UserName, cl.Type
-    FROM customers c
-    JOIN customerlogon cl ON c.CustomerId = cl.CustomerId
-    WHERE c.CustomerId = :id
-");
-$stmt->bindValue("id", $id, PDO::PARAM_INT);
-$stmt->execute();
-$user = $stmt->fetch();
+$user = $repo->getUserDetailsById((int)$id);
 
 if (!$user) {
     header("Location: /error.php?error=userNotFound");
@@ -43,17 +37,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         exit;
     }
 
-    $stmt1 = $db->prepareStatement("UPDATE customers SET FirstName = :first, LastName = :last, Email = :email WHERE CustomerId = :id");
-    $stmt1->bindValue("first", $first);
-    $stmt1->bindValue("last", $last);
-    $stmt1->bindValue("email", $email);
-    $stmt1->bindValue("id", $id);
-    $stmt1->execute();
-
-    $stmt2 = $db->prepareStatement("UPDATE customerlogon SET Type = :type, DateLastModified = NOW() WHERE CustomerId = :id");
-    $stmt2->bindValue("type", $type, PDO::PARAM_INT);
-    $stmt2->bindValue("id", $id);
-    $stmt2->execute();
+    $repo->updateCustomerBasicInfo((int)$id, $first, $last, $email);
+    $repo->updateUserType((int)$id, (int)$type);
 
     header("Location: manage-users.php");
     exit;
