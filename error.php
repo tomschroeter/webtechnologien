@@ -1,9 +1,11 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <title>Error</title>
     <meta charset="UTF-8">
 </head>
+
 <body class="container mt-5">
     <h2>Error</h2>
     <p>
@@ -26,6 +28,8 @@
                     echo "Error 404: No subject with the given ID was found.";
                 } elseif ($type === 'artist') {
                     echo "Error 404: No artist with the given ID was found.";
+                } elseif ($type === 'genre') {
+                    echo "Error 404: No genre with the given ID was found.";
                 } else {
                     echo "Error 404: No entry with the given ID was found.";
                 }
@@ -51,4 +55,5 @@
         ?>
     </p>
 </body>
+
 </html>
