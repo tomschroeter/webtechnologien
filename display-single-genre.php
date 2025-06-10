@@ -77,7 +77,13 @@ try {
                 <a href="<?php echo $artworkLink ?>" target="_blank"
                   class="text-body"><?php echo $artwork->getTitle() ?></a>
               </h5>
-              <a href="<?php echo $artworkLink ?>" target="_blank" class="btn btn-primary mt-auto">View</a>
+              <div class="row mx-auto mt-auto">
+                <a href="<?php echo $artworkLink ?>" target="_blank" class="btn btn-primary mt-auto mx-auto">View</a>
+                <form method="post" action="add-favourite.php" class="mx-auto mt-1">
+                  <input type="hidden" name="artworkId" value="<?php echo $artwork->getArtworkId() ?>">
+                  <button type="submit" class="btn btn-tertiary mt-auto">Add to Favourites</button>
+                </form>
+              </div>
             </div>
           </div>
         </div>
