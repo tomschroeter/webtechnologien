@@ -47,7 +47,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             $customerId = $repo->registerCustomer($customer, $logon);
             
             // Automatically log the user in after successful registration
-            $_SESSION['customerId'] = $customerId;
+            $_SESSION['customerId'] = $customerId;  // This should be consistent
             $_SESSION['username'] = $username;
             $_SESSION['isAdmin'] = false; // New users are always regular users
             

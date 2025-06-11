@@ -41,6 +41,20 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $repo->updateCustomerBasicInfo((int)$id, $first, $last, $email);
     $repo->updateUserAdmin((int)$id, $isAdmin);
 
+    // Check if admin is demoting themselves
+    if (isset($_SESSION['customerId']) && 
+        (int)$id === (int)$_SESSION['customerId'] && 
+        !$isAdmin && 
+        ($_SESSION['isAdmin'] ?? false)) {
+        
+        // Update session to reflect they're no longer admin
+        $_SESSION['isAdmin'] = false;
+        
+        // Redirect to home page instead of manage-users
+        header("Location: /index.php");
+        exit;
+    }
+
     header("Location: manage-users.php");
     exit;
 }

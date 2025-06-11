@@ -31,7 +31,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         exit;
     }
 
-    $_SESSION['customerId'] = $user['CustomerId'];
+    $_SESSION['customerId'] = $user['CustomerID'];  // Fixed: Use CustomerID (uppercase D)
     $_SESSION['username'] = $user['UserName'];
     $_SESSION['isAdmin'] = $user['isAdmin'] ?? false;
 
