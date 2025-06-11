@@ -13,6 +13,7 @@ $subjects = $subjectRepository->getAllSubjects();
 
 <body class="container">
   <h1 class="mt-3 mb-3">Themen</h1>
+  <p class="text-muted">Gefunden: <?php echo count($subjects)?> Themen</p>
 
   <!-- List to display all subjects -->
   <ul class="list-group mb-5">

@@ -30,15 +30,15 @@ $reviewRepo = new ReviewRepository($db);
 // Handle Add/Remove Favorites
 if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['action'])) {
     try {
-        if (!isset($_SESSION['favorites'])) {
-            $_SESSION['favorites'] = [];
+        if (!isset($_SESSION['favoriteArtworks'])) {
+            $_SESSION['favoriteArtworks'] = [];
         }
         
         $artworkId = (int)$_POST['artworkId'];
         
         if ($_POST['action'] === 'add_to_favorites') {
-            if (!in_array($artworkId, $_SESSION['favorites'])) {
-                $_SESSION['favorites'][] = $artworkId;
+            if (!in_array($artworkId, $_SESSION['favoriteArtworks'])) {
+                $_SESSION['favoriteArtworks'][] = $artworkId;
                 $message = "Artwork added to favorites!";
                 $messageType = "success";
             } else {
@@ -46,13 +46,13 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['action'])) {
                 $messageType = "info";
             }
         } elseif ($_POST['action'] === 'remove_from_favorites') {
-            if (($key = array_search($artworkId, $_SESSION['favorites'])) !== false) {
-                unset($_SESSION['favorites'][$key]);
-                $_SESSION['favorites'] = array_values($_SESSION['favorites']); // Re-index array
-                $message = "Artwork removed from favorites!";
+            if (($key = array_search($artworkId, $_SESSION['favoriteArtworks'])) !== false) {
+                unset($_SESSION['favoriteArtworks'][$key]);
+                $_SESSION['favoriteArtworks'] = array_values($_SESSION['favoriteArtworks']); // Re-index array
+                $message = "Artwork removed from favoriteArtworks!";
                 $messageType = "success";
             } else {
-                $message = "Artwork is not in your favorites.";
+                $message = "Artwork is not in your favorites";
                 $messageType = "info";
             }
         }
@@ -174,7 +174,7 @@ if (file_exists($_SERVER['DOCUMENT_ROOT'] . $imagePath)) {
 
                 <!-- Add/Remove Favorites Form -->
                 <?php 
-                $isInFavorites = isset($_SESSION['favorites']) && in_array($artwork->getArtworkId(), $_SESSION['favorites']);
+                $isInFavorites = isset($_SESSION['favoriteArtworks']) && in_array($artwork->getArtworkId(), $_SESSION['favoriteArtworks']);
                 ?>
                 <form method="post" class="mb-3">
                     <?php if ($isInFavorites): ?>

@@ -1,33 +1,93 @@
 <!DOCTYPE html>
-<?php
-session_start();
-
-
-$_SESSION['customerId'] = 1; // TEST-Nutzer ID = 1
-$_SESSION['isAdmin'] = true; // Temporär
-
-
-?>
-
 <html lang="en">
 
 <?php
 require_once dirname(__DIR__) . "/src/head.php";
+require_once dirname(__DIR__) . "/src/navbar.php";
+require_once dirname(__DIR__) . "/src/Database.php";
 require_once dirname(__DIR__) . "/src/repositories/ArtistRepository.php";
 require_once dirname(__DIR__) . "/src/repositories/ArtworkRepository.php";
-require_once dirname(__DIR__) . "/src/navbar.php";
+require_once dirname(__DIR__) . "/src/router/router.php";
+
+session_start();
+
+$_SESSION['customerId'] = 1; // TEMP: simulate logged-in user
+$_SESSION['isAdmin'] = true; // TEMP: simulate admin privileges
 
 $db = new Database();
 $artistRepository = new ArtistRepository($db);
 $artworkRepository = new ArtworkRepository($db);
 
-// Check if artist ID is valid
-if (isset($_GET['id']) && is_numeric($_GET['id'])) {
-	$artistId = $_GET['id'];
-} else {
+// Handle Add/Remove Favorites for both artists and artworks
+if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['action'])) {
+    try {
+        // Handle artist favorites
+        if (isset($_POST['artistId'])) {
+            if (!isset($_SESSION['favoriteArtists'])) {
+                $_SESSION['favoriteArtists'] = [];
+            }
+            $artistId = (int)$_POST['artistId'];
+            if ($_POST['action'] === 'add_to_favorites') {
+                if (!in_array($artistId, $_SESSION['favoriteArtists'])) {
+                    $_SESSION['favoriteArtists'][] = $artistId;
+                    $message = "Artist added to favorites!";
+                    $messageType = "success";
+                } else {
+                    $message = "Artist is already in your favorites.";
+                    $messageType = "info";
+                }
+            } elseif ($_POST['action'] === 'remove_from_favorites') {
+                if (($key = array_search($artistId, $_SESSION['favoriteArtists'])) !== false) {
+                    unset($_SESSION['favoriteArtists'][$key]);
+                    $_SESSION['favoriteArtists'] = array_values($_SESSION['favoriteArtists']);
+                    $message = "Artist removed from favorites!";
+                    $messageType = "success";
+                } else {
+                    $message = "Artist is not in your favorites.";
+                    $messageType = "info";
+                }
+            }
+        }
+        // Handle artwork favorites
+        if (isset($_POST['artworkId'])) {
+            if (!isset($_SESSION['favoriteArtworks'])) {
+                $_SESSION['favoriteArtworks'] = [];
+            }
+            $artworkId = (int)$_POST['artworkId'];
+            if ($_POST['action'] === 'add_to_favorites') {
+                if (!in_array($artworkId, $_SESSION['favoriteArtworks'])) {
+                    $_SESSION['favoriteArtworks'][] = $artworkId;
+                    $message = "Artwork added to favorites!";
+                    $messageType = "success";
+                } else {
+                    $message = "Artwork is already in your favorites.";
+                    $messageType = "info";
+                }
+            } elseif ($_POST['action'] === 'remove_from_favorites') {
+                if (($key = array_search($artworkId, $_SESSION['favoriteArtworks'])) !== false) {
+                    unset($_SESSION['favoriteArtworks'][$key]);
+                    $_SESSION['favoriteArtworks'] = array_values($_SESSION['favoriteArtworks']);
+                    $message = "Artwork removed from favorites!";
+                    $messageType = "success";
+                } else {
+                    $message = "Artwork is not in your favorites.";
+                    $messageType = "info";
+                }
+            }
+        }
+    } catch (Exception $e) {
+        $message = "Error updating favorites. Please try again.";
+        $messageType = "danger";
+    }
+}
+
+// Check if artist ID is provided and valid
+if (!isset($_GET['id']) || !is_numeric($_GET['id'])) {
 	header("Location: /error.php?error=invalidParam");
 	exit();
 }
+
+$artistId = (int)$_GET['id'];
 
 // Load artist and artworks
 try {
@@ -41,7 +101,17 @@ try {
 
 <body class="container">
 	<br>
-	<h1><?php echo $artist->getFirstName() ?> <?php echo $artist->getLastName() ?></h1>
+	<h1><?php echo htmlspecialchars($artist->getFirstName() . ' ' . $artist->getLastName()) ?></h1>
+	
+	<?php if (isset($message)): ?>
+        <div class="alert alert-<?php echo $messageType ?> alert-dismissible fade show" role="alert">
+            <?php echo htmlspecialchars($message) ?>
+            <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                <span aria-hidden="true">&times;</span>
+            </button>
+        </div>
+    <?php endif; ?>
+	
 	<div class="container mt-3">
 		<div class="row">
 			<div>
@@ -51,16 +121,30 @@ try {
 				$placeholderPath = "/assets/placeholder/artists/medium/placeholder.svg";
 				$correctImagePath = file_exists($_SERVER['DOCUMENT_ROOT'] . $imagePath) ? $imagePath : $placeholderPath;
 				?>
-				<img src="<?php echo $correctImagePath ?>" alt="Image of <?php echo $artist->getFirstName() . ' ' . $artist->getLastName() ?>">
+				<img src="<?php echo $correctImagePath ?>" alt="Image of <?php echo htmlspecialchars($artist->getFirstName() . ' ' . $artist->getLastName()) ?>">
 			</div>
 			<div class="col-md-8">
-				<p><?php echo $artist->getDetails() ?></p>
+				<p><?php echo htmlspecialchars($artist->getDetails()) ?></p>
 
-				<!-- Add to favourites button -->
-				<form method="post" action="add-favourite.php">
-					<input type="hidden" name="artistId" value="<?php echo $artist->getArtistId() ?>">
-					<button type="submit" class="btn btn-primary mt-2">Add to Favourites</button>
-				</form>
+				<!-- Add/Remove Artist Favorites Form -->
+                <?php 
+                $isInFavorites = isset($_SESSION['favoriteArtists']) && in_array($artist->getArtistId(), $_SESSION['favoriteArtists']);
+                ?>
+                <form method="post" class="mb-3">
+                    <?php if ($isInFavorites): ?>
+                        <input type="hidden" name="action" value="remove_from_favorites">
+                        <input type="hidden" name="artistId" value="<?php echo $artist->getArtistId() ?>">
+                        <button type="submit" class="btn btn-outline-danger">
+                            ♥ Remove from Favorites
+                        </button>
+                    <?php else: ?>
+                        <input type="hidden" name="action" value="add_to_favorites">
+                        <input type="hidden" name="artistId" value="<?php echo $artist->getArtistId() ?>">
+                        <button type="submit" class="btn btn-primary">
+                            ♡ Add to Favorites
+                        </button>
+                    <?php endif; ?>
+                </form>
 
 				<!-- Artist details -->
 				<table class="table table-bordered w-75 mt-4">
@@ -69,51 +153,26 @@ try {
 					</thead>
 					<tr>
 						<th>Date:</th>
-						<td><?php echo $artist->getYearOfBirth() ?><?php if ($artist->getYearOfDeath()) echo " - " . $artist->getYearOfDeath() ?></td>
+						<td><?php echo htmlspecialchars($artist->getYearOfBirth()) ?><?php if ($artist->getYearOfDeath()) echo " - " . htmlspecialchars($artist->getYearOfDeath()) ?></td>
 					</tr>
 					<tr>
 						<th>Nationality:</th>
-						<td><?php echo $artist->getNationality() ?></td>
+						<td><?php echo htmlspecialchars($artist->getNationality()) ?></td>
 					</tr>
 					<tr>
 						<th>More Info:</th>
-						<td><a href="<?php echo $artist->getArtistLink() ?>" target="_blank">Wikipedia</a></td>
+						<td><a href="<?php echo htmlspecialchars($artist->getArtistLink()) ?>" target="_blank" class="text-decoration-none">Wikipedia</a></td>
 					</tr>
 				</table>
 			</div>
 		</div>
 
-		<h2 class="mt-5">Artworks by <?php echo $artist->getFirstName() ?> <?php echo $artist->getLastName() ?></h2>
+		<h2 class="mt-5">Artworks by <?php echo htmlspecialchars($artist->getFirstName() . ' ' . $artist->getLastName()) ?></h2>
 		<div class="row mt-4">
-			<?php foreach ($artworks as $artwork): ?>
-
-
-				<!-- Creates new URL to display single artwork --->
-				<?php $artworkLink = "/display-single-artwork.php?id=" . $artwork->getArtworkId(); ?>
-				<!-- List of artworks -->
-				<div class="col-md-3 mb-4">
-					<div class="card h-100">
-						<!-- Artwork image -->
-						<?php
-						$imagePath = "/assets/images/works/square-medium/" . $artwork->getImageFileName() . ".jpg";
-						$placeholderPath = "/assets/placeholder/works/square-medium/placeholder.svg";
-						$correctImagePath = file_exists($_SERVER['DOCUMENT_ROOT'] . $imagePath) ? $imagePath : $placeholderPath;
-						?>
-						<a href="<?php echo $artworkLink ?>" target="_blank">
-							<img src="<?php echo $correctImagePath ?>" class="card-img-top" alt="<?php echo $artwork->getTitle() ?>">
-						</a>
-
-						<div class="card-body d-flex flex-column">
-							<h5 class="card-title text-center">
-								<a href="<?php echo $artworkLink ?>" target="_blank" class="text-body">
-									<?php echo $artwork->getTitle() ?>
-								</a>
-							</h5>
-							<a href="<?php echo $artworkLink ?>" target="_blank" class="btn btn-primary mt-auto">View</a>
-						</div>
-					</div>
-				</div>
-			<?php endforeach ?>
+            <?php 
+            require_once __DIR__ . '/components/artwork-card-list.php';
+            renderArtworkCardList($artworks);
+            ?>
 		</div>
 	</div>
 
