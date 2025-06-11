@@ -47,12 +47,12 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['action'])) {
             }
         } elseif ($_POST['action'] === 'remove_from_favorites') {
             if (($key = array_search($artworkId, $_SESSION['favoriteArtworks'])) !== false) {
-                unset($_SESSION['favorites'][$key]);
+                unset($_SESSION['favoriteArtworks'][$key]);
                 $_SESSION['favoriteArtworks'] = array_values($_SESSION['favoriteArtworks']); // Re-index array
-                $message = "Artwork removed from favorites!";
+                $message = "Artwork removed from favoriteArtworks!";
                 $messageType = "success";
             } else {
-                $message = "Artwork is not in your favorites.";
+                $message = "Artwork is not in your favoriteArtworks";
                 $messageType = "info";
             }
         }
@@ -174,7 +174,7 @@ if (file_exists($_SERVER['DOCUMENT_ROOT'] . $imagePath)) {
 
                 <!-- Add/Remove Favorites Form -->
                 <?php 
-                $isInFavorites = isset($_SESSION['favorites']) && in_array($artwork->getArtworkId(), $_SESSION['favorites']);
+                $isInFavorites = isset($_SESSION['favoriteArtworks']) && in_array($artwork->getArtworkId(), $_SESSION['favoriteArtworks']);
                 ?>
                 <form method="post" class="mb-3">
                     <?php if ($isInFavorites): ?>
