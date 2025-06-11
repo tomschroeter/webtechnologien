@@ -106,7 +106,7 @@ $artworkSearchResults = $artworkRepository->getArtworkBySearchQuery($searchQuery
                         </span>
                     </a>
                     <div class="d-flex align-items-center" style="gap: 0.5rem;">
-                        <!-- Display add to favourites button -->
+                        <!-- Display add to favorites button -->
                         <form method="post" action="/favorites-handler.php" class="mr-2 mb-0">
                         <?php
                             $isInFavorites = isset($_SESSION['favoriteArtists']) && in_array($artist->getArtistId(), $_SESSION['favoriteArtists']);
@@ -179,7 +179,7 @@ $artworkSearchResults = $artworkRepository->getArtworkBySearchQuery($searchQuery
                         </span>
                     </a>
                     <div class="d-flex align-items-center" style="gap: 0.5rem;">
-                        <!-- Display add to favourites button -->
+                        <!-- Display add to favorites button -->
                         <form method="post" action="/favorites-handler.php" class="mr-2 mb-0">
                             <?php
                                 $isInFavorites = isset($_SESSION['favoriteArtworks']) && in_array($combined->getArtwork()->getArtworkId(), $_SESSION['favoriteArtworks']);
