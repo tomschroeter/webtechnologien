@@ -14,7 +14,9 @@ require_once dirname(__DIR__) . "/src/repositories/ReviewRepository.php";
 require_once dirname(__DIR__) . "/src/dtos/ReviewStats.php";
 require_once dirname(__DIR__) . "/src/router/router.php";
 
-session_start();
+if (session_status() === PHP_SESSION_NONE) {
+    session_start();
+}
 
 $_SESSION['customerId'] = 1; // TEMP: simulate logged-in user
 $_SESSION['isAdmin'] = true; // TEMP: simulate admin privileges

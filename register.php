@@ -1,5 +1,7 @@
 <?php
-session_start();
+if (session_status() === PHP_SESSION_NONE) {
+    session_start();
+}
 
 require_once "bootstrap.php";
 require_once "classes/Customer.php";
@@ -8,7 +10,6 @@ require_once "Database.php";
 require_once "repositories/CustomerLogonRepository.php";
 
 $db = new Database();
-$db->connect();
 $repo = new CustomerLogonRepository($db);
 
 $error = $_GET['error'] ?? null;
@@ -36,17 +37,27 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     } elseif ($repo->userExists($username)) {
         $error = 'exists';
     } else {
-        $customerId = $repo->getNextCustomerId();
-        $customer = new Customer($firstName, $lastName, $address, $city, $country, $postal, $email, $region, $phone);
-        $repo->insertCustomer($customer, $customerId);
-
-        $hashed = password_hash($password, PASSWORD_DEFAULT);
-        $logon = new CustomerLogon($username, $hashed, 1, 0, date("Y-m-d H:i:s"), date("Y-m-d H:i:s"), $customerId);
-        $repo->insertLogon($logon);
-
-        $db->disconnect();
-        header("Location: register.php?success=1");
-        exit;
+        try {
+            $customer = new Customer($firstName, $lastName, $address, $city, $country, $postal, $email, $region, $phone);
+            
+            $hashed = password_hash($password, PASSWORD_DEFAULT);
+            $logon = new CustomerLogon($username, $hashed, 1, 0, date("Y-m-d H:i:s"), date("Y-m-d H:i:s"));
+            
+            // Use atomic registration method to prevent race conditions
+            $customerId = $repo->registerCustomer($customer, $logon);
+            
+            // Automatically log the user in after successful registration
+            $_SESSION['customerId'] = $customerId;
+            $_SESSION['username'] = $username;
+            $_SESSION['isAdmin'] = false; // New users are always regular users
+            
+            // Redirect to home page (logged in)
+            header("Location: index.php?welcome=1");
+            exit;
+        } catch (Exception $e) {
+            $error = 'database';
+            echo $e;
+        }
     }
 }
 ?>
@@ -66,6 +77,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         </div>
     <?php elseif ($error === 'exists'): ?>
         <div class="alert alert-warning">Username already exists. Please choose another one.</div>
+    <?php elseif ($error === 'database'): ?>
+        <div class="alert alert-danger">Registration failed due to a database error. Please try again.</div>
     <?php elseif ($success): ?>
         <div class="alert alert-success">Registration successful! You can now <a href="login.php">log in</a>.</div>
     <?php endif; ?>
