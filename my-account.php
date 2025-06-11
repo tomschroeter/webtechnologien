@@ -8,15 +8,17 @@ if (!isset($_SESSION['customerId'])) {
 
 require_once "bootstrap.php";
 require_once "Database.php";
+require_once "repositories/CustomerLogonRepository.php";
 
 $db = new Database();
 $db->connect();
+$repo = new CustomerLogonRepository($db);
 
 $customerId = $_SESSION['customerId'];
 $error = $_GET['error'] ?? null;
 $success = $_GET['success'] ?? null;
 
-// Handle POST (update data)
+// Handle update
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $first = trim($_POST['firstName'] ?? '');
     $last = trim($_POST['lastName'] ?? '');
@@ -28,53 +30,26 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         exit;
     }
 
-    // Update customer
-    $stmt1 = $db->prepareStatement("
-        UPDATE customers SET FirstName = :first, LastName = :last, Email = :email WHERE CustomerId = :id
-    ");
-    $stmt1->bindValue("first", $first);
-    $stmt1->bindValue("last", $last);
-    $stmt1->bindValue("email", $email);
-    $stmt1->bindValue("id", $customerId);
-    $stmt1->execute();
+    $repo->updateCustomerBasicInfo($customerId, $first, $last, $email);
 
-    // Optional password update
     if (!empty($password)) {
-        if (!preg_match('/^(?=.[A-Z])(?=.\d)(?=.*[\W_]).{6,}$/', $password)) {
+        if (!preg_match('/^(?=.*[A-Z])(?=.*\d)(?=.*[\W_]).{6,}$/', $password)) {
             header("Location: my-account.php?error=weakPassword");
             exit;
         }
-
-        $hashed = password_hash($password, PASSWORD_DEFAULT);
-
-        $stmt2 = $db->prepareStatement("
-            UPDATE customerlogon SET Pass = :pass, DateLastModified = NOW() WHERE CustomerId = :id
-        ");
-        $stmt2->bindValue("pass", $hashed);
-        $stmt2->bindValue("id", $customerId);
-        $stmt2->execute();
+        $repo->updateCustomerPassword($customerId, $password);
     }
 
     header("Location: my-account.php?success=1");
     exit;
 }
 
-// Load user data
-$stmt = $db->prepareStatement("
-    SELECT c.FirstName, c.LastName, c.Email, cl.UserName
-    FROM customers c
-    JOIN customerlogon cl ON c.CustomerId = cl.CustomerId
-    WHERE c.CustomerId = :id
-");
-$stmt->bindValue("id", $customerId, PDO::PARAM_INT);
-$stmt->execute();
-$user = $stmt->fetch();
-
+// Load user info
+$user = $repo->getUserDetailsById($customerId);
 if (!$user) {
     header("Location: /error.php?error=userNotFound");
     exit;
 }
-
 ?>
 
 <!DOCTYPE html>
