@@ -100,12 +100,6 @@ $artworkSearchResults = $artworkRepository->getArtworkBySearchQuery($searchQuery
 			    ?>
 							<img src="<?php echo $correctImagePath?>" alt="Künsterbild">
 						</a>
-						
-						<!-- Display add to favourites button -->
-						<form method="post" action="/add-favourite.php">
-							<input type="hidden" name="artworkId" value="<?php echo $artist->getArtistId()?>">
-							<button type="submit" class="btn btn-primary ml-3" style="height: 64px;">Add to<br>Favourites</button>
-						</form>
 				</li>
 			<?php endforeach?>
 			</ul>
@@ -162,12 +156,6 @@ $artworkSearchResults = $artworkRepository->getArtworkBySearchQuery($searchQuery
 			    ?>
 						<img src="<?php echo $correctImagePath?>" alt="Kunstwerk">
 					</a>
-
-					<!-- Display add to favourites button -->
-					<form method="post" action="/add-favourite.php">
-						<input type="hidden" name="artworkId" value="<?php echo $combined->getArtwork()->getArtworkId()?>">
-						<button type="submit" class="btn btn-primary ml-3" style="height: 75px;">Add to<br>Favourites</button>
-					</form>
 				</li>
 			<?php endforeach?>
 			</ul>
