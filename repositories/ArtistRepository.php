@@ -1,7 +1,7 @@
 <?php
 
-require_once dirname(__DIR__)."/Database.php";
-require_once dirname(__DIR__)."/classes/Artist.php";
+require_once dirname(__DIR__) . "/Database.php";
+require_once dirname(__DIR__) . "/classes/Artist.php";
 
 class ArtistRepository
 {
@@ -14,7 +14,7 @@ class ArtistRepository
 
     /**
      * @return Artist[]
-    */
+     */
     public function getAllArtists(bool $sortDesc): array
     {
         if (!$this->db->isConnected()) {
@@ -77,8 +77,8 @@ class ArtistRepository
 
 
     /**
-    * @throws Exception if artist couldn't be found
-    */
+     * @throws Exception if artist couldn't be found
+     */
     public function getArtistById(int $artistId): Artist
     {
         if (!$this->db->isConnected()) {
@@ -120,6 +120,88 @@ class ArtistRepository
 
         $stmt = $this->db->prepareStatement($sql);
         $stmt->bindValue('searchQuery', '%' . $searchQuery . '%');
+        $stmt->execute();
+
+        $artists = [];
+
+        foreach ($stmt as $row) {
+            $artists[] = Artist::createArtistFromRecord($row);
+        }
+
+        $this->db->disconnect();
+
+        return $artists;
+    }
+
+    /**
+     * Summary of getArtistNationalities
+     * @return array
+     */
+    public function getArtistNationalities()
+    {
+        if (!$this->db->isConnected()) {
+            $this->db->connect();
+        }
+
+        $sql = "
+        SELECT DISTINCT nationality FROM artists 
+        WHERE nationality IS NOT NULL 
+        ORDER BY nationality;
+        ";
+
+        $stmt = $this->db->prepareStatement($sql);
+        $stmt->execute();
+
+        $nationalities = [];
+
+        foreach ($stmt as $row) {
+            $nationalities[] = $row['nationality']; // Fixed: use [] instead of ::append() and access the column
+        }
+
+        $this->db->disconnect();
+
+        return $nationalities;
+    }
+
+    /**
+     * Summary of getArtistByAdvancedSearch
+     * @param mixed $name
+     * @param mixed $startYear
+     * @param mixed $endYear
+     * @param mixed $nationality
+     * @param bool $sortDesc
+     * @return Artist[]
+     */
+    public function getArtistByAdvancedSearch($name = null, $startYear = null, $endYear = null, $nationality = null, bool $sortDesc)
+    {
+        if (!$this->db->isConnected()) {
+            $this->db->connect();
+        }
+
+        $sortOrder = $sortDesc ? "DESC" : "ASC";
+
+        // Build the SQL query dynamically
+        $sql = "SELECT * FROM artists WHERE 1=1";
+
+        if (!empty($name)) {
+            $sql .= " AND LastName LIKE '%" . addslashes($name) . "%'";
+        }
+
+        if (!empty($nationality)) {
+            $sql .= " AND Nationality = '" . addslashes($nationality) . "'";
+        }
+
+        if (!empty($startYear)) {
+            $sql .= " AND (YearOfBirth >= " . intval($startYear) . " OR YearOfBirth IS NULL)";
+        }
+
+        if (!empty($endYear)) {
+            $sql .= " AND (YearOfBirth <= " . intval($endYear) . " OR YearOfBirth IS NULL)";
+        }
+
+        $sql .= " ORDER BY LastName {$sortOrder}";
+
+        $stmt = $this->db->prepareStatement($sql);
         $stmt->execute();
 
         $artists = [];

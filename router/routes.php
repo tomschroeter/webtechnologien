@@ -13,4 +13,5 @@ return [
     "favorites" => "favorites",
     "admin_users" => "admin/manage-users",
     "about" => "about",
+    "advanced" => "advanced-search",
 ];
