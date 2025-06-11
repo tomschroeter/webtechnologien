@@ -4,11 +4,6 @@ if (session_status() === PHP_SESSION_NONE) {
     session_start();
 }
 
-
-$_SESSION['customerId'] = 1; // TEST-Nutzer ID = 1
-$_SESSION['isAdmin'] = true; // Temporär
-
-
 ?>
 
 <html lang="en">
