@@ -13,36 +13,6 @@ session_start();
 $_SESSION['customerId'] = 1;
 $_SESSION['isAdmin'] = true;
 
-// Handle Add/Remove Artwork Favorites
-if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['action'])) {
-    try {
-        if (!isset($_SESSION['favoriteArtworks'])) {
-            $_SESSION['favoriteArtworks'] = [];
-        }
-        $artworkId = (int)$_POST['artworkId'];
-        if ($_POST['action'] === 'add_to_favorites') {
-            if (!in_array($artworkId, $_SESSION['favoriteArtworks'])) {
-                $_SESSION['favoriteArtworks'][] = $artworkId;
-                $message = "Artwork added to favorites!";
-                $messageType = "success";
-            } else {
-                $message = "Artwork is already in your favorites.";
-                $messageType = "info";
-            }
-        } elseif ($_POST['action'] === 'remove_from_favorites') {
-            if (($key = array_search($artworkId, $_SESSION['favoriteArtworks'])) !== false) {
-                unset($_SESSION['favoriteArtworks'][$key]);
-                $_SESSION['favoriteArtworks'] = array_values($_SESSION['favoriteArtworks']); // Re-index array
-                $message = "Artwork removed from your favorites!";
-                $messageType = "success";
-            }
-        }
-    } catch (Exception $e) {
-        $message = "Error updating favorites. Please try again.";
-        $messageType = "danger";
-    }
-}
-
 $db = new Database();
 $subjectRepository = new SubjectRepository($db);
 $artworkRepository = new ArtworkRepository($db);
