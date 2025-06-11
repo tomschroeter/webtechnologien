@@ -7,6 +7,7 @@ require_once dirname(__DIR__)."/repositories/ArtistRepository.php";
 require_once dirname(__DIR__)."/repositories/SubjectRepository.php";
 require_once dirname(__DIR__)."/repositories/GenreRepository.php";
 require_once dirname(__DIR__)."/dtos/ArtworkWithArtistName.php";
+require_once dirname(__DIR__)."/components/fix-file-path.php";
 
 class ArtworkRepository
 {
@@ -45,9 +46,7 @@ class ArtworkRepository
         }
 
         // Add 0 in front of image file name if name is 5 characters long
-        if (strlen($artwork['ImageFileName']) < 6) {
-            $artwork['ImageFileName'] = '0' . $artwork['ImageFileName'];
-        }
+        
 
         $this->db->disconnect();
 
@@ -83,9 +82,7 @@ class ArtworkRepository
         foreach ($stmt as $row) {
 
             // Add 0 in front of image file name if name is 5 characters long
-            if (strlen($row['ImageFileName']) < 6) {
-                $row['ImageFileName'] = '0' . $row['ImageFileName'];
-            }
+            $row = fixFilePath(($row));
 
             $artworks[] = Artwork::createArtworkFromRecord($row);
         }
@@ -126,9 +123,7 @@ class ArtworkRepository
         foreach ($stmt as $row) {
 
             // Add 0 in front of image file name if name is 5 characters long
-            if (strlen($row['ImageFileName']) < 6) {
-                $row['ImageFileName'] = '0' . $row['ImageFileName'];
-            }
+            $row = fixFilePath(($row));
 
             $artworks[] = Artwork::createArtworkFromRecord($row);
         }
@@ -168,9 +163,7 @@ class ArtworkRepository
 
         foreach ($stmt as $row) {
             // Add 0 in front of image file name if name is 5 characters long
-            if (strlen($row['ImageFileName']) < 6) {
-                $row['ImageFileName'] = '0' . $row['ImageFileName'];
-            }
+            $row = fixFilePath(($row));
 
             $artworks[] = Artwork::createArtworkFromRecord($row);
         }
@@ -217,9 +210,7 @@ class ArtworkRepository
 
         foreach ($stmt as $row) {
             // Add 0 in front of image file name if name is 5 characters long
-            if (strlen($row['ImageFileName']) < 6) {
-                $row['ImageFileName'] = '0' . $row['ImageFileName'];
-            }
+            $row = fixFilePath(($row));
 
             $artwork = Artwork::createArtworkFromRecord($row);
             $artistFirstName = $row['FirstName'];
@@ -270,9 +261,7 @@ class ArtworkRepository
 
         foreach ($stmt as $row) {
             // Add 0 in front of image file name if name is 5 characters long
-            if (strlen($row['ImageFileName']) < 6) {
-                $row['ImageFileName'] = '0' . $row['ImageFileName'];
-            }
+            $row = fixFilePath(($row));
 
             $artworks[] = Artwork::createArtworkFromRecord($row);
         }
