@@ -34,13 +34,12 @@ class ArtistWithStats
  */
 class ArtistWithStatsArray extends \ArrayObject
 {
-    public function offsetSet($key, $val)
+    public function offsetSet(mixed $key, mixed $val): void
     {
-        if ($val instanceof ArtistWithStats) {
-            return parent::offsetSet($key, $val);
+        if (!$val instanceof ArtistWithStats) {
+            throw new \InvalidArgumentException('Value must be an ArtistWithStats instance');
         }
 
-        // Backslash means using the Standard PHP Library ArrayObject class (same for \ArrayObject)
-        throw new \InvalidArgumentException('Value must be a ArtistWithStats instance');
+        parent::offsetSet($key, $val);
     }
 }

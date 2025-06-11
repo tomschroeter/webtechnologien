@@ -11,6 +11,6 @@ return [
     "login" => "login",
     "account" => "account",
     "favorites" => "favorites",
-    "admin_users" => "admin/manage-users",
+    "admin_users" => "manage-users",
     "about" => "about",
 ];
