@@ -1,5 +1,7 @@
 <?php
-session_start();
+if (session_status() === PHP_SESSION_NONE) {
+    session_start();
+}
 
 if (!($_SESSION['isAdmin'] ?? false)) {
   header("Location: error.php?error=unauthorized");
@@ -26,9 +28,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
   if ($customerID && in_array($action, ['promote', 'demote', 'deactivate', 'activate'])) {
     if ($action === 'promote') {
-      $repo->updateUserType($customerID, 1);
+      $repo->updateUserAdmin($customerID, true);
     } elseif ($action === 'demote') {
-      $repo->updateUserType($customerID, 0);
+      $repo->updateUserAdmin($customerID, false);
     } elseif ($action === 'activate') {
       $repo->updateUserState($customerID, 1);
     } elseif ($action === 'deactivate') {
@@ -72,12 +74,12 @@ $users = $repo->getAllUsersWithLogonData();
           <td><?= htmlspecialchars($user['FirstName'] . ' ' . $user['LastName']) ?></td>
           <td><?= htmlspecialchars($user['Email']) ?></td>
           <td><?= htmlspecialchars($user['UserName']) ?></td>
-          <td><?= $user['Type'] == 1 ? 'Admin' : 'User' ?></td>
+          <td><?= $user['isAdmin'] ? 'Admin' : 'User' ?></td>
           <td><?= $user['State'] == 1 ? 'Active' : 'Inactive' ?></td>
           <td>
             <a class="btn btn-sm btn-primary" href="edit-user.php?id=<?= $user['CustomerID'] ?>">Edit</a>
 
-            <?php if ($user['Type'] == 0): ?>
+            <?php if (!$user['isAdmin']): ?>
               <form method="POST" class="d-inline" onsubmit="return confirm('Are you sure you want to promote this user?')">
                 <input type="hidden" name="customerId" value="<?= $user['CustomerID'] ?>">
                 <button name="action" value="promote" class="btn btn-sm btn-success">Promote</button>

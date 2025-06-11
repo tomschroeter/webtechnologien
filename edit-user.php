@@ -1,5 +1,7 @@
 <?php
-session_start();
+if (session_status() === PHP_SESSION_NONE) {
+    session_start();
+}
 require_once "bootstrap.php";
 require_once "Database.php";
 require_once "repositories/CustomerLogonRepository.php";
@@ -29,7 +31,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $first = trim($_POST['firstName'] ?? '');
     $last = trim($_POST['lastName'] ?? '');
     $email = trim($_POST['email'] ?? '');
-    $type = $_POST['type'] ?? 0;
+    $isAdmin = isset($_POST['isAdmin']) && $_POST['isAdmin'] === '1';
 
     if (!$last || !filter_var($email, FILTER_VALIDATE_EMAIL)) {
         header("Location: edit-user.php?id=$id&error=invalidInput");
@@ -37,7 +39,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     }
 
     $repo->updateCustomerBasicInfo((int)$id, $first, $last, $email);
-    $repo->updateUserType((int)$id, (int)$type);
+    $repo->updateUserAdmin((int)$id, $isAdmin);
 
     header("Location: manage-users.php");
     exit;
@@ -65,9 +67,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     </div>
     <div class="form-group">
       <label>Role</label>
-      <select name="type" class="form-control">
-        <option value="0" <?= $user['Type'] == 0 ? 'selected' : '' ?>>User</option>
-        <option value="1" <?= $user['Type'] == 1 ? 'selected' : '' ?>>Admin</option>
+      <select name="isAdmin" class="form-control">
+        <option value="0" <?= !$user['isAdmin'] ? 'selected' : '' ?>>User</option>
+        <option value="1" <?= $user['isAdmin'] ? 'selected' : '' ?>>Admin</option>
       </select>
     </div>
     <button type="submit" class="btn btn-primary">Save</button>

@@ -1,5 +1,7 @@
 <?php
-session_start();
+if (session_status() === PHP_SESSION_NONE) {
+    session_start();
+}
 $_SESSION['isAdmin'] = true; // temporär
 ?>
 <!DOCTYPE html>
@@ -38,6 +40,17 @@ $_SESSION['isAdmin'] = true; // temporär
           </div>
         </form>
       </div>
+    </div>
+  <?php endif; ?>
+
+  <!-- Welcome message for newly registered users -->
+  <?php if (isset($_GET['welcome']) && isset($_SESSION['username'])): ?>
+    <div class="alert alert-success alert-dismissible fade show mt-3" role="alert">
+      <strong>Welcome, <?= htmlspecialchars($_SESSION['username']) ?>!</strong> 
+      Your registration was successful and you are now logged in. Enjoy exploring our art gallery!
+      <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+        <span aria-hidden="true">&times;</span>
+      </button>
     </div>
   <?php endif; ?>
 

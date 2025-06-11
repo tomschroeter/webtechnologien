@@ -1,12 +1,13 @@
 <?php
-session_start();
+if (session_status() === PHP_SESSION_NONE) {
+    session_start();
+}
 
 require_once "bootstrap.php";
 require_once "Database.php";
 require_once "repositories/CustomerLogonRepository.php";
 
 $db = new Database();
-$db->connect();
 $repo = new CustomerLogonRepository($db);
 
 // Meldungen verarbeiten
@@ -32,7 +33,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
     $_SESSION['customerId'] = $user['CustomerId'];
     $_SESSION['username'] = $user['UserName'];
-    $_SESSION['isAdmin'] = $user['Type'] == 1;
+    $_SESSION['isAdmin'] = $user['isAdmin'] ?? false;
 
     header("Location: index.php");
     exit;
