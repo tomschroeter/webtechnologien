@@ -23,7 +23,7 @@ $artworkRepository = new ArtworkRepository($db);
 if (isset($_GET['filterBy'])) {
 	$filterBy = $_GET['filterBy'];
 } else {
-	$filterBy = 'artist';
+	$filterBy = '';
 }
 // Checks if search query has been submitted
 if (isset($_GET['searchQuery'])) {
@@ -140,7 +140,7 @@ if (isset($_GET['filterBy'])) {
 	<?php endif; ?>
 
 	<?php if (sizeof($artistSearchResults) > 0 || sizeof($artworkSearchResults) > 0): ?>
-		<?php if (sizeof($artistSearchResults) > 0 && $filterBy === 'artist'): ?>
+		<?php if (sizeof($artistSearchResults) > 0 && ($filterBy === 'artist' || $filterBy === '')): ?>
 			<div class="d-flex align-items-center mt-3 mb-3">
 				<h3 class="flex-grow-1 mb-0">Artists</h3>
 				<!-- Form providing the ability to sort the order of displayed artists -->
@@ -203,7 +203,7 @@ if (isset($_GET['filterBy'])) {
 			</ul>
 		<?php endif; ?>
 
-		<?php if (sizeof($artworkSearchResults) > 0 && $filterBy === 'artwork'): ?>
+		<?php if (sizeof($artworkSearchResults) > 0 && ($filterBy === 'artwork' || $filterBy === '')): ?>
 			<div class="d-flex align-items-center mt-3 mb-3">
 				<h3 class="flex-grow-1 mb-0">Artworks</h3>
 				<!-- Form providing the ability to sort the order of displayed artworks by specific parameters -->
