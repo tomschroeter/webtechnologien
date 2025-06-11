@@ -20,11 +20,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
   $customerID = (int)($_POST['customerId'] ?? 0);
   $action = $_POST['action'] ?? '';
 
-  if ($customerID === (int)$_SESSION['customerId'] && $action === 'demote') {
-    header("Location: manage-users.php?error=selfdemote");
-    exit;
-  }
-
   // Check if trying to demote the last admin
   if ($action === 'demote') {
     $adminCount = $repo->countActiveAdmins();
@@ -51,6 +46,18 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
       $repo->updateUserAdmin($customerID, true);
     } elseif ($action === 'demote') {
       $repo->updateUserAdmin($customerID, false);
+      
+      // Check if admin is demoting themselves
+      if (isset($_SESSION['customerId']) && 
+          $customerID === (int)$_SESSION['customerId']) {
+        
+        // Update session to reflect they're no longer admin
+        $_SESSION['isAdmin'] = false;
+        
+        // Redirect to home page instead of manage-users
+        header("Location: /index.php");
+        exit;
+      }
     } elseif ($action === 'activate') {
       $repo->updateUserState($customerID, 1);
     } elseif ($action === 'deactivate') {
@@ -74,9 +81,7 @@ $adminCount = $repo->countActiveAdmins();
   <?php require_once dirname(__DIR__) . "/src/navbar.php"; ?>
   <h1>User Management</h1>
 
-  <?php if (isset($_GET['error']) && $_GET['error'] === 'selfdemote'): ?>
-    <div class="alert alert-warning">You cannot demote yourself as admin.</div>
-  <?php elseif (isset($_GET['error']) && $_GET['error'] === 'lastadmin'): ?>
+  <?php if (isset($_GET['error']) && $_GET['error'] === 'lastadmin'): ?>
     <div class="alert alert-danger">Cannot demote or deactivate the last administrator. There must be at least one active admin.</div>
   <?php endif; ?>
 
@@ -107,7 +112,7 @@ $adminCount = $repo->countActiveAdmins();
                 <input type="hidden" name="customerId" value="<?= $user['CustomerID'] ?>">
                 <button name="action" value="promote" class="btn btn-sm btn-success">Promote</button>
               </form>
-            <?php elseif ($_SESSION['customerId'] != $user['CustomerID'] && !($user['isAdmin'] && $adminCount <= 1)): ?>
+            <?php elseif ($user['isAdmin'] && !($user['isAdmin'] && $adminCount <= 1)): ?>
               <form method="POST" class="d-inline" onsubmit="return confirm('Are you sure you want to demote this user?')">
                 <input type="hidden" name="customerId" value="<?= $user['CustomerID'] ?>">
                 <button name="action" value="demote" class="btn btn-sm btn-warning">Demote</button>
