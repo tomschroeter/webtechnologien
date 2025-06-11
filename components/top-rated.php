@@ -1,3 +1,7 @@
+<?php
+require_once dirname(__DIR__) . "/components/find_image_ref.php";
+?>
+
 <div>
   <div class="card-columns">
     <?php
@@ -27,7 +31,7 @@
             $imgPath = "$worksDir/$fileName";
             $placeholderImg = "$worksDir/001010.jpg";
 
-            $imgToUse = file_exists($imgPath) ? $imgPath : $placeholderImg;
+            $imgToUse = getImagePathOrPlaceholder($imgPath, $placeholderImg);
 
             // Note: Wrong filenames: 12030; Balcony by Edouard Manet, 01290; The Dream by Pablo Picasso
             // And many more

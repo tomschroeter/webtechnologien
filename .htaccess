@@ -23,8 +23,14 @@ RewriteRule ^artworks2/(.+)$ display-single-artwork-copy.php?id=$1 [L]
 # URL artworks/ wird auf artworks umgeleitet
 RewriteRule ^artworks/?$ artworks.php [L]
 
+# URL subjects/*** ruft display-single-subject.php auf
+RewriteRule ^genres/(.+)$ display-single-genre.php?id=$1 [L]
+
 # URL genres/ wird auf genres umgeleitet
 RewriteRule ^genres/?$ genres.php [L]
+
+# URL favorites/ wird auf favorites umgeleitet
+RewriteRule ^favorites/?$ favorites.php [L]
 
 # Entfernt .php in der URL
 RewriteRule ^([^\.]+)$ $1.php [NC,L]
