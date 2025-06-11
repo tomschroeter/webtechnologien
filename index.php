@@ -11,34 +11,14 @@ if (session_status() === PHP_SESSION_NONE) {
 <body class="container">
   <?php require_once dirname(__DIR__) . "/src/navbar.php"; ?>
 
-  <!-- Login Modal (only visible to non-logged-in users) -->
-  <?php if (!isset($_SESSION['username'])): ?>
-
-    <!-- Modal -->
-    <div class="modal fade" id="loginModal" tabindex="-1" role="dialog" aria-labelledby="loginModalLabel"
-      aria-hidden="true">
-      <div class="modal-dialog" role="document">
-        <form method="POST" action="login.php" class="modal-content">
-          <div class="modal-header">
-            <h5 class="modal-title" id="loginModalLabel">Login</h5>
-            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-              <span aria-hidden="true">&times;</span>
-            </button>
-          </div>
-          <div class="modal-body">
-            <div class="form-group">
-              <input name="username" class="form-control" placeholder="Benutzername" required>
-            </div>
-            <div class="form-group">
-              <input name="password" type="password" class="form-control" placeholder="Passwort" required>
-            </div>
-          </div>
-          <div class="modal-footer">
-            <button type="submit" class="btn btn-primary">Login</button>
-            <button type="button" class="btn btn-secondary" data-dismiss="modal">Abbrechen</button>
-          </div>
-        </form>
-      </div>
+  <!-- Login success message -->
+  <?php if (isset($_GET['login']) && $_GET['login'] === 'success' && isset($_SESSION['username'])): ?>
+    <div class="alert alert-success alert-dismissible fade show mt-3" role="alert">
+      <strong>Welcome back, <?= htmlspecialchars($_SESSION['username']) ?>!</strong> 
+      You have successfully logged in.
+      <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+        <span aria-hidden="true">&times;</span>
+      </button>
     </div>
   <?php endif; ?>
 
