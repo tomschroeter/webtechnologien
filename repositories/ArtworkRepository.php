@@ -1,12 +1,12 @@
 <?php
 
-require_once dirname(__DIR__)."/Database.php";
-require_once dirname(__DIR__)."/classes/Artwork.php";
-require_once dirname(__DIR__)."/classes/Gallery.php";
-require_once dirname(__DIR__)."/repositories/ArtistRepository.php";
-require_once dirname(__DIR__)."/repositories/SubjectRepository.php";
-require_once dirname(__DIR__)."/repositories/GenreRepository.php";
-require_once dirname(__DIR__)."/dtos/ArtworkWithArtistName.php";
+require_once dirname(__DIR__) . "/Database.php";
+require_once dirname(__DIR__) . "/classes/Artwork.php";
+require_once dirname(__DIR__) . "/classes/Gallery.php";
+require_once dirname(__DIR__) . "/repositories/ArtistRepository.php";
+require_once dirname(__DIR__) . "/repositories/SubjectRepository.php";
+require_once dirname(__DIR__) . "/repositories/GenreRepository.php";
+require_once dirname(__DIR__) . "/dtos/ArtworkWithArtistName.php";
 
 class ArtworkRepository
 {
@@ -55,8 +55,8 @@ class ArtworkRepository
     }
 
     /**
-    * @return Artwork[]
-    */
+     * @return Artwork[]
+     */
     public function getArtworksByArtist(int $artistId): array
     {
         if (!$this->db->isConnected()) {
@@ -96,8 +96,8 @@ class ArtworkRepository
     }
 
     /**
-    * @return Artwork[]
-    */
+     * @return Artwork[]
+     */
     public function getArtworksBySubject(int $subjectId): array
     {
         if (!$this->db->isConnected()) {
@@ -139,8 +139,8 @@ class ArtworkRepository
     }
 
     /**
-    * @return Artwork[]
-    */
+     * @return Artwork[]
+     */
     public function getArtworksByGenre(int $genreId): array
     {
         if (!$this->db->isConnected()) {
@@ -281,4 +281,87 @@ class ArtworkRepository
 
         return $artworks;
     }
+
+    /**
+     * Summary of getArtworksByAdvancedSearch
+     * @param mixed $title
+     * @param mixed $startYear
+     * @param mixed $endYear
+     * @param mixed $genreName
+     * @param string $sortParameter
+     * @param bool $sortDesc
+     * @return ArtworkWithArtistName[]
+     */
+    public function getArtworksByAdvancedSearch($title = null, $startYear = null, $endYear = null, $genreName = null, string $sortParameter, bool $sortDesc)
+    {
+        if (!$this->db->isConnected()) {
+            $this->db->connect();
+        }
+
+        // Mapping of sort parameter to prevent SQL injections
+        $sortMap = [
+            'title' => 'a.Title',
+            'lastname' => 'ar.LastName',
+            'yearofwork' => 'a.YearOfWork'
+        ];
+        $sortField = $sortMap[strtolower($sortParameter)] ?? 'Title';
+
+        $sortOrder = $sortDesc ? "DESC" : "ASC";
+
+        // Build the SQL query dynamically
+        $sql = "SELECT DISTINCT a.*, ar.FirstName, ar.LastName
+            FROM artworks a
+            INNER JOIN artists ar ON a.ArtistID = ar.ArtistID";
+
+        // Join with artworkgenres + genres if genre filter is provided
+        if (!empty($genreName)) {
+            $sql .= " INNER JOIN artworkgenres ag ON a.ArtWorkID = ag.ArtWorkID";
+            $sql .= " INNER JOIN genres g ON ag.GenreID = g.GenreID";
+        }
+
+        $sql .= " WHERE 1=1";
+
+        if (!empty($title)) {
+            $safeTitle = addslashes($title); // or use prepared statement
+            $sql .= " AND a.Title LIKE '%$safeTitle%'";
+        }
+
+        if (!empty($genreName)) {
+            $safeGenre = addslashes($genreName); // or use prepared statement
+            $sql .= " AND g.GenreName = '$safeGenre'";
+        }
+
+        if (!empty($startYear)) {
+            $sql .= " AND (a.YearOfWork >= " . intval($startYear) . " OR a.YearOfWork IS NULL)";
+        }
+
+        if (!empty($endYear)) {
+            $sql .= " AND (a.YearOfWork <= " . intval($endYear) . " OR a.YearOfWork IS NULL)";
+        }
+
+        $sql .= " ORDER BY {$sortField} {$sortOrder}"; //{$sortField} {$sortOrder}
+
+        $stmt = $this->db->prepareStatement($sql);
+        $stmt->execute();
+
+        $artworks = [];
+
+        foreach ($stmt as $row) {
+            // Add 0 in front of image file name if name is 5 characters long
+            if (strlen($row['ImageFileName']) < 6) {
+                $row['ImageFileName'] = '0' . $row['ImageFileName'];
+            }
+
+            $artwork = Artwork::createArtworkFromRecord($row);
+            $artistFirstName = $row['FirstName'];
+            $artistLastName = $row['LastName'];
+
+            $artworks[] = new ArtworkWithArtistName($artwork, $artistFirstName, $artistLastName);
+        }
+
+        $this->db->disconnect();
+
+        return $artworks;
+    }
+
 }
