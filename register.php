@@ -29,11 +29,14 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $email = trim($_POST['email'] ?? '');
     $username = trim($_POST['username'] ?? '');
     $password = $_POST['password'] ?? '';
+    $password2 = $_POST['password2'] ?? '';
 
     $validPassword = preg_match('/^(?=.*[A-Z])(?=.*\d)(?=.*[\W_]).{6,}$/', $password);
 
     if (!$lastName || !$city || !$address || !$country || !filter_var($email, FILTER_VALIDATE_EMAIL) || !$validPassword) {
         $error = 'validation';
+    } elseif ($password !== $password2) {
+        $error = 'password_mismatch';
     } elseif ($repo->userExists($username)) {
         $error = 'exists';
     } else {
@@ -77,6 +80,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         </div>
     <?php elseif ($error === 'exists'): ?>
         <div class="alert alert-warning">Username already exists. Please choose another one.</div>
+    <?php elseif ($error === 'password_mismatch'): ?>
+        <div class="alert alert-danger">Passwords do not match. Please try again.</div>
     <?php elseif ($error === 'database'): ?>
         <div class="alert alert-danger">Registration failed due to a database error. Please try again.</div>
     <?php elseif ($success): ?>
@@ -96,7 +101,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
         <hr>
         <div class="form-group"><input name="username" class="form-control" placeholder="Username*" required value="<?= htmlspecialchars($username ?? '') ?>"></div>
-        <div class="form-group"><input name="password" type="password" class="form-control" placeholder="Password (min. 6 chars)*" required></div>
+        <div class="form-group"><input name="password" type="password" class="form-control" placeholder="Password*" required></div>
+        <div class="form-group"><input name="password2" type="password" class="form-control" placeholder="Repeat Password*" required></div>
+        <small class="form-text text-muted mb-3">Your password must be at least 6 characters, contain an uppercase letter, a digit, and a special character.</small>
 
         <button type="submit" class="btn btn-primary">Register</button>
     </form>
