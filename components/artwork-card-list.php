@@ -34,7 +34,7 @@ function renderArtworkCardList($artworks) {
                             <?php else: ?>
                                 <input type="hidden" name="action" value="add_to_favorites">
                                 <input type="hidden" name="artworkId" value="<?php echo $artwork->getArtworkId() ?>">
-                                <button type="submit" class="btn btn-outline-primary">
+                                <button type="submit" class="btn btn-primary">
                                     ♡
                                 </button>
                             <?php endif; ?>
