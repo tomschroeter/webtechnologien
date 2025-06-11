@@ -39,19 +39,16 @@ $artists = $artistRepository->getAllArtists($sort);
            class="d-flex justify-content-between align-items-center w-100 text-decoration-none text-dark">
           <span><?php echo $artist->getFirstName()?> <?php echo $artist->getLastName()?></span>
           <!-- Checks if artists' image exists -->
-          <?php $imagePath =  "/assets/images/artists/square-thumb/".$artist->getArtistId().".jpg";
-        $placeholderPath = "/assets/placeholder/artists/square-thumb/placeholder.svg";
-        if (file_exists($_SERVER['DOCUMENT_ROOT'] . $imagePath)) {
-            $correctImagePath = $imagePath;
-        } else {
-            $correctImagePath = $placeholderPath;
-        }
-        ?>
+          <?php require_once dirname(__DIR__) . "/src/components/find_image_ref.php";
+$imagePath =  "/assets/images/artists/square-thumb/".$artist->getArtistId().".jpg";
+$placeholderPath = "/assets/placeholder/artists/square-thumb/placeholder.svg";
+$correctImagePath = getImagePathOrPlaceholder($imagePath, $placeholderPath);
+?>
           <img src="<?php echo $correctImagePath?>" alt="Künsterbild" style="max-width: 100px; max-height: 100px; object-fit: cover;">
         </a>
       </li>
     <?php endforeach; ?>
   </ul>
-  <?php require_once 'bootstrap.php'; ?>
+  <?php require_once dirname(__DIR__) . "/src/bootstrap.php"; ?>
 </body>
 </html>

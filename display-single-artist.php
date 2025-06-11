@@ -53,9 +53,10 @@ try {
 			<div>
 				<!-- Artist image -->
 				<?php
+				require_once dirname(__DIR__) . "/src/components/find_image_ref.php";
 				$imagePath = "/assets/images/artists/medium/" . $artist->getArtistId() . ".jpg";
 				$placeholderPath = "/assets/placeholder/artists/medium/placeholder.svg";
-				$correctImagePath = file_exists($_SERVER['DOCUMENT_ROOT'] . $imagePath) ? $imagePath : $placeholderPath;
+				$correctImagePath = getImagePathOrPlaceholder($imagePath, $placeholderPath);
 				?>
 				<img src="<?php echo $correctImagePath ?>" alt="Image of <?php echo htmlspecialchars($artist->getFirstName() . ' ' . $artist->getLastName()) ?>">
 			</div>
@@ -106,7 +107,7 @@ try {
 		<h2 class="mt-5">Artworks by <?php echo htmlspecialchars($artist->getFirstName() . ' ' . $artist->getLastName()) ?></h2>
 		<div class="row mt-4">
             <?php 
-            require_once __DIR__ . '/components/artwork-card-list.php';
+            require_once dirname(__DIR__) . "/src/components/artwork-card-list.php";
             renderArtworkCardList($artworks);
             ?>
 		</div>

@@ -8,6 +8,7 @@ require_once dirname(__DIR__) . "/src/Database.php";
 require_once dirname(__DIR__) . "/src/repositories/ArtworkRepository.php";
 require_once dirname(__DIR__) . "/src/repositories/ArtistRepository.php";
 require_once dirname(__DIR__) . "/src/router/router.php";
+require_once dirname(__DIR__) . "/src/components/find_image_ref.php";
 
 if (session_status() === PHP_SESSION_NONE) {
     session_start();
@@ -124,9 +125,10 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['action']) && $_POST['
                         <div class="col-md-6 col-lg-4 mb-4">
                             <div class="card">
                                 <?php 
+                                // For artist images
                                 $imagePath = "/assets/images/artists/medium/" . $artist->getArtistId() . ".jpg";
                                 $placeholderPath = "/assets/placeholder/artists/medium/placeholder.svg";
-                                $correctImagePath = file_exists($_SERVER['DOCUMENT_ROOT'] . $imagePath) ? $imagePath : $placeholderPath;
+                                $correctImagePath = getImagePathOrPlaceholder($imagePath, $placeholderPath);
                                 ?>
                                 <img src="<?php echo $correctImagePath ?>" 
                                      class="card-img-top" 
@@ -177,12 +179,11 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['action']) && $_POST['
                         <div class="col-md-6 col-lg-4 mb-4">
                             <div class="card">
                                 <?php 
-                                // Fix image filename padding
+                                // For artwork images
                                 $imageFileName = $artwork->getImageFileName();
-                                
                                 $imagePath = "/assets/images/works/medium/" . $imageFileName . ".jpg";
                                 $placeholderPath = "/assets/placeholder/works/medium/placeholder.svg";
-                                $correctImagePath = file_exists($_SERVER['DOCUMENT_ROOT'] . $imagePath) ? $imagePath : $placeholderPath;
+                                $correctImagePath = getImagePathOrPlaceholder($imagePath, $placeholderPath);
                                 ?>
                                 <img src="<?php echo $correctImagePath ?>" 
                                      class="card-img-top" 
@@ -220,6 +221,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['action']) && $_POST['
         </div>
     </div>
 
-    <?php require_once 'bootstrap.php'; ?>
+    <?php require_once dirname(__DIR__) . "/src/bootstrap.php"; ?>
 </body>
 </html>

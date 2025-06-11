@@ -10,8 +10,11 @@ require_once dirname(__DIR__) . "/src/Database.php";
 require_once dirname(__DIR__) . "/src/repositories/ArtistRepository.php";
 require_once dirname(__DIR__) . "/src/repositories/ArtworkRepository.php";
 require_once dirname(__DIR__) . "/src/dtos/ArtworkWithArtistName.php";
+require_once dirname(__DIR__) . "/src/components/find_image_ref.php";
 
-session_start();
+if (session_status() === PHP_SESSION_NONE) {
+    session_start();
+}
 
 $_SESSION['customerId'] = 1; // TEMP: simulate logged-in user
 $_SESSION['isAdmin'] = true; // TEMP: simulate admin privileges
@@ -128,11 +131,7 @@ $artworkSearchResults = $artworkRepository->getArtworkBySearchQuery($searchQuery
                         <!-- Checks if artists' image exists -->
                         <?php $imagePath = "/assets/images/artists/square-thumb/".$artist->getArtistId().".jpg";
                             $placeholderPath = "/assets/placeholder/artists/square-thumb/placeholder.svg";
-                            if (file_exists($_SERVER['DOCUMENT_ROOT'] . $imagePath)) {
-                                $correctImagePath = $imagePath;
-                            } else {
-                                $correctImagePath = $placeholderPath;
-                            }
+                            $correctImagePath = getImagePathOrPlaceholder($imagePath, $placeholderPath);
                         ?>
                         <img src="<?php echo $correctImagePath?>" alt="Künsterbild" style="width: 60px; height: 60px; object-fit: cover; border-radius: 0.25rem;">
                     </div>
@@ -205,11 +204,7 @@ $artworkSearchResults = $artworkRepository->getArtworkBySearchQuery($searchQuery
                         <!-- Checks if artworks' image exists -->
                         <?php $imagePath = "/assets/images/works/square-small/".$combined->getArtwork()->getImageFileName().".jpg";
                             $placeholderPath = "/assets/placeholder/works/square-small/placeholder.svg";
-                            if (file_exists($_SERVER['DOCUMENT_ROOT'] . $imagePath)) {
-                                $correctImagePath = $imagePath;
-                            } else {
-                                $correctImagePath = $placeholderPath;
-                            }
+                            $correctImagePath = getImagePathOrPlaceholder($imagePath, $placeholderPath);
                         ?>
                         <img src="<?php echo $correctImagePath?>" alt="Kunstwerk" style="width: 60px; height: 60px; object-fit: cover; border-radius: 0.25rem;">
                     </div>
@@ -222,6 +217,6 @@ $artworkSearchResults = $artworkRepository->getArtworkBySearchQuery($searchQuery
 		<?php else: ?>
 			<?php echo 'Es wurden keinen Ergebnisse für den Suchbegriff' . ' "'  . $searchQuery . '" '  . 'gefunden.'; ?>
 	<?php endif; ?>
-	<?php require_once 'bootstrap.php'; ?>
+	<?php require_once dirname(__DIR__) . "/src/bootstrap.php"; ?>
 </body>
 </html>

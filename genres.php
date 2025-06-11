@@ -23,19 +23,16 @@ $genres = $genreRepository->getAllGenres();
            class="d-flex justify-content-between align-items-center w-100 text-decoration-none text-dark">
           <span><?php echo $genre->getGenreName() ?></span>
           <!-- Checks if genre image exists -->
-          <?php $imagePath =  "/assets/images/genres/square-thumbs/".$genre->getGenreId().".jpg";
-        $placeholderPath = "/assets/placeholder/genres/square-thumbs/placeholder.svg";
-        if (file_exists($_SERVER['DOCUMENT_ROOT'] . $imagePath)) {
-            $correctImagePath = $imagePath;
-        } else {
-            $correctImagePath = $placeholderPath;
-        }
-        ?>
+          <?php require_once dirname(__DIR__) . "/src/components/find_image_ref.php";
+$imagePath =  "/assets/images/genres/square-thumbs/".$genre->getGenreId().".jpg";
+$placeholderPath = "/assets/placeholder/genres/square-thumbs/placeholder.svg";
+$correctImagePath = getImagePathOrPlaceholder($imagePath, $placeholderPath);
+?>
           <img src="<?php echo $correctImagePath?>" alt="Themenbild" style="max-width: 100px; max-height: 100px; object-fit: cover;">
         </a>
       </li>
     <?php endforeach; ?>
   </ul>
-  <?php require_once 'bootstrap.php'; ?>
+  <?php require_once dirname(__DIR__) . "/src/bootstrap.php"; ?>
 </body>
 </html>
