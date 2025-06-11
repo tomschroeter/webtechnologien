@@ -18,69 +18,6 @@ $db = new Database();
 $artistRepository = new ArtistRepository($db);
 $artworkRepository = new ArtworkRepository($db);
 
-// Handle Add/Remove Favorites for both artists and artworks
-if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['action'])) {
-    try {
-        // Handle artist favorites
-        if (isset($_POST['artistId'])) {
-            if (!isset($_SESSION['favoriteArtists'])) {
-                $_SESSION['favoriteArtists'] = [];
-            }
-            $artistId = (int)$_POST['artistId'];
-            if ($_POST['action'] === 'add_to_favorites') {
-                if (!in_array($artistId, $_SESSION['favoriteArtists'])) {
-                    $_SESSION['favoriteArtists'][] = $artistId;
-                    $message = "Artist added to favorites!";
-                    $messageType = "success";
-                } else {
-                    $message = "Artist is already in your favorites.";
-                    $messageType = "info";
-                }
-            } elseif ($_POST['action'] === 'remove_from_favorites') {
-                if (($key = array_search($artistId, $_SESSION['favoriteArtists'])) !== false) {
-                    unset($_SESSION['favoriteArtists'][$key]);
-                    $_SESSION['favoriteArtists'] = array_values($_SESSION['favoriteArtists']);
-                    $message = "Artist removed from favorites!";
-                    $messageType = "success";
-                } else {
-                    $message = "Artist is not in your favorites.";
-                    $messageType = "info";
-                }
-            }
-        }
-        // Handle artwork favorites
-        if (isset($_POST['artworkId'])) {
-            if (!isset($_SESSION['favoriteArtworks'])) {
-                $_SESSION['favoriteArtworks'] = [];
-            }
-            $artworkId = (int)$_POST['artworkId'];
-            if ($_POST['action'] === 'add_to_favorites') {
-                if (!in_array($artworkId, $_SESSION['favoriteArtworks'])) {
-                    $_SESSION['favoriteArtworks'][] = $artworkId;
-                    $message = "Artwork added to favorites!";
-                    $messageType = "success";
-                } else {
-                    $message = "Artwork is already in your favorites.";
-                    $messageType = "info";
-                }
-            } elseif ($_POST['action'] === 'remove_from_favorites') {
-                if (($key = array_search($artworkId, $_SESSION['favoriteArtworks'])) !== false) {
-                    unset($_SESSION['favoriteArtworks'][$key]);
-                    $_SESSION['favoriteArtworks'] = array_values($_SESSION['favoriteArtworks']);
-                    $message = "Artwork removed from favorites!";
-                    $messageType = "success";
-                } else {
-                    $message = "Artwork is not in your favorites.";
-                    $messageType = "info";
-                }
-            }
-        }
-    } catch (Exception $e) {
-        $message = "Error updating favorites. Please try again.";
-        $messageType = "danger";
-    }
-}
-
 // Check if artist ID is provided and valid
 if (!isset($_GET['id']) || !is_numeric($_GET['id'])) {
 	header("Location: /error.php?error=invalidParam");
@@ -130,15 +67,15 @@ try {
                 <?php 
                 $isInFavorites = isset($_SESSION['favoriteArtists']) && in_array($artist->getArtistId(), $_SESSION['favoriteArtists']);
                 ?>
-                <form method="post" class="mb-3">
+                <form method="post" action="/favorites-handler.php" class="mb-3">
                     <?php if ($isInFavorites): ?>
-                        <input type="hidden" name="action" value="remove_from_favorites">
+                        <input type="hidden" name="action" value="remove_artist_from_favorites">
                         <input type="hidden" name="artistId" value="<?php echo $artist->getArtistId() ?>">
                         <button type="submit" class="btn btn-outline-danger">
                             ♥ Remove from Favorites
                         </button>
                     <?php else: ?>
-                        <input type="hidden" name="action" value="add_to_favorites">
+                        <input type="hidden" name="action" value="add_artist_to_favorites">
                         <input type="hidden" name="artistId" value="<?php echo $artist->getArtistId() ?>">
                         <button type="submit" class="btn btn-primary">
                             ♡ Add to Favorites
