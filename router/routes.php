@@ -9,8 +9,8 @@ return [
     "subjects" => "subjects/:id",
     "register" => "register",
     "login" => "login",
-    "account" => "account",
+    "account" => "my-account",
     "favorites" => "favorites",
-    "admin_users" => "admin/manage-users",
+    "admin_users" => "manage-users",
     "about" => "about",
 ];
