@@ -1,8 +1,8 @@
 <?php
-function fixFilePath(array $array) { 
-    if (strlen($array['ImageFileName']) < 6) {
-            $array['ImageFileName'] = '0' . $array['ImageFileName'];
+function fixFilePath(array $artwork) { 
+    if (strlen($artwork['ImageFileName']) < 6) {
+            $artwork['ImageFileName'] = '0' . $artwork['ImageFileName'];
         }
-    return $array;
+    return $artwork;
 }
 ?>
