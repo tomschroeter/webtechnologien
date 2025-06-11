@@ -1,10 +1,10 @@
 <?php
+require_once "Database.php";
+require_once "repositories/CustomerLogonRepository.php";
+
 if (session_status() === PHP_SESSION_NONE) {
     session_start();
 }
-require_once "bootstrap.php";
-require_once "Database.php";
-require_once "repositories/CustomerLogonRepository.php";
 
 if (!($_SESSION['isAdmin'] ?? false)) {
     header("Location: /error.php?error=unauthorized");
@@ -63,8 +63,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 <!DOCTYPE html>
 <html lang="en">
 <?php require_once "head.php"; ?>
-<body class="container mt-5">
-  <h1>Edit User</h1>
+<body class="container">
+  <?php require_once dirname(__DIR__) . "/src/navbar.php"; ?>
+  <h1 class="mt-3">Edit User</h1>
 
   <form method="POST" class="mt-4">
     <div class="form-group">
@@ -89,5 +90,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     <button type="submit" class="btn btn-primary">Save</button>
     <a href="manage-users.php" class="btn btn-secondary ml-2">Cancel</a>
   </form>
+  <?php require_once dirname(__DIR__) . "/src/bootstrap.php"; ?>
 </body>
 </html>

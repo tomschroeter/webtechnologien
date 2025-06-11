@@ -1,4 +1,7 @@
 <?php
+require_once dirname(__DIR__) . "/src/Database.php";
+require_once dirname(__DIR__) . "/src/repositories/CustomerLogonRepository.php";
+
 if (session_status() === PHP_SESSION_NONE) {
     session_start();
 }
@@ -7,10 +10,6 @@ if (!($_SESSION['isAdmin'] ?? false)) {
   header("Location: error.php?error=unauthorized");
   exit;
 }
-
-require_once dirname(__DIR__) . "/src/bootstrap.php";
-require_once dirname(__DIR__) . "/src/Database.php";
-require_once dirname(__DIR__) . "/src/repositories/CustomerLogonRepository.php";
 
 $db = new Database();
 $repo = new CustomerLogonRepository($db);
@@ -77,9 +76,9 @@ $adminCount = $repo->countActiveAdmins();
 <html lang="en">
 <?php require_once dirname(__DIR__) . "/src/head.php"; ?>
 
-<body class="container mt-5">
+<body class="container">
   <?php require_once dirname(__DIR__) . "/src/navbar.php"; ?>
-  <h1>User Management</h1>
+  <h1 class="mt-3">User Management</h1>
 
   <?php if (isset($_GET['error']) && $_GET['error'] === 'lastadmin'): ?>
     <div class="alert alert-danger">Cannot demote or deactivate the last administrator. There must be at least one active admin.</div>

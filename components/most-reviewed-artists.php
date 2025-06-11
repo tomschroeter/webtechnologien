@@ -1,8 +1,10 @@
+<?php
+require_once dirname(__DIR__)."/classes/Artist.php";
+require_once dirname(__DIR__)."/repositories/ArtistRepository.php";
+?>
+
 <div class="card-deck">
 	<?php
-
-    require_once dirname(__DIR__)."/classes/Artist.php";
-	require_once dirname(__DIR__)."/repositories/ArtistRepository.php";
 
 	$artistRepository = new ArtistRepository(new Database());
 	$mostReviewedArtists = $artistRepository->findMostReviewed(3);

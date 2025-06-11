@@ -2,10 +2,11 @@
 <html lang="en">
 
 <?php
-    require_once dirname(__DIR__)."/src/head.php";
+require_once dirname(__DIR__)."/src/head.php";
 require_once dirname(__DIR__)."/src/repositories/ArtworkRepository.php";
 require_once dirname(__DIR__)."/src/repositories/ArtistRepository.php";
 require_once dirname(__DIR__)."/src/navbar.php";
+require_once dirname(__DIR__)."/src/components/find_image_ref.php";
 
 $db = new Database();
 
@@ -84,12 +85,7 @@ $artworks = $artworkRepository->getAllArtworks($sortBy, $sortOrder);
           <!-- Check if artwork image exists -->
           <?php $imagePath = "/assets/images/works/square-small/".$artwork->getImageFileName().".jpg";
         $placeholderPath = "/assets/placeholder/works/square-small/placeholder.svg";
-
-        if (file_exists($_SERVER['DOCUMENT_ROOT'] . $imagePath)) {
-            $correctImagePath = $imagePath;
-        } else {
-            $correctImagePath = $placeholderPath;
-        }
+        $correctImagePath = getImagePathOrPlaceholder($imagePath, $placeholderPath);
         ?>
           <img src="<?php echo $correctImagePath?>" alt="<?php echo $artwork->getTitle()?>" 
                style="max-width: 100px; max-height: 100px; object-fit: cover;">
@@ -97,6 +93,6 @@ $artworks = $artworkRepository->getAllArtworks($sortBy, $sortOrder);
       </li>
     <?php endforeach; ?>
   </ul>
-  <?php require_once 'bootstrap.php'; ?>
+  <?php require_once dirname(__DIR__)."/src/bootstrap.php"; ?>
 </body>
 </html>

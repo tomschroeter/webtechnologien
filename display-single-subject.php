@@ -7,11 +7,9 @@ require_once dirname(__DIR__)."/src/repositories/SubjectRepository.php";
 require_once dirname(__DIR__)."/src/repositories/ArtworkRepository.php";
 require_once dirname(__DIR__)."/src/navbar.php";
 
-session_start();
-
-// TEMP: simulate logged-in user (remove in production)
-$_SESSION['customerId'] = 1;
-$_SESSION['isAdmin'] = true;
+if (session_status() === PHP_SESSION_NONE) {
+    session_start();
+}
 
 $db = new Database();
 $subjectRepository = new SubjectRepository($db);
@@ -49,24 +47,22 @@ try {
 	<div class="container mt-3">
 		<div class="row">
             <!-- Displays subject image -->
-            <?php $imagePath =  "/assets/images/subjects/square-medium/".$subject->getSubjectId().".jpg";
+            <?php 
+require_once dirname(__DIR__) . "/src/components/find_image_ref.php";
+$imagePath =  "/assets/images/subjects/square-medium/".$subject->getSubjectId().".jpg";
 $placeholderPath = "/assets/placeholder/subjects/square-medium/placeholder.svg";
-if (file_exists($_SERVER['DOCUMENT_ROOT'] . $imagePath)) {
-    $correctImagePath = $imagePath;
-} else {
-    $correctImagePath = $placeholderPath;
-}
+$correctImagePath = getImagePathOrPlaceholder($imagePath, $placeholderPath);
 ?>
             <img src="<?php echo $correctImagePath?>" alt="Bild von <?php echo $subject->getSubjectName()?>">
 		</div>
         <h2 class="mt-5">Artworks for <?php echo $subject->getSubjectName()?> </h2>
         <div class="row mt-4">
             <?php 
-                require_once __DIR__ . '/components/artwork-card-list.php';
+                require_once dirname(__DIR__) . "/src/components/artwork-card-list.php";
                 renderArtworkCardList($artworks);
             ?>
         </div>
 	</div>
-	<?php require_once 'bootstrap.php'; ?>
+	<?php require_once dirname(__DIR__) . "/src/bootstrap.php"; ?>
 </body>
 </html>

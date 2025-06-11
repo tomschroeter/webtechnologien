@@ -1,8 +1,9 @@
 <?php
+require_once dirname(__DIR__) . "/src/router/router.php";
+
 if (session_status() === PHP_SESSION_NONE) {
   session_start();
 }
-require_once dirname(__DIR__) . "/src/router/router.php";
 ?>
 <nav class="navbar sticky-top navbar-expand-sm navbar-light bg-light">
   <a class="navbar-brand" href="<?php echo route("home") ?>">
