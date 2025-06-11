@@ -27,7 +27,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['action'])) {
         
         $artistId = (int)$_POST['artistId'];
         
-        if ($_POST['action'] === 'add_artist_to_favorites') {
+        if ($_POST['action'] === 'add_to_favorites') {
             if (!in_array($artistId, $_SESSION['favoriteArtists'])) {
                 $_SESSION['favoriteArtists'][] = $artistId;
                 $message = "Artist added to favorites!";
@@ -36,7 +36,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['action'])) {
                 $message = "Artist is already in your favorites.";
                 $messageType = "info";
             }
-        } elseif ($_POST['action'] === 'remove_artist_from_favorites') {
+        } elseif ($_POST['action'] === 'remove_from_favorites') {
             if (($key = array_search($artistId, $_SESSION['favoriteArtists'])) !== false) {
                 unset($_SESSION['favoriteArtists'][$key]);
                 $_SESSION['favoriteArtists'] = array_values($_SESSION['favoriteArtists']); // Re-index array
@@ -104,13 +104,13 @@ try {
                 ?>
                 <form method="post" class="mb-3">
                     <?php if ($isInFavorites): ?>
-                        <input type="hidden" name="action" value="remove_artist_from_favorites">
+                        <input type="hidden" name="action" value="remove_from_favorites">
                         <input type="hidden" name="artistId" value="<?php echo $artist->getArtistId() ?>">
                         <button type="submit" class="btn btn-outline-danger">
                             ♥ Remove from Favorites
                         </button>
                     <?php else: ?>
-                        <input type="hidden" name="action" value="add_artist_to_favorites">
+                        <input type="hidden" name="action" value="add_to_favorites">
                         <input type="hidden" name="artistId" value="<?php echo $artist->getArtistId() ?>">
                         <button type="submit" class="btn btn-primary">
                             ♡ Add to Favorites

@@ -20,7 +20,7 @@ $message = '';
 $messageType = '';
 
 // Get favorites from session
-$artworkFavorites = $_SESSION['favorites'] ?? [];
+$artworkFavorites = $_SESSION['favoriteArtworks'] ?? [];
 $artistFavorites = $_SESSION['favoriteArtists'] ?? [];
 $artworks = [];
 $artists = [];
@@ -34,9 +34,9 @@ if (!empty($artworkFavorites)) {
             $artworks[] = ['artwork' => $artwork, 'artist' => $artist];
         } catch (Exception $e) {
             // Remove invalid artwork from favorites
-            if (($key = array_search($artworkId, $_SESSION['favorites'])) !== false) {
-                unset($_SESSION['favorites'][$key]);
-                $_SESSION['favorites'] = array_values($_SESSION['favorites']);
+            if (($key = array_search($artworkId, $_SESSION['favoriteArtworks'])) !== false) {
+                unset($_SESSION['favoriteArtworks'][$key]);
+                $_SESSION['favoriteArtworks'] = array_values($_SESSION['favoriteArtworks']);
             }
             $message = "Some artworks were removed from your favorites because they are no longer available.";
             $messageType = "warning";
@@ -66,8 +66,8 @@ if (!empty($artistFavorites)) {
 if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['action']) && $_POST['action'] === 'remove_from_favorites') {
     $artworkId = (int)$_POST['artworkId'];
     if (($key = array_search($artworkId, $artworkFavorites)) !== false) {
-        unset($_SESSION['favorites'][$key]);
-        $_SESSION['favorites'] = array_values($_SESSION['favorites']); // Re-index array
+        unset($_SESSION['favoriteArtworks'][$key]);
+        $_SESSION['favoriteArtworks'] = array_values($_SESSION['favoriteArtworks']); // Re-index array
         $message = "Artwork removed from favorites successfully.";
         $messageType = "success";
         

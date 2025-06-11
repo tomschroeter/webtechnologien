@@ -11,9 +11,58 @@ require_once dirname(__DIR__) . "/src/repositories/ArtistRepository.php";
 require_once dirname(__DIR__) . "/src/repositories/ArtworkRepository.php";
 require_once dirname(__DIR__) . "/src/dtos/ArtworkWithArtistName.php";
 
+session_start();
+
+$_SESSION['customerId'] = 1; // TEMP: simulate logged-in user
+$_SESSION['isAdmin'] = true; // TEMP: simulate admin privileges
+
 $db = new Database();
 $artistRepository = new ArtistRepository($db);
 $artworkRepository = new ArtworkRepository($db);
+
+// Handle Add Artist Favorites
+if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['action'])) {
+    try {
+        if (!isset($_SESSION['favoriteArtists'])) {
+            $_SESSION['favoriteArtists'] = [];
+        }
+		if (!isset($_SESSION['favoriteArtworks'])) {
+            $_SESSION['favoriteArtworks'] = [];
+        }
+        
+		if (isset($_POST['artistId'])){
+        	$artistId = (int)$_POST['artistId'];
+		}
+		if (isset($_POST['artworkId'])){
+        	$artworkId = (int)$_POST['artworkId'];
+		}
+
+        if ($_POST['action'] === 'add_artist_to_favorites') {
+            if (!in_array($artistId, $_SESSION['favoriteArtists'])) {
+                $_SESSION['favoriteArtists'][] = $artistId;
+                $message = "Artist added to favorites!";
+                $messageType = "success";
+            } else {
+                $message = "Artist is already in your favorites.";
+                $messageType = "info";
+            }
+		}
+
+		if ($_POST['action'] === 'add_artwork_to_favorites') {
+            if (!in_array($artworkId, $_SESSION['favoriteArtworks'])) {
+                $_SESSION['favoriteArtworks'][] = $artworkId;
+                $message = "Artwork added to favorites!";
+                $messageType = "success";
+            } else {
+                $message = "Artwork is already in your favorites.";
+                $messageType = "info";
+            }
+		}
+	} catch (Exception $e) {
+        $message = "Error updating favorites. Please try again.";
+        $messageType = "danger";
+    }
+}
 
 // Checks if search query has been submitted
 if (isset($_GET['searchQuery'])) {
@@ -59,6 +108,16 @@ $artworkSearchResults = $artworkRepository->getArtworkBySearchQuery($searchQuery
 
 <body class="container">
 	<h2 class="flex-grow-1 mb-1 mt-3">Suchergebnisse</h2>
+
+	<?php if (isset($message)): ?>
+        <div class="alert alert-<?php echo $messageType ?> alert-dismissible fade show" role="alert">
+            <?php echo htmlspecialchars($message) ?>
+            <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                <span aria-hidden="true">&times;</span>
+            </button>
+        </div>
+    <?php endif; ?>
+
 	<?php if (sizeof($artistSearchResults) > 0 || sizeof($artworkSearchResults) > 0): ?>
 		<?php if (sizeof($artistSearchResults) > 0): ?>
 			<div class="d-flex align-items-center mt-3 mb-3">
@@ -100,6 +159,13 @@ $artworkSearchResults = $artworkRepository->getArtworkBySearchQuery($searchQuery
 			    ?>
 							<img src="<?php echo $correctImagePath?>" alt="Künsterbild">
 						</a>
+						
+						<!-- Display add to favourites button -->
+						<form method="post">
+							<input type="hidden" name="action" value="add_artist_to_favorites">
+							<input type="hidden" name="artistId" value="<?php echo $artist->getArtistId()?>">
+							<button type="submit" class="btn btn-primary ml-3" style="height: 64px;">Add to<br>Favourites</button>
+						</form>
 				</li>
 			<?php endforeach?>
 			</ul>
@@ -156,6 +222,13 @@ $artworkSearchResults = $artworkRepository->getArtworkBySearchQuery($searchQuery
 			    ?>
 						<img src="<?php echo $correctImagePath?>" alt="Kunstwerk">
 					</a>
+					
+					<!-- Display add to favourites button -->
+					<form method="post">
+						<input type="hidden" name="action" value="add_artwork_to_favorites">
+						<input type="hidden" name="artworkId" value="<?php echo $combined->getArtwork()->getArtworkId()?>">
+						<button type="submit" class="btn btn-primary ml-3" style="height: 75px;">Add to<br>Favourites</button>
+					</form>
 				</li>
 			<?php endforeach?>
 			</ul>
