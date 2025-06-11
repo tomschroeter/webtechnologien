@@ -9,10 +9,9 @@ require_once dirname(__DIR__) . "/src/repositories/ArtistRepository.php";
 require_once dirname(__DIR__) . "/src/repositories/ArtworkRepository.php";
 require_once dirname(__DIR__) . "/src/router/router.php";
 
-session_start();
-
-$_SESSION['customerId'] = 1; // TEMP: simulate logged-in user
-$_SESSION['isAdmin'] = true; // TEMP: simulate admin privileges
+if (session_status() === PHP_SESSION_NONE) {
+    session_start();
+}
 
 $db = new Database();
 $artistRepository = new ArtistRepository($db);

@@ -51,4 +51,36 @@ class Database
 
         $this->pdo = null;
     }
+
+    public function beginTransaction(): bool
+    {
+        if (!$this->isConnected()) {
+            throw new Exception("Not connected to DB.");
+        }
+        return $this->pdo->beginTransaction();
+    }
+
+    public function commit(): bool
+    {
+        if (!$this->isConnected()) {
+            throw new Exception("Not connected to DB.");
+        }
+        return $this->pdo->commit();
+    }
+
+    public function rollBack(): bool
+    {
+        if (!$this->isConnected()) {
+            throw new Exception("Not connected to DB.");
+        }
+        return $this->pdo->rollBack();
+    }
+
+    public function lastInsertId(): string
+    {
+        if (!$this->isConnected()) {
+            throw new Exception("Not connected to DB.");
+        }
+        return $this->pdo->lastInsertId();
+    }
 }
