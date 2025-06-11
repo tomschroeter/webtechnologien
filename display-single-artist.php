@@ -141,33 +141,10 @@ try {
 
 		<h2 class="mt-5">Artworks by <?php echo htmlspecialchars($artist->getFirstName() . ' ' . $artist->getLastName()) ?></h2>
 		<div class="row mt-4">
-			<?php foreach ($artworks as $artwork): ?>
-				<!-- Creates new URL to display single artwork --->
-				<?php $artworkLink = route('artworks', ['id' => $artwork->getArtworkId()]); ?>
-				<!-- List of artworks -->
-				<div class="col-md-3 mb-4">
-					<div class="card h-100">
-						<!-- Artwork image -->
-						<?php
-						$imagePath = "/assets/images/works/square-medium/" . $artwork->getImageFileName() . ".jpg";
-						$placeholderPath = "/assets/placeholder/works/square-medium/placeholder.svg";
-						$correctImagePath = file_exists($_SERVER['DOCUMENT_ROOT'] . $imagePath) ? $imagePath : $placeholderPath;
-						?>
-						<a href="<?php echo $artworkLink ?>" target="_blank">
-							<img src="<?php echo $correctImagePath ?>" class="card-img-top" alt="<?php echo htmlspecialchars($artwork->getTitle()) ?>">
-						</a>
-
-						<div class="card-body d-flex flex-column">
-							<h5 class="card-title text-center">
-								<a href="<?php echo $artworkLink ?>" target="_blank" class="text-body">
-									<?php echo htmlspecialchars($artwork->getTitle()) ?>
-								</a>
-							</h5>
-							<a href="<?php echo $artworkLink ?>" target="_blank" class="btn btn-primary mt-auto">View</a>
-						</div>
-					</div>
-				</div>
-			<?php endforeach ?>
+            <?php 
+            require_once __DIR__ . '/components/artwork-card-list.php';
+            renderArtworkCardList($artworks);
+            ?>
 		</div>
 	</div>
 
