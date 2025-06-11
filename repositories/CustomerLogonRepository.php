@@ -26,22 +26,6 @@ class CustomerLogonRepository
         return $userExists;
     }
 
-    public function getNextCustomerId(): int
-    {
-        if (!$this->db->isConnected()) {
-            $this->db->connect();
-        }
-
-        $stmt = $this->db->prepareStatement("SELECT MAX(CustomerId) + 1 AS nextId FROM customers");
-        $stmt->execute();
-
-        $nextId = $stmt->fetchColumn() ?: 1;
-
-        $this->db->disconnect();
-        
-        return $nextId;
-    }
-
     public function getActiveUserByUsername(string $username): ?array
     {
         if (!$this->db->isConnected()) {
@@ -151,60 +135,6 @@ class CustomerLogonRepository
         $this->db->disconnect();
     }
 
-
-
-    public function insertCustomer(Customer $customer, int $id): void
-    {
-        if (!$this->db->isConnected()) {
-            $this->db->connect();
-        }
-
-        $stmt = $this->db->prepareStatement("
-            INSERT INTO customers (CustomerId, FirstName, LastName, Address, City, Region, Country, Postal, Phone, Email)
-            VALUES (:id, :first, :last, :address, :city, :region, :country, :postal, :phone, :email)
-        ");
-        $stmt->bindValue("id", $id, PDO::PARAM_INT);
-        $stmt->bindValue("first", $customer->getFirstName());
-        $stmt->bindValue("last", $customer->getLastName());
-        $stmt->bindValue("address", $customer->getAddress());
-        $stmt->bindValue("city", $customer->getCity());
-        $stmt->bindValue("region", $customer->getRegion());
-        $stmt->bindValue("country", $customer->getCountry());
-        $stmt->bindValue("postal", $customer->getPostal());
-        $stmt->bindValue("phone", $customer->getPhone());
-        $stmt->bindValue("email", $customer->getEmail());
-        $stmt->execute();
-
-        $this->db->disconnect();
-    }
-
-    public function insertLogon(CustomerLogon $logon): void
-    {
-        if (!$this->db->isConnected()) {
-            $this->db->connect();
-        }
-
-        $hashedPassword = $logon->getPass(); // This should be the complete hash from password_hash()
-        $salt = $this->extractSaltFromHash($hashedPassword);
-        
-        $stmt = $this->db->prepareStatement("
-            INSERT INTO customerlogon (CustomerId, UserName, Pass, Salt, State, Type, DateJoined, DateLastModified, isAdmin)
-            VALUES (:id, :user, :pass, :salt, :state, :type, :joined, :modified, :isAdmin)
-        ");
-        $stmt->bindValue("id", $logon->getCustomerId(), PDO::PARAM_INT);
-        $stmt->bindValue("user", $logon->getUserName());
-        $stmt->bindValue("pass", $hashedPassword);
-        $stmt->bindValue("salt", $salt);
-        $stmt->bindValue("state", $logon->getState());
-        $stmt->bindValue("type", $logon->getType());
-        $stmt->bindValue("joined", $logon->getDateJoined());
-        $stmt->bindValue("modified", $logon->getDateLastModified());
-        $stmt->bindValue("isAdmin", false, PDO::PARAM_BOOL); // New users are not admins by default
-        $stmt->execute();
-
-        $this->db->disconnect();
-    }
-
     /**
      * Atomically registers a new customer with login credentials.
      * This method prevents race conditions by handling everything in a single transaction.
@@ -299,19 +229,7 @@ class CustomerLogonRepository
         if (preg_match('/^\$2[axy]\$\d+\$(.{22})/', $hash, $matches)) {
             return $matches[1]; // Return the 22-character salt
         }
-        
-        // For other hash types, try to extract salt using a more general approach
-        $parts = explode('$', $hash);
-        if (count($parts) >= 4) {
-            // Format: $algorithm$cost$saltAndHash
-            $saltAndHash = $parts[3];
-            // For bcrypt, salt is first 22 characters
-            if (strlen($saltAndHash) >= 22) {
-                return substr($saltAndHash, 0, 22);
-            }
-        }
-        
-        // Fallback: return empty string if salt extraction fails
-        return '';
+
+        throw new Exception("Unknown hash type in db")
     }
 }
