@@ -9,22 +9,17 @@ require_once dirname(__DIR__) . "/src/navbar.php";
 
 session_start();
 
-$_SESSION['customerId'] = 1; // TEMP: simulate logged-in user
-$_SESSION['isAdmin'] = true; // TEMP: simulate admin privileges
+// TEMP: simulate logged-in user (remove in production)
+$_SESSION['customerId'] = 1;
+$_SESSION['isAdmin'] = true;
 
-$db = new Database();
-$genreRepository = new GenreRepository($db);
-$artworkRepository = new ArtworkRepository($db);
-
-// Handle Add Artist Favorites
+// Handle Add/Remove Artwork Favorites
 if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['action'])) {
     try {
         if (!isset($_SESSION['favoriteArtworks'])) {
             $_SESSION['favoriteArtworks'] = [];
         }
-        
         $artworkId = (int)$_POST['artworkId'];
-        
         if ($_POST['action'] === 'add_to_favorites') {
             if (!in_array($artworkId, $_SESSION['favoriteArtworks'])) {
                 $_SESSION['favoriteArtworks'][] = $artworkId;
@@ -34,12 +29,23 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['action'])) {
                 $message = "Artwork is already in your favorites.";
                 $messageType = "info";
             }
-		}
-	} catch (Exception $e) {
+        } elseif ($_POST['action'] === 'remove_from_favorites') {
+            if (($key = array_search($artworkId, $_SESSION['favoriteArtworks'])) !== false) {
+                unset($_SESSION['favoriteArtworks'][$key]);
+                $_SESSION['favoriteArtworks'] = array_values($_SESSION['favoriteArtworks']); // Re-index array
+                $message = "Artwork removed from favorites!";
+                $messageType = "success";
+            }
+        }
+    } catch (Exception $e) {
         $message = "Error updating favorites. Please try again.";
         $messageType = "danger";
     }
 }
+
+$db = new Database();
+$genreRepository = new GenreRepository ($db);
+$artworkRepository = new ArtworkRepository($db);
 
 // Checks if id is set correctly in URL
 if (isset($_GET['id']) && is_numeric($_GET['id'])) {

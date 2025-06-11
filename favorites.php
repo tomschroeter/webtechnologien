@@ -38,7 +38,7 @@ if (!empty($artworkFavorites)) {
                 unset($_SESSION['favoriteArtworks'][$key]);
                 $_SESSION['favoriteArtworks'] = array_values($_SESSION['favoriteArtworks']);
             }
-            $message = "Some artworks were removed from your favorites because they are no longer available.";
+            $message = "Some artworks were removed from favorites because they are no longer available.";
             $messageType = "warning";
         }
     }
@@ -56,7 +56,7 @@ if (!empty($artistFavorites)) {
                 unset($_SESSION['favoriteArtists'][$key]);
                 $_SESSION['favoriteArtists'] = array_values($_SESSION['favoriteArtists']);
             }
-            $message = "Some artists were removed from your favorites because they are no longer available.";
+            $message = "Some artists were removed from favorites because they are no longer available.";
             $messageType = "warning";
         }
     }
