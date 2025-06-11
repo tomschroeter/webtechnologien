@@ -135,22 +135,6 @@ class CustomerLogonRepository
         $this->db->disconnect();
     }
 
-    public function updateUserType(int $customerId, int $type): void
-    {
-        if (!$this->db->isConnected()) {
-            $this->db->connect();
-        }
-
-        $stmt = $this->db->prepareStatement("
-        UPDATE customerlogon SET Type = :type, DateLastModified = NOW() WHERE CustomerId = :id
-    ");
-        $stmt->bindValue("type", $type, PDO::PARAM_INT);
-        $stmt->bindValue("id", $customerId);
-        $stmt->execute();
-
-        $this->db->disconnect();
-    }
-
     public function updateUserAdmin(int $customerId, bool $isAdmin): void
     {
         if (!$this->db->isConnected()) {
