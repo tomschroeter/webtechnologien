@@ -13,7 +13,6 @@ require_once dirname(__DIR__) . "/src/Database.php";
 require_once dirname(__DIR__) . "/src/repositories/CustomerLogonRepository.php";
 
 $db = new Database();
-$db->connect();
 $repo = new CustomerLogonRepository($db);
 
 // Handle user updates
