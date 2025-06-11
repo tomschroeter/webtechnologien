@@ -63,8 +63,7 @@ require_once dirname(__DIR__) . "/src/router/router.php";
             <a class="dropdown-item text-danger" href="/logout.php">Logout</a>
           <?php else: ?>
             <a class="dropdown-item" href="<?php echo route("register") ?>">Register</a>
-            <!-- Open login modal on index.php -->
-            <button class="dropdown-item" data-toggle="modal" data-target="#loginModal">Login</button>
+            <a class="dropdown-item" href="<?php echo route("login") ?>">Login</a>
           <?php endif; ?>
         </div>
       </li>

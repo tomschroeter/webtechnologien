@@ -14,7 +14,7 @@ UPDATE customerlogon SET isAdmin = FALSE;
 INSERT INTO customerlogon (UserName, Pass, Salt, State, Type, DateJoined, DateLastModified, isAdmin)
 VALUES (
     'admin',
-    '$2y$10$qpTSgUnhROIBPLnFTNU3OexvQ/fMmtEVZpaB1TJaAXP3CPVgl9XHO',
+    '$2y$10$qpTSgUnhROIBPLnFTNU3OexvQ/fMmtEVZpaB1TJaAXP3CPVgl9XHO', -- AdminPassword123!
     'qpTSgUnhROIBPLnFTNU3Oe',
     1,
     1,

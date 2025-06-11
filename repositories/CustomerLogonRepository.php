@@ -230,6 +230,6 @@ class CustomerLogonRepository
             return $matches[1]; // Return the 22-character salt
         }
 
-        throw new Exception("Unknown hash type in db")
+        throw new Exception("Unknown hash type in db");
     }
 }
