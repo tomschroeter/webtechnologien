@@ -12,6 +12,32 @@ $genres = $genreRepository->getAllGenres();
 ?>
 
 <body class="container">
+  <?php
+session_start();
+// Handle Add/Remove Favorites
+if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['action'])) {
+    try {
+        if (!isset($_SESSION['favoriteArtworks'])) {
+            $_SESSION['favoriteArtworks'] = [];
+        }
+        $artworkId = (int)$_POST['artworkId'];
+        if ($_POST['action'] === 'add_to_favorites') {
+            if (!in_array($artworkId, $_SESSION['favoriteArtworks'])) {
+                $_SESSION['favoriteArtworks'][] = $artworkId;
+            }
+        } elseif ($_POST['action'] === 'remove_from_favorites') {
+            if (($key = array_search($artworkId, $_SESSION['favoriteArtworks'])) !== false) {
+                unset($_SESSION['favoriteArtworks'][$key]);
+                $_SESSION['favoriteArtworks'] = array_values($_SESSION['favoriteArtworks']);
+            }
+        }
+    } catch (Exception $e) {
+      $message = "Error updating favorites. Please try again.";
+      $messageType = "danger";
+    }
+}
+?>
+
   <h1 class="mt-3 mb-3">Genres</h1>
   <p class="text-muted">Gefunden: <?php echo count($genres)?> Genres</p>
 
