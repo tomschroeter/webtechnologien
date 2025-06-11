@@ -5,8 +5,8 @@
 require_once dirname(__DIR__) . "/src/head.php";
 require_once dirname(__DIR__) . "/src/navbar.php";
 require_once dirname(__DIR__) . "/src/Database.php";
-require_once dirname(__DIR__) . "/src/repositories/ArtworkRepository.php";
 require_once dirname(__DIR__) . "/src/repositories/ArtistRepository.php";
+require_once dirname(__DIR__) . "/src/repositories/ArtworkRepository.php";
 require_once dirname(__DIR__) . "/src/router/router.php";
 require_once dirname(__DIR__) . "/src/components/find_image_ref.php";
 

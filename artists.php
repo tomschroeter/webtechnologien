@@ -2,9 +2,10 @@
 <html lang="en">
 
 <?php
-  require_once dirname(__DIR__)."/src/head.php";
+require_once dirname(__DIR__)."/src/head.php";
 require_once dirname(__DIR__)."/src/repositories/ArtistRepository.php";
 require_once dirname(__DIR__)."/src/navbar.php";
+require_once dirname(__DIR__)."/src/components/find_image_ref.php";
 
 $artistRepository = new ArtistRepository(new Database());
 
@@ -39,7 +40,7 @@ $artists = $artistRepository->getAllArtists($sort);
            class="d-flex justify-content-between align-items-center w-100 text-decoration-none text-dark">
           <span><?php echo $artist->getFirstName()?> <?php echo $artist->getLastName()?></span>
           <!-- Checks if artists' image exists -->
-          <?php require_once dirname(__DIR__) . "/src/components/find_image_ref.php";
+          <?php
 $imagePath =  "/assets/images/artists/square-thumb/".$artist->getArtistId().".jpg";
 $placeholderPath = "/assets/placeholder/artists/square-thumb/placeholder.svg";
 $correctImagePath = getImagePathOrPlaceholder($imagePath, $placeholderPath);
@@ -49,6 +50,6 @@ $correctImagePath = getImagePathOrPlaceholder($imagePath, $placeholderPath);
       </li>
     <?php endforeach; ?>
   </ul>
-  <?php require_once dirname(__DIR__) . "/src/bootstrap.php"; ?>
+  <?php require_once dirname(__DIR__)."/src/bootstrap.php"; ?>
 </body>
 </html>

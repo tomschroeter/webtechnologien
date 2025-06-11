@@ -1,13 +1,13 @@
 <?php
-if (session_status() === PHP_SESSION_NONE) {
-    session_start();
-}
-
 require_once "bootstrap.php";
 require_once "classes/Customer.php";
 require_once "classes/CustomerLogon.php";
 require_once "Database.php";
 require_once "repositories/CustomerLogonRepository.php";
+
+if (session_status() === PHP_SESSION_NONE) {
+    session_start();
+}
 
 $db = new Database();
 $repo = new CustomerLogonRepository($db);
@@ -66,9 +66,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 <html lang="en">
 <?php require_once "head.php"; ?>
 
-<body class="container mt-5">
+<body class="container">
     <?php require_once "navbar.php"; ?>
-    <h1>Register</h1>
+    <h1 class="mt-3">Register</h1>
 
     <?php if ($error === 'validation'): ?>
         <div class="alert alert-danger">

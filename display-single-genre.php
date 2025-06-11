@@ -7,11 +7,9 @@ require_once dirname(__DIR__) . "/src/repositories/GenreRepository.php";
 require_once dirname(__DIR__) . "/src/repositories/ArtworkRepository.php";
 require_once dirname(__DIR__) . "/src/navbar.php";
 
-session_start();
-
-// TEMP: simulate logged-in user (remove in production)
-$_SESSION['customerId'] = 1;
-$_SESSION['isAdmin'] = true;
+if (session_status() === PHP_SESSION_NONE) {
+  session_start();
+}
 
 $db = new Database();
 $genreRepository = new GenreRepository ($db);

@@ -2,7 +2,7 @@
 <html lang="en">
 
 <?php
-    require_once dirname(__DIR__) . "/src/head.php";
+require_once dirname(__DIR__) . "/src/head.php";
 require_once dirname(__DIR__) . "/src/navbar.php";
 require_once dirname(__DIR__) . "/src/classes/Artist.php";
 require_once dirname(__DIR__) . "/src/classes/Artwork.php";
@@ -15,9 +15,6 @@ require_once dirname(__DIR__) . "/src/components/find_image_ref.php";
 if (session_status() === PHP_SESSION_NONE) {
     session_start();
 }
-
-$_SESSION['customerId'] = 1; // TEMP: simulate logged-in user
-$_SESSION['isAdmin'] = true; // TEMP: simulate admin privileges
 
 $db = new Database();
 $artistRepository = new ArtistRepository($db);
