@@ -2,7 +2,7 @@
 <html lang="en">
 
 <?php
-  require_once dirname(__DIR__)."/src/head.php";
+require_once dirname(__DIR__)."/src/head.php";
 require_once dirname(__DIR__)."/src/navbar.php";
 ?>
 
@@ -35,6 +35,6 @@ require_once dirname(__DIR__)."/src/navbar.php";
             </div>
         </div>
     </div>
-    <?php require_once 'bootstrap.php'; ?>
+    <?php require_once dirname(__DIR__)."/src/bootstrap.php"; ?>
 </body>
 </html>

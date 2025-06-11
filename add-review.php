@@ -1,14 +1,10 @@
 <?php
+require_once "classes/Review.php";
+require_once "repositories/ReviewRepository.php";
+
 if (session_status() === PHP_SESSION_NONE) {
     session_start();
 }
-
-// Simulate logged-in user (TEMP)
-$_SESSION['customerId'] = 1;
-
-require_once "bootstrap.php";
-require_once "classes/Review.php";
-require_once "repositories/ReviewRepository.php";
 
 // Validate session
 if (!isset($_SESSION['customerId'])) {
