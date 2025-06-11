@@ -10,7 +10,6 @@ if (!($_SESSION['isAdmin'] ?? false)) {
 }
 
 $db = new Database();
-$db->connect();
 $repo = new CustomerLogonRepository($db);
 
 $id = $_GET['id'] ?? null;

@@ -11,40 +11,76 @@ class CustomerLogonRepository
 
     public function userExists(string $username): bool
     {
+        if (!$this->db->isConnected()) {
+            $this->db->connect();
+        }
+
         $stmt = $this->db->prepareStatement("SELECT COUNT(*) FROM customerlogon WHERE UserName = :username");
         $stmt->bindValue("username", $username);
         $stmt->execute();
-        return $stmt->fetchColumn() > 0;
+
+        $userExists = $stmt->fetchColumn() > 0;
+
+        $this->db->disconnect();
+
+        return $userExists;
     }
 
     public function getNextCustomerId(): int
     {
+        if (!$this->db->isConnected()) {
+            $this->db->connect();
+        }
+
         $stmt = $this->db->prepareStatement("SELECT MAX(CustomerId) + 1 AS nextId FROM customers");
         $stmt->execute();
-        return $stmt->fetchColumn() ?: 1;
+
+        $nextId = $stmt->fetchColumn() ?: 1;
+
+        $this->db->disconnect();
+        
+        return $nextId;
     }
 
     public function getActiveUserByUsername(string $username): ?array
     {
-        $stmt = $this->db->prepareStatement("
-        SELECT * FROM customerlogon WHERE UserName = :username AND State = 1
-    ");
+        if (!$this->db->isConnected()) {
+            $this->db->connect();
+        }
+
+        $stmt = $this->db->prepareStatement("SELECT * FROM customerlogon WHERE UserName = :username AND State = 1");
+
         $stmt->bindValue("username", $username);
         $stmt->execute();
         $result = $stmt->fetch();
-        return $result ?: null;
+        
+        $returnValue = $result ?: null;
+
+        $this->db->disconnect();
+
+        return $returnValue;
     }
 
     public function updateUserState(int $customerId, int $state): void
     {
+        if (!$this->db->isConnected()) {
+            $this->db->connect();
+        }
+
         $stmt = $this->db->prepareStatement("UPDATE customerlogon SET State = :state WHERE CustomerID = :id");
         $stmt->bindValue("id", $customerId, PDO::PARAM_INT);
         $stmt->bindValue("state", $state, PDO::PARAM_INT);
         $stmt->execute();
+
+        $this->db->disconnect();
     }
 
     public function getAllUsersWithLogonData(): array
     {
+        if (!$this->db->isConnected()) {
+            $this->db->connect();
+        }
+
         $stmt = $this->db->prepareStatement("
         SELECT c.CustomerID, FirstName, LastName, Email, UserName, Type, State
         FROM customers c
@@ -52,11 +88,19 @@ class CustomerLogonRepository
         ORDER BY LastName, FirstName
     ");
         $stmt->execute();
-        return $stmt->fetchAll();
+        $result = $stmt->fetchAll();
+
+        $this->db->disconnect();
+
+        return $result;
     }
 
     public function getUserDetailsById(int $id): ?array
     {
+        if (!$this->db->isConnected()) {
+            $this->db->connect();
+        }
+
         $stmt = $this->db->prepareStatement("
         SELECT c.FirstName, c.LastName, c.Email, cl.UserName, cl.Type
         FROM customers c
@@ -66,11 +110,19 @@ class CustomerLogonRepository
         $stmt->bindValue("id", $id, PDO::PARAM_INT);
         $stmt->execute();
         $user = $stmt->fetch();
-        return $user ?: null;
+        $returnValue = $user ?: null;
+
+        $this->db->disconnect();
+
+        return $returnValue;
     }
 
     public function updateCustomerBasicInfo(int $id, string $first, string $last, string $email): void
     {
+        if (!$this->db->isConnected()) {
+            $this->db->connect();
+        }
+
         $stmt = $this->db->prepareStatement("
         UPDATE customers SET FirstName = :first, LastName = :last, Email = :email WHERE CustomerId = :id
     ");
@@ -79,22 +131,34 @@ class CustomerLogonRepository
         $stmt->bindValue("email", $email);
         $stmt->bindValue("id", $id);
         $stmt->execute();
+
+        $this->db->disconnect();
     }
 
     public function updateUserType(int $customerId, int $type): void
     {
+        if (!$this->db->isConnected()) {
+            $this->db->connect();
+        }
+
         $stmt = $this->db->prepareStatement("
         UPDATE customerlogon SET Type = :type, DateLastModified = NOW() WHERE CustomerId = :id
     ");
         $stmt->bindValue("type", $type, PDO::PARAM_INT);
         $stmt->bindValue("id", $customerId);
         $stmt->execute();
+
+        $this->db->disconnect();
     }
 
 
 
     public function insertCustomer(Customer $customer, int $id): void
     {
+        if (!$this->db->isConnected()) {
+            $this->db->connect();
+        }
+
         $stmt = $this->db->prepareStatement("
             INSERT INTO customers (CustomerId, FirstName, LastName, Address, City, Region, Country, Postal, Phone, Email)
             VALUES (:id, :first, :last, :address, :city, :region, :country, :postal, :phone, :email)
@@ -110,10 +174,16 @@ class CustomerLogonRepository
         $stmt->bindValue("phone", $customer->getPhone());
         $stmt->bindValue("email", $customer->getEmail());
         $stmt->execute();
+
+        $this->db->disconnect();
     }
 
     public function insertLogon(CustomerLogon $logon): void
     {
+        if (!$this->db->isConnected()) {
+            $this->db->connect();
+        }
+
         $stmt = $this->db->prepareStatement("
             INSERT INTO customerlogon (CustomerId, UserName, Pass, State, Type, DateJoined, DateLastModified)
             VALUES (:id, :user, :pass, :state, :type, :joined, :modified)
@@ -126,5 +196,7 @@ class CustomerLogonRepository
         $stmt->bindValue("joined", $logon->getDateJoined());
         $stmt->bindValue("modified", $logon->getDateLastModified());
         $stmt->execute();
+
+        $this->db->disconnect();
     }
 }
