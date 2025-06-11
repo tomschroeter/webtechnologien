@@ -29,6 +29,7 @@ $artists = $artistRepository->getAllArtists($sort);
       </select>
     </form>
   </div>
+  <p class="text-muted">Gefunden: <?php echo count($artists)?> Künstler</p>
 
   <!-- List to display all artists -->
   <ul class="list-group mb-5">

@@ -7,8 +7,44 @@ require_once dirname(__DIR__) . "/src/repositories/GenreRepository.php";
 require_once dirname(__DIR__) . "/src/repositories/ArtworkRepository.php";
 require_once dirname(__DIR__) . "/src/navbar.php";
 
+session_start();
+
+// TEMP: simulate logged-in user (remove in production)
+$_SESSION['customerId'] = 1;
+$_SESSION['isAdmin'] = true;
+
+// Handle Add/Remove Artwork Favorites
+if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['action'])) {
+    try {
+        if (!isset($_SESSION['favoriteArtworks'])) {
+            $_SESSION['favoriteArtworks'] = [];
+        }
+        $artworkId = (int)$_POST['artworkId'];
+        if ($_POST['action'] === 'add_to_favorites') {
+            if (!in_array($artworkId, $_SESSION['favoriteArtworks'])) {
+                $_SESSION['favoriteArtworks'][] = $artworkId;
+                $message = "Artwork added to favorites!";
+                $messageType = "success";
+            } else {
+                $message = "Artwork is already in your favorites.";
+                $messageType = "info";
+            }
+        } elseif ($_POST['action'] === 'remove_from_favorites') {
+            if (($key = array_search($artworkId, $_SESSION['favoriteArtworks'])) !== false) {
+                unset($_SESSION['favoriteArtworks'][$key]);
+                $_SESSION['favoriteArtworks'] = array_values($_SESSION['favoriteArtworks']); // Re-index array
+                $message = "Artwork removed from favorites!";
+                $messageType = "success";
+            }
+        }
+    } catch (Exception $e) {
+        $message = "Error updating favorites. Please try again.";
+        $messageType = "danger";
+    }
+}
+
 $db = new Database();
-$genreRepository = new GenreRepository($db);
+$genreRepository = new GenreRepository ($db);
 $artworkRepository = new ArtworkRepository($db);
 
 // Checks if id is set correctly in URL
@@ -32,6 +68,16 @@ try {
 <body class="container">
   <br>
   <h1><?php echo $genre->getGenreName() ?></h1>
+
+  <?php if (isset($message)): ?>
+        <div class="alert alert-<?php echo $messageType ?> alert-dismissible fade show" role="alert">
+            <?php echo htmlspecialchars($message) ?>
+            <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                <span aria-hidden="true">&times;</span>
+            </button>
+        </div>
+    <?php endif; ?>
+
   <div class="container mt-3">
     <div class="row">
       <!-- Displays genre image -->
@@ -53,41 +99,10 @@ try {
     </div>
     <h2 class="mt-5">Artworks for <?php echo $genre->getGenreName() ?></h2>
     <div class="row mt-4">
-      <?php foreach ($artworks as $artwork): ?>
-        <!-- Creates new URL to display single artwork --->
-      <?php $artworkLink = route('artworks', ['id' => $artwork->getArtworkId()]) ?>
-      <!-- List of artworks -->
-        <div class="col-md-3 mb-4">
-          <!-- Artwork card including image, name and view button --->
-        <div class="card h-100">
-          <!-- Checks if artworks' image exists -->
-            <?php $imagePath = "/assets/images/works/square-medium/" . $artwork->getImageFileName() . ".jpg";
-            $placeholderPath = "/assets/placeholder/works/square-medium/placeholder.svg";
-            if (file_exists($_SERVER['DOCUMENT_ROOT'] . $imagePath)) {
-              $correctImagePath = $imagePath;
-            } else {
-              $correctImagePath = $placeholderPath;
-            }
-            ?>
-            <a href="<?php echo $artworkLink ?>" target="_blank">
-              <img src="<?php echo $correctImagePath ?>" class="card-img-top" alt="<?php echo $artwork->getTitle() ?>">
-            </a>
-            <div class="card-body d-flex flex-column">
-              <h5 class="card-title text-center">
-                <a href="<?php echo $artworkLink ?>" target="_blank"
-                  class="text-body"><?php echo $artwork->getTitle() ?></a>
-              </h5>
-              <div class="row mx-auto mt-auto">
-                <a href="<?php echo $artworkLink ?>" target="_blank" class="btn btn-primary mt-auto mx-auto">View</a>
-                <form method="post" action="add-favourite.php" class="mx-auto mt-1">
-                  <input type="hidden" name="artworkId" value="<?php echo $artwork->getArtworkId() ?>">
-                  <button type="submit" class="btn btn-tertiary mt-auto">Add to Favourites</button>
-                </form>
-              </div>
-            </div>
-          </div>
-        </div>
-      <?php endforeach ?>
+      <?php 
+        require_once __DIR__ . '/components/artwork-card-list.php';
+        renderArtworkCardList($artworks);
+      ?>
     </div>
   </div>
   <?php require_once 'bootstrap.php'; ?>

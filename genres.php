@@ -13,6 +13,7 @@ $genres = $genreRepository->getAllGenres();
 
 <body class="container">
   <h1 class="mt-3 mb-3">Genres</h1>
+  <p class="text-muted">Gefunden: <?php echo count($genres)?> Genres</p>
 
   <!-- List to display all genres -->
   <ul class="list-group mb-5">
