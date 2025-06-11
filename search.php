@@ -46,9 +46,19 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['action'])) {
                 $message = "Artist is already in your favorites.";
                 $messageType = "info";
             }
-		}
+        } elseif ($_POST['action'] === 'remove_artist_from_favorites') {
+            if (($key = array_search($artistId, $_SESSION['favoriteArtists'])) !== false) {
+                unset($_SESSION['favoriteArtists'][$key]);
+                $_SESSION['favoriteArtists'] = array_values($_SESSION['favoriteArtists']);
+                $message = "Artist removed from favorites!";
+                $messageType = "success";
+            } else {
+                $message = "Artist is not in your favorites.";
+                $messageType = "info";
+            }
+        }
 
-		if ($_POST['action'] === 'add_artwork_to_favorites') {
+        if ($_POST['action'] === 'add_artwork_to_favorites') {
             if (!in_array($artworkId, $_SESSION['favoriteArtworks'])) {
                 $_SESSION['favoriteArtworks'][] = $artworkId;
                 $message = "Artwork added to favorites!";
@@ -57,7 +67,17 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['action'])) {
                 $message = "Artwork is already in your favorites.";
                 $messageType = "info";
             }
-		}
+        } elseif ($_POST['action'] === 'remove_artwork_from_favorites') {
+            if (($key = array_search($artworkId, $_SESSION['favoriteArtworks'])) !== false) {
+                unset($_SESSION['favoriteArtworks'][$key]);
+                $_SESSION['favoriteArtworks'] = array_values($_SESSION['favoriteArtworks']);
+                $message = "Artwork removed from favorites!";
+                $messageType = "success";
+            } else {
+                $message = "Artwork is not in your favorites.";
+                $messageType = "info";
+            }
+        }
 	} catch (Exception $e) {
         $message = "Error updating favorites. Please try again.";
         $messageType = "danger";
@@ -161,10 +181,23 @@ $artworkSearchResults = $artworkRepository->getArtworkBySearchQuery($searchQuery
 						</a>
 						
 						<!-- Display add to favourites button -->
-						<form method="post">
-							<input type="hidden" name="action" value="add_artist_to_favorites">
-							<input type="hidden" name="artistId" value="<?php echo $artist->getArtistId()?>">
-							<button type="submit" class="btn btn-primary ml-3" style="height: 64px;">Add to<br>Favourites</button>
+						<form method="post" class="ml-2">
+						<?php
+                            $isInFavorites = isset($_SESSION['favoriteArtists']) && in_array($artist->getArtistId(), $_SESSION['favoriteArtists']);
+                            ?>
+                            <?php if ($isInFavorites): ?>
+                                <input type="hidden" name="action" value="remove_artist_from_favorites">
+                                <input type="hidden" name="artistId" value="<?php echo $artist->getArtistId() ?>">
+                                <button type="submit" class="btn btn-outline-danger">
+                                    ♥
+                                </button>
+                            <?php else: ?>
+                                <input type="hidden" name="action" value="add_artist_to_favorites">
+                                <input type="hidden" name="artistId" value="<?php echo $artist->getArtistId() ?>">
+                                <button type="submit" class="btn btn-primary">
+                                    ♡
+                                </button>
+                            <?php endif; ?>
 						</form>
 				</li>
 			<?php endforeach?>
@@ -224,11 +257,24 @@ $artworkSearchResults = $artworkRepository->getArtworkBySearchQuery($searchQuery
 					</a>
 					
 					<!-- Display add to favourites button -->
-					<form method="post">
-						<input type="hidden" name="action" value="add_artwork_to_favorites">
-						<input type="hidden" name="artworkId" value="<?php echo $combined->getArtwork()->getArtworkId()?>">
-						<button type="submit" class="btn btn-primary ml-3" style="height: 75px;">Add to<br>Favourites</button>
-					</form>
+					<form method="post" class="ml-2">
+						<?php
+                            $isInFavorites = isset($_SESSION['favoriteArtworks']) && in_array($combined->getArtwork()->getArtworkId(), $_SESSION['favoriteArtworks']);
+                            ?>
+                            <?php if ($isInFavorites): ?>
+                                <input type="hidden" name="action" value="remove_artwork_from_favorites">
+                                <input type="hidden" name="artworkId" value="<?php echo $combined->getArtwork()->getArtworkId() ?>">
+                                <button type="submit" class="btn btn-outline-danger">
+                                    ♥
+                                </button>
+                            <?php else: ?>
+                                <input type="hidden" name="action" value="add_artwork_to_favorites">
+                                <input type="hidden" name="artworkId" value="<?php echo $combined->getArtwork()->getArtworkId() ?>">
+                                <button type="submit" class="btn btn-primary">
+                                    ♡
+                                </button>
+                            <?php endif; ?>
+						</form>
 				</li>
 			<?php endforeach?>
 			</ul>
