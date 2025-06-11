@@ -88,7 +88,7 @@ if (!$user || !$customer) {
   </form>
 
   <hr>
-  <h4>Change Password</h4>
+  <h4>Password</h4>
   <form class="mt-4" action="<?php echo route('edit_password'); ?>" method="get">
     <div class="form-row">
       <div class="form-group col-md-4">
