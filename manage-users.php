@@ -1,4 +1,7 @@
 <?php
+require_once dirname(__DIR__) . "/src/Database.php";
+require_once dirname(__DIR__) . "/src/repositories/CustomerLogonRepository.php";
+
 if (session_status() === PHP_SESSION_NONE) {
     session_start();
 }
@@ -7,10 +10,6 @@ if (!($_SESSION['isAdmin'] ?? false)) {
   header("Location: error.php?error=unauthorized");
   exit;
 }
-
-require_once dirname(__DIR__) . "/src/bootstrap.php";
-require_once dirname(__DIR__) . "/src/Database.php";
-require_once dirname(__DIR__) . "/src/repositories/CustomerLogonRepository.php";
 
 $db = new Database();
 $repo = new CustomerLogonRepository($db);

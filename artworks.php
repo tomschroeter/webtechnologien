@@ -2,11 +2,11 @@
 <html lang="en">
 
 <?php
-    require_once dirname(__DIR__)."/src/head.php";
+require_once dirname(__DIR__)."/src/head.php";
 require_once dirname(__DIR__)."/src/repositories/ArtworkRepository.php";
 require_once dirname(__DIR__)."/src/repositories/ArtistRepository.php";
 require_once dirname(__DIR__)."/src/navbar.php";
-require_once dirname(__DIR__) . "/src/components/find_image_ref.php";
+require_once dirname(__DIR__)."/src/components/find_image_ref.php";
 
 $db = new Database();
 
@@ -93,6 +93,6 @@ $artworks = $artworkRepository->getAllArtworks($sortBy, $sortOrder);
       </li>
     <?php endforeach; ?>
   </ul>
-  <?php require_once dirname(__DIR__) . "/src/bootstrap.php"; ?>
+  <?php require_once dirname(__DIR__)."/src/bootstrap.php"; ?>
 </body>
 </html>

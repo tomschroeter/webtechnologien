@@ -2,9 +2,10 @@
 <html lang="en">
 
 <?php
-  require_once dirname(__DIR__)."/src/head.php";
+require_once dirname(__DIR__)."/src/head.php";
 require_once dirname(__DIR__)."/src/repositories/GenreRepository.php";
 require_once dirname(__DIR__)."/src/navbar.php";
+require_once dirname(__DIR__) . "/src/components/find_image_ref.php";
 
 $genreRepository = new GenreRepository(new Database());
 
@@ -23,7 +24,7 @@ $genres = $genreRepository->getAllGenres();
            class="d-flex justify-content-between align-items-center w-100 text-decoration-none text-dark">
           <span><?php echo $genre->getGenreName() ?></span>
           <!-- Checks if genre image exists -->
-          <?php require_once dirname(__DIR__) . "/src/components/find_image_ref.php";
+          <?php
 $imagePath =  "/assets/images/genres/square-thumbs/".$genre->getGenreId().".jpg";
 $placeholderPath = "/assets/placeholder/genres/square-thumbs/placeholder.svg";
 $correctImagePath = getImagePathOrPlaceholder($imagePath, $placeholderPath);
