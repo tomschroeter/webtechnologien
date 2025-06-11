@@ -160,47 +160,48 @@ $artworkSearchResults = $artworkRepository->getArtworkBySearchQuery($searchQuery
 			<!-- List to display all artists that fit the search query -->
 			<ul class="list-group">
 			<?php foreach ($artistSearchResults as $artist): ?>
-				<li class="list-group-item d-flex justify-content-between align-items-center">
-					<!-- Ref link to display single artist -->
-					<a href="<?php echo route('artists', ['id' => $artist->getArtistId()]) ?>"
-						class="d-flex justify-content-between flex-grow-1 align-items-center text-decoration-none text-dark">
-
-						<!-- Display artist name -->
-						<span><?php echo $artist->getFirstName() ?> <?= $artist->getLastName() ?></span>
-
-						<!-- Checks if artists' image exists -->
-						<?php $imagePath = "/assets/images/artists/square-thumb/".$artist->getArtistId().".jpg";
-			    $placeholderPath = "/assets/placeholder/artists/square-thumb/placeholder.svg";
-			    if (file_exists($_SERVER['DOCUMENT_ROOT'] . $imagePath)) {
-			        $correctImagePath = $imagePath;
-			    } else {
-			        $correctImagePath = $placeholderPath;
-			    }
-			    ?>
-							<img src="<?php echo $correctImagePath?>" alt="Künsterbild">
-						</a>
-						
-						<!-- Display add to favourites button -->
-						<form method="post" class="ml-2">
-						<?php
+                <li class="list-group-item d-flex align-items-center justify-content-between">
+                    <!-- Ref link to display single artist -->
+                    <a href="<?php echo route('artists', ['id' => $artist->getArtistId()]) ?>"
+                        class="d-flex align-items-center flex-grow-1 text-decoration-none text-dark" style="min-width:0;">
+                        <!-- Display artist name -->
+                        <span class="text-truncate" style="max-width: 60%; white-space: normal;">
+                            <?php echo $artist->getFirstName() ?> <?= $artist->getLastName() ?>
+                        </span>
+                    </a>
+                    <div class="d-flex align-items-center" style="gap: 0.5rem;">
+                        <!-- Display add to favourites button -->
+                        <form method="post" class="mr-2 mb-0">
+                        <?php
                             $isInFavorites = isset($_SESSION['favoriteArtists']) && in_array($artist->getArtistId(), $_SESSION['favoriteArtists']);
-                            ?>
-                            <?php if ($isInFavorites): ?>
-                                <input type="hidden" name="action" value="remove_artist_from_favorites">
-                                <input type="hidden" name="artistId" value="<?php echo $artist->getArtistId() ?>">
-                                <button type="submit" class="btn btn-outline-danger">
-                                    ♥
-                                </button>
-                            <?php else: ?>
-                                <input type="hidden" name="action" value="add_artist_to_favorites">
-                                <input type="hidden" name="artistId" value="<?php echo $artist->getArtistId() ?>">
-                                <button type="submit" class="btn btn-primary">
-                                    ♡
-                                </button>
-                            <?php endif; ?>
-						</form>
-				</li>
-			<?php endforeach?>
+                        ?>
+                        <?php if ($isInFavorites): ?>
+                            <input type="hidden" name="action" value="remove_artist_from_favorites">
+                            <input type="hidden" name="artistId" value="<?php echo $artist->getArtistId() ?>">
+                            <button type="submit" class="btn btn-outline-danger">
+                                ♥
+                            </button>
+                        <?php else: ?>
+                            <input type="hidden" name="action" value="add_artist_to_favorites">
+                            <input type="hidden" name="artistId" value="<?php echo $artist->getArtistId() ?>">
+                            <button type="submit" class="btn btn-primary">
+                                ♡
+                            </button>
+                        <?php endif; ?>
+                        </form>
+                        <!-- Checks if artists' image exists -->
+                        <?php $imagePath = "/assets/images/artists/square-thumb/".$artist->getArtistId().".jpg";
+                            $placeholderPath = "/assets/placeholder/artists/square-thumb/placeholder.svg";
+                            if (file_exists($_SERVER['DOCUMENT_ROOT'] . $imagePath)) {
+                                $correctImagePath = $imagePath;
+                            } else {
+                                $correctImagePath = $placeholderPath;
+                            }
+                        ?>
+                        <img src="<?php echo $correctImagePath?>" alt="Künsterbild" style="width: 60px; height: 60px; object-fit: cover; border-radius: 0.25rem;">
+                    </div>
+                </li>
+            <?php endforeach?>
 			</ul>
 		<?php endif; ?>
 
@@ -234,32 +235,22 @@ $artworkSearchResults = $artworkRepository->getArtworkBySearchQuery($searchQuery
 			<!-- List to display all artworks that fit the search query -->	
 			<ul class="list-group">
 			<?php foreach ($artworkSearchResults as $index => $combined):?>
-				<li class="list-group-item d-flex align-items-center">
-					<!-- Ref link to display single artwork -->
-					<a href="<?php echo route('artworks', ['id' => $combined->getArtwork()->getArtworkId()])?>"
-						class="d-flex justify-content-between align-items-center flex-grow-1 text-decoration-none text-dark">
-
-						<!-- Display artwork title, artist name and year of publishment -->
-						<?php echo '"' . $combined->getArtwork()->getTitle() . '" ' .
-			    "by " . $combined->getArtistFirstName() . " " . $combined->getArtistLastName() . "," .
-			    " veröffentlicht " . $combined->getArtwork()->getYearOfWork()?>
-
-						<!-- Checks if artworks' image exists -->
-						<?php $imagePath = "/assets/images/works/square-small/".$combined->getArtwork()->getImageFileName().".jpg";
-			    $placeholderPath = "/assets/placeholder/works/square-small/placeholder.svg";
-			    if (file_exists($_SERVER['DOCUMENT_ROOT'] . $imagePath)) {
-			        $correctImagePath = $imagePath;
-			    } else {
-			        $correctImagePath = $placeholderPath;
-			    }
-			    ?>
-						<img src="<?php echo $correctImagePath?>" alt="Kunstwerk">
-					</a>
-					
-					<!-- Display add to favourites button -->
-					<form method="post" class="ml-2">
-						<?php
-                            $isInFavorites = isset($_SESSION['favoriteArtworks']) && in_array($combined->getArtwork()->getArtworkId(), $_SESSION['favoriteArtworks']);
+				<li class="list-group-item d-flex align-items-center justify-content-between">
+                    <!-- Ref link to display single artwork -->
+                    <a href="<?php echo route('artworks', ['id' => $combined->getArtwork()->getArtworkId()])?>"
+                        class="d-flex align-items-center flex-grow-1 text-decoration-none text-dark" style="min-width:0;">
+                        <!-- Display artwork title, artist name and year of publishment -->
+                        <span class="text-truncate" style="max-width: 60%; white-space: normal;">
+                            <?php echo '&quot;' . $combined->getArtwork()->getTitle() . '&quot; ' .
+                                'by ' . $combined->getArtistFirstName() . ' ' . $combined->getArtistLastName() . ',' .
+                                ' veröffentlicht ' . $combined->getArtwork()->getYearOfWork()?>
+                        </span>
+                    </a>
+                    <div class="d-flex align-items-center" style="gap: 0.5rem;">
+                        <!-- Display add to favourites button -->
+                        <form method="post" class="mr-2 mb-0">
+                            <?php
+                                $isInFavorites = isset($_SESSION['favoriteArtworks']) && in_array($combined->getArtwork()->getArtworkId(), $_SESSION['favoriteArtworks']);
                             ?>
                             <?php if ($isInFavorites): ?>
                                 <input type="hidden" name="action" value="remove_artwork_from_favorites">
@@ -274,8 +265,19 @@ $artworkSearchResults = $artworkRepository->getArtworkBySearchQuery($searchQuery
                                     ♡
                                 </button>
                             <?php endif; ?>
-						</form>
-				</li>
+                        </form>
+                        <!-- Checks if artworks' image exists -->
+                        <?php $imagePath = "/assets/images/works/square-small/".$combined->getArtwork()->getImageFileName().".jpg";
+                            $placeholderPath = "/assets/placeholder/works/square-small/placeholder.svg";
+                            if (file_exists($_SERVER['DOCUMENT_ROOT'] . $imagePath)) {
+                                $correctImagePath = $imagePath;
+                            } else {
+                                $correctImagePath = $placeholderPath;
+                            }
+                        ?>
+                        <img src="<?php echo $correctImagePath?>" alt="Kunstwerk" style="width: 60px; height: 60px; object-fit: cover; border-radius: 0.25rem;">
+                    </div>
+                </li>
 			<?php endforeach?>
 			</ul>
 		<?php endif; ?>
