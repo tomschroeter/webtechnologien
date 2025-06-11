@@ -22,7 +22,7 @@ $artists = $artistRepository->getAllArtists($sort);
 <body class="container">
   <!-- Form providing the ability to sort the order of displayed artists -->
   <div class="d-flex align-items-center mt-3 mb-3">
-    <h1 class="flex-grow-1 mb-0">Künstler</h1>
+    <h1 class="flex-grow-1 mb-0">Artists</h1>
     <form method="get">
       <select name="sort" onchange="this.form.submit()" class="form-select">
         <option value="ascending" <?php echo !$sort ? 'selected' : ''?>>Name (aufsteigend)</option>
@@ -30,7 +30,7 @@ $artists = $artistRepository->getAllArtists($sort);
       </select>
     </form>
   </div>
-  <p class="text-muted">Gefunden: <?php echo count($artists)?> Künstler</p>
+  <p class="text-muted">Found: <?php echo count($artists)?> artists</p>
 
   <!-- List to display all artists -->
   <ul class="list-group mb-5">

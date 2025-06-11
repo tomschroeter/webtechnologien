@@ -77,7 +77,7 @@ $artworkSearchResults = $artworkRepository->getArtworkBySearchQuery($searchQuery
 	<?php if (sizeof($artistSearchResults) > 0 || sizeof($artworkSearchResults) > 0): ?>
 		<?php if (sizeof($artistSearchResults) > 0): ?>
 			<div class="d-flex align-items-center mt-3 mb-3">
-				<h3 class="flex-grow-1 mb-0">Künstler</h3>
+				<h3 class="flex-grow-1 mb-0">Artists</h3>
 				<!-- Form providing the ability to sort the order of displayed artists -->
 				<form method="get">
 					<!-- Sets already submitted url params -->
@@ -139,7 +139,7 @@ $artworkSearchResults = $artworkRepository->getArtworkBySearchQuery($searchQuery
 
 		<?php if (sizeof($artworkSearchResults) > 0): ?>
 			<div class="d-flex align-items-center mt-3 mb-3">
-				<h3 class="flex-grow-1 mb-0">Kunstwerke</h3>
+				<h3 class="flex-grow-1 mb-0">Artworks</h3>
 				<!-- Form providing the ability to sort the order of displayed artworks by specific parameters -->
 				<form method="get" class="d-flex">
 					<!-- Sets already submitted url params -->
@@ -152,7 +152,7 @@ $artworkSearchResults = $artworkRepository->getArtworkBySearchQuery($searchQuery
 					<!-- Form to change the sort parameter -->
 					<select name="sortParameter" onchange="this.form.submit()" class="form-select mx-2">
 						<option value="Title" <?php echo $sortParameter == "Title" ? 'selected' : ''?>>Titel</option>
-						<option value="LastName" <?php echo $sortParameter == "LastName" ? 'selected' : ''?>>Künstlername</option>
+						<option value="LastName" <?php echo $sortParameter == "LastName" ? 'selected' : ''?>>Artist Name</option>
 						<option value="YearOfWork" <?php echo $sortParameter == "YearOfWork" ? 'selected' : ''?>>Jahr</option>
 					</select>
 
@@ -212,7 +212,7 @@ $artworkSearchResults = $artworkRepository->getArtworkBySearchQuery($searchQuery
 
 		<!-- Output if search didn't return a result -->
 		<?php else: ?>
-			<?php echo 'Es wurden keinen Ergebnisse für den Suchbegriff' . ' "'  . $searchQuery . '" '  . 'gefunden.'; ?>
+			<?php echo 'No results were found for the search term' . ' "'  . $searchQuery . '"' . '.'; ?>
 	<?php endif; ?>
 	<?php require_once dirname(__DIR__) . "/src/bootstrap.php"; ?>
 </body>
