@@ -135,6 +135,22 @@ class CustomerLogonRepository
         $this->db->disconnect();
     }
 
+    public function countActiveAdmins(): int
+    {
+        if (!$this->db->isConnected()) {
+            $this->db->connect();
+        }
+
+        $stmt = $this->db->prepareStatement("SELECT COUNT(*) FROM customerlogon WHERE isAdmin = 1 AND State = 1");
+        $stmt->execute();
+        
+        $count = (int) $stmt->fetchColumn();
+
+        $this->db->disconnect();
+
+        return $count;
+    }
+
     /**
      * Atomically registers a new customer with login credentials.
      * This method prevents race conditions by handling everything in a single transaction.

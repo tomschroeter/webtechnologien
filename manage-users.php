@@ -25,6 +25,27 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     exit;
   }
 
+  // Check if trying to demote the last admin
+  if ($action === 'demote') {
+    $adminCount = $repo->countActiveAdmins();
+    if ($adminCount <= 1) {
+      header("Location: manage-users.php?error=lastadmin");
+      exit;
+    }
+  }
+
+  // Check if trying to deactivate the last active admin
+  if ($action === 'deactivate') {
+    $user = $repo->getUserDetailsById($customerID);
+    if ($user && $user['isAdmin']) {
+      $adminCount = $repo->countActiveAdmins();
+      if ($adminCount <= 1) {
+        header("Location: manage-users.php?error=lastadmin");
+        exit;
+      }
+    }
+  }
+
   if ($customerID && in_array($action, ['promote', 'demote', 'deactivate', 'activate'])) {
     if ($action === 'promote') {
       $repo->updateUserAdmin($customerID, true);
@@ -42,6 +63,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 }
 
 $users = $repo->getAllUsersWithLogonData();
+$adminCount = $repo->countActiveAdmins();
 ?>
 
 <!DOCTYPE html>
@@ -54,6 +76,8 @@ $users = $repo->getAllUsersWithLogonData();
 
   <?php if (isset($_GET['error']) && $_GET['error'] === 'selfdemote'): ?>
     <div class="alert alert-warning">You cannot demote yourself as admin.</div>
+  <?php elseif (isset($_GET['error']) && $_GET['error'] === 'lastadmin'): ?>
+    <div class="alert alert-danger">Cannot demote or deactivate the last administrator. There must be at least one active admin.</div>
   <?php endif; ?>
 
   <table class="table table-bordered mt-4">
@@ -83,20 +107,22 @@ $users = $repo->getAllUsersWithLogonData();
                 <input type="hidden" name="customerId" value="<?= $user['CustomerID'] ?>">
                 <button name="action" value="promote" class="btn btn-sm btn-success">Promote</button>
               </form>
-            <?php elseif ($_SESSION['customerId'] != $user['CustomerID']): ?>
+            <?php elseif ($_SESSION['customerId'] != $user['CustomerID'] && !($user['isAdmin'] && $adminCount <= 1)): ?>
               <form method="POST" class="d-inline" onsubmit="return confirm('Are you sure you want to demote this user?')">
                 <input type="hidden" name="customerId" value="<?= $user['CustomerID'] ?>">
                 <button name="action" value="demote" class="btn btn-sm btn-warning">Demote</button>
               </form>
             <?php endif; ?>
 
-            <form method="POST" class="d-inline" onsubmit="return confirm('Are you sure you want to change status?')">
-              <input type="hidden" name="customerId" value="<?= $user['CustomerID'] ?>">
-              <button name="action" value="<?= $user['State'] == 1 ? 'deactivate' : 'activate' ?>"
-                class="btn btn-sm btn-<?= $user['State'] == 1 ? 'secondary' : 'primary' ?>">
-                <?= $user['State'] == 1 ? 'Deactivate' : 'Activate' ?>
-              </button>
-            </form>
+            <?php if (!($user['isAdmin'] && $adminCount <= 1)): ?>
+              <form method="POST" class="d-inline" onsubmit="return confirm('Are you sure you want to change status?')">
+                <input type="hidden" name="customerId" value="<?= $user['CustomerID'] ?>">
+                <button name="action" value="<?= $user['State'] == 1 ? 'deactivate' : 'activate' ?>"
+                  class="btn btn-sm btn-<?= $user['State'] == 1 ? 'secondary' : 'primary' ?>">
+                  <?= $user['State'] == 1 ? 'Deactivate' : 'Activate' ?>
+                </button>
+              </form>
+            <?php endif; ?>
           </td>
         </tr>
       <?php endforeach; ?>
