@@ -26,41 +26,6 @@ $subjectRepository = new SubjectRepository($db);
 $galleryRepository = new GalleryRepository($db);
 $reviewRepo = new ReviewRepository($db);
 
-// Handle Add/Remove Favorites
-if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['action'])) {
-    try {
-        if (!isset($_SESSION['favorites'])) {
-            $_SESSION['favorites'] = [];
-        }
-        
-        $artworkId = (int)$_POST['artworkId'];
-        
-        if ($_POST['action'] === 'add_to_favorites') {
-            if (!in_array($artworkId, $_SESSION['favorites'])) {
-                $_SESSION['favorites'][] = $artworkId;
-                $message = "Artwork added to favorites!";
-                $messageType = "success";
-            } else {
-                $message = "Artwork is already in your favorites.";
-                $messageType = "info";
-            }
-        } elseif ($_POST['action'] === 'remove_from_favorites') {
-            if (($key = array_search($artworkId, $_SESSION['favorites'])) !== false) {
-                unset($_SESSION['favorites'][$key]);
-                $_SESSION['favorites'] = array_values($_SESSION['favorites']); // Re-index array
-                $message = "Artwork removed from favorites!";
-                $messageType = "success";
-            } else {
-                $message = "Artwork is not in your favorites.";
-                $messageType = "info";
-            }
-        }
-    } catch (Exception $e) {
-        $message = "Error updating favorites. Please try again.";
-        $messageType = "danger";
-    }
-}
-
 // Check if artwork ID is provided and valid
 if (!isset($_GET['id']) || !is_numeric($_GET['id'])) {
     header("Location: /error.php?error=invalidParam");
@@ -173,17 +138,17 @@ if (file_exists($_SERVER['DOCUMENT_ROOT'] . $imagePath)) {
 
                 <!-- Add/Remove Favorites Form -->
                 <?php 
-                $isInFavorites = isset($_SESSION['favorites']) && in_array($artwork->getArtworkId(), $_SESSION['favorites']);
+                $isInFavorites = isset($_SESSION['favoriteArtworks']) && in_array($artwork->getArtworkId(), $_SESSION['favoriteArtworks']);
                 ?>
-                <form method="post" class="mb-3">
+                <form method="post" action="/favorites-handler.php" class="mb-3">
                     <?php if ($isInFavorites): ?>
-                        <input type="hidden" name="action" value="remove_from_favorites">
+                        <input type="hidden" name="action" value="remove_artwork_from_favorites">
                         <input type="hidden" name="artworkId" value="<?php echo $artwork->getArtworkId() ?>">
                         <button type="submit" class="btn btn-outline-danger">
                             ♥ Remove from Favorites
                         </button>
                     <?php else: ?>
-                        <input type="hidden" name="action" value="add_to_favorites">
+                        <input type="hidden" name="action" value="add_artwork_to_favorites">
                         <input type="hidden" name="artworkId" value="<?php echo $artwork->getArtworkId() ?>">
                         <button type="submit" class="btn btn-primary">
                             ♡ Add to Favorites
