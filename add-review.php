@@ -1,11 +1,10 @@
 <?php
+require_once "classes/Review.php";
+require_once "repositories/ReviewRepository.php";
+
 if (session_status() === PHP_SESSION_NONE) {
     session_start();
 }
-
-require_once "bootstrap.php";
-require_once "classes/Review.php";
-require_once "repositories/ReviewRepository.php";
 
 // Validate session
 if (!isset($_SESSION['customerId'])) {

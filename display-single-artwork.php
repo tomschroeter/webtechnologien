@@ -13,6 +13,7 @@ require_once dirname(__DIR__) . "/src/repositories/GalleryRepository.php";
 require_once dirname(__DIR__) . "/src/repositories/ReviewRepository.php";
 require_once dirname(__DIR__) . "/src/dtos/ReviewStats.php";
 require_once dirname(__DIR__) . "/src/router/router.php";
+require_once dirname(__DIR__) . "/src/components/find_image_ref.php";
 
 if (session_status() === PHP_SESSION_NONE) {
     session_start();
@@ -66,14 +67,8 @@ try {
 $imagePath = "/assets/images/works/medium/" . $artwork->getImageFileName() . ".jpg";
 $largeImagePath = "/assets/images/works/large/" . $artwork->getImageFileName() . ".jpg";
 $placeholderPath = "/assets/placeholder/works/medium/placeholder.svg";
-
-if (file_exists($_SERVER['DOCUMENT_ROOT'] . $imagePath)) {
-    $correctImagePath = $imagePath;
-    $correctLargeImagePath = $largeImagePath;
-} else {
-    $correctImagePath = $placeholderPath;
-    $correctLargeImagePath = $placeholderPath;
-}
+$correctImagePath = getImagePathOrPlaceholder($imagePath, $placeholderPath);
+$correctLargeImagePath = getImagePathOrPlaceholder($largeImagePath, $placeholderPath);
 ?>
 
 <body class="container">
@@ -489,7 +484,7 @@ if (file_exists($_SERVER['DOCUMENT_ROOT'] . $imagePath)) {
         </div>
     </div>
 
-    <?php require_once 'bootstrap.php'; ?>
+    <?php require_once dirname(__DIR__) . "/src/bootstrap.php"; ?>
     
     <script>
     // Handle accordion arrow rotation for general museum information
