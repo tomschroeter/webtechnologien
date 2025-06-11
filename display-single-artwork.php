@@ -30,15 +30,15 @@ $reviewRepo = new ReviewRepository($db);
 // Handle Add/Remove Favorites
 if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['action'])) {
     try {
-        if (!isset($_SESSION['favorites'])) {
-            $_SESSION['favorites'] = [];
+        if (!isset($_SESSION['favoriteArtworks'])) {
+            $_SESSION['favoriteArtworks'] = [];
         }
         
         $artworkId = (int)$_POST['artworkId'];
         
         if ($_POST['action'] === 'add_to_favorites') {
-            if (!in_array($artworkId, $_SESSION['favorites'])) {
-                $_SESSION['favorites'][] = $artworkId;
+            if (!in_array($artworkId, $_SESSION['favoriteArtworks'])) {
+                $_SESSION['favoriteArtworks'][] = $artworkId;
                 $message = "Artwork added to favorites!";
                 $messageType = "success";
             } else {
@@ -46,9 +46,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['action'])) {
                 $messageType = "info";
             }
         } elseif ($_POST['action'] === 'remove_from_favorites') {
-            if (($key = array_search($artworkId, $_SESSION['favorites'])) !== false) {
+            if (($key = array_search($artworkId, $_SESSION['favoriteArtworks'])) !== false) {
                 unset($_SESSION['favorites'][$key]);
-                $_SESSION['favorites'] = array_values($_SESSION['favorites']); // Re-index array
+                $_SESSION['favoriteArtworks'] = array_values($_SESSION['favoriteArtworks']); // Re-index array
                 $message = "Artwork removed from favorites!";
                 $messageType = "success";
             } else {
