@@ -58,9 +58,11 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
     <form method="POST" class="mt-4">
         <div class="form-group">
+            <label>Benutzername</label>
             <input name="username" class="form-control" placeholder="Benutzername" required>
         </div>
         <div class="form-group">
+            <label>Passwort</label>
             <input name="password" type="password" class="form-control" placeholder="Passwort" required>
         </div>
         <button type="submit" class="btn btn-primary">Login</button>
