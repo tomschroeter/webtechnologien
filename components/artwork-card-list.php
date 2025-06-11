@@ -1,5 +1,4 @@
 <?php
-// Usage: require 'components/artwork-card-list.php'; renderArtworkCardList($artworks);
 function renderArtworkCardList($artworks) {
     foreach ($artworks as $artwork) {
         $artworkLink = route('artworks', ['id' => $artwork->getArtworkId()]);
@@ -20,7 +19,27 @@ function renderArtworkCardList($artworks) {
                     <h5 class="card-title text-center">
                         <a href="<?php echo $artworkLink ?>" target="_blank" class="text-body"><?php echo htmlspecialchars($artwork->getTitle()) ?></a>
                     </h5>
-                    <a href="<?php echo $artworkLink ?>" target="_blank" class="btn btn-primary mt-auto">View</a>
+                    <div class="d-flex align-items-center mt-auto">
+                        <a href="<?php echo $artworkLink ?>" target="_blank" class="btn btn-primary flex-fill mr-2">View</a>
+                        <form method="post" class="d-flex">
+                            <?php
+                            $isInFavorites = isset($_SESSION['favoriteArtworks']) && in_array($artwork->getArtworkId(), $_SESSION['favoriteArtworks']);
+                            ?>
+                            <?php if ($isInFavorites): ?>
+                                <input type="hidden" name="action" value="remove_from_favorites">
+                                <input type="hidden" name="artworkId" value="<?php echo $artwork->getArtworkId() ?>">
+                                <button type="submit" class="btn btn-outline-danger">
+                                    ♥
+                                </button>
+                            <?php else: ?>
+                                <input type="hidden" name="action" value="add_to_favorites">
+                                <input type="hidden" name="artworkId" value="<?php echo $artwork->getArtworkId() ?>">
+                                <button type="submit" class="btn btn-outline-primary">
+                                    ♡
+                                </button>
+                            <?php endif; ?>
+                        </form>
+                    </div>
                 </div>
             </div>
         </div>
