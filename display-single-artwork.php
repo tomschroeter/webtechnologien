@@ -52,7 +52,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['action'])) {
                 $message = "Artwork removed from favoriteArtworks!";
                 $messageType = "success";
             } else {
-                $message = "Artwork is not in your favoriteArtworks";
+                $message = "Artwork is not in your favorites";
                 $messageType = "info";
             }
         }
