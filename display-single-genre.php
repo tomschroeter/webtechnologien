@@ -93,42 +93,10 @@ try {
     </div>
     <h2 class="mt-5">Artworks for <?php echo $genre->getGenreName() ?></h2>
     <div class="row mt-4">
-      <?php foreach ($artworks as $artwork): ?>
-        <!-- Creates new URL to display single artwork --->
-      <?php $artworkLink = route('artworks', ['id' => $artwork->getArtworkId()]) ?>
-      <!-- List of artworks -->
-        <div class="col-md-3 mb-4">
-          <!-- Artwork card including image, name and view button --->
-        <div class="card h-100">
-          <!-- Checks if artworks' image exists -->
-            <?php $imagePath = "/assets/images/works/square-medium/" . $artwork->getImageFileName() . ".jpg";
-            $placeholderPath = "/assets/placeholder/works/square-medium/placeholder.svg";
-            if (file_exists($_SERVER['DOCUMENT_ROOT'] . $imagePath)) {
-              $correctImagePath = $imagePath;
-            } else {
-              $correctImagePath = $placeholderPath;
-            }
-            ?>
-            <a href="<?php echo $artworkLink ?>" target="_blank">
-              <img src="<?php echo $correctImagePath ?>" class="card-img-top" alt="<?php echo $artwork->getTitle() ?>">
-            </a>
-            <div class="card-body d-flex flex-column">
-              <h5 class="card-title text-center">
-                <a href="<?php echo $artworkLink ?>" target="_blank"
-                  class="text-body"><?php echo $artwork->getTitle() ?></a>
-              </h5>
-              <div class="row mx-auto mt-auto">
-                <a href="<?php echo $artworkLink ?>" target="_blank" class="btn btn-primary mt-auto mx-auto">View</a>
-                <form method="post" class="mx-auto mt-1">
-                  <input type="hidden" name="action" value="add_to_favorites">
-                  <input type="hidden" name="artworkId" value="<?php echo $artwork->getArtworkId() ?>">
-                  <button type="submit" class="btn btn-primary ml-3">Add to Favourites</button>
-                </form>
-              </div>
-            </div>
-          </div>
-        </div>
-      <?php endforeach ?>
+      <?php 
+        require_once __DIR__ . '/components/artwork-card-list.php';
+        renderArtworkCardList($artworks);
+      ?>
     </div>
   </div>
   <?php require_once 'bootstrap.php'; ?>
