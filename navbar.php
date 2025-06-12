@@ -58,7 +58,7 @@ if (session_status() === PHP_SESSION_NONE) {
                  <?= htmlspecialchars($_SESSION['username']) ?>
               </span>
               <a class="dropdown-item" href="<?php echo route("account") ?>">My Account</a>
-              <a class="dropdown-item" href="<?php echo route("favorites") ?>">Favorite List</a>
+              <a class="dropdown-item" href="<?php echo route("favorites") ?>">Favorites</a>
               <?php if ($_SESSION['isAdmin'] ?? false): ?>
                 <a class="dropdown-item" href="<?php echo route("admin_users") ?>">Manage Users</a>
               <?php endif; ?>
