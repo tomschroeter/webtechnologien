@@ -99,5 +99,6 @@ if (!$user || !$customer) {
     <button type="submit" class="btn btn-primary">Edit Password</button>
   </form>
   <?php require_once dirname(__DIR__) . "/src/bootstrap.php"; ?>
+  <br>
 </body>
 </html>
