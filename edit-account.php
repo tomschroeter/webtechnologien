@@ -60,9 +60,12 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         $phone === ($customer['Phone'] ?? '') &&
         $email === ($customer['Email'] ?? '')
     );
+    
+    $validPhoneNumber = preg_match('/^\+?[0-9\s\-\(\)\.\/xXextEXT\*#]{5,30}$/', $phone);
+
     if ($allSame) {
         $error = 'nochange';
-    } elseif (!$last || !$city || !$address || !$country || !filter_var($email, FILTER_VALIDATE_EMAIL)) {
+    } elseif (!$last || !$city || !$address || !$country || !$validPhoneNumber || !filter_var($email, FILTER_VALIDATE_EMAIL)) {
         $error = 'invalidInput';
     } else {
         $repo->updateCustomerFullInfo($id, $first, $last, $address, $city, $region, $country, $postal, $phone, $email);
@@ -80,7 +83,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
   <?php if ($success): ?>
     <div class="alert alert-success">Profile updated successfully.</div>
   <?php elseif ($error === 'invalidInput'): ?>
-    <div class="alert alert-danger">Please fill in all required fields and provide a valid email.</div>
+    <div class="alert alert-danger">Please fill in all required fields and provide a valid email and phone number.</div>
   <?php elseif ($error === 'nochange'): ?>
     <div class="alert alert-info">No changes detected. All information is the same.</div>
   <?php endif; ?>
