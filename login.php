@@ -49,11 +49,11 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     <h1 class="mt-3">Login</h1>
 
     <?php if ($error === 'missing'): ?>
-        <div class="alert alert-warning">Bitte gib Benutzername und Passwort ein.</div>
+        <div class="alert alert-warning">Please enter username and password.</div>
     <?php elseif ($error === 'invalid'): ?>
-        <div class="alert alert-danger">Ungültiger Benutzername oder Passwort.</div>
+        <div class="alert alert-danger">Invalid username or password.</div>
     <?php elseif ($logout): ?>
-        <div class="alert alert-success">Du wurdest erfolgreich ausgeloggt.</div>
+        <div class="alert alert-success">You were logged out successfully.</div>
     <?php endif; ?>
 
     <form method="POST" class="mt-4">
