@@ -87,8 +87,8 @@ $artworkSearchResults = $artworkRepository->getArtworkBySearchQuery($searchQuery
 						<?php endif; ?>
 					<?php endforeach; ?>
 					<select name="sortArtist" onchange="this.form.submit()" class="form-select">
-						<option value="ascending" <?php echo !$sortArtist ? 'selected' : ''?>>name (ascending)</option>
-						<option value="descending" <?php echo $sortArtist ? 'selected' : ''?>>name (descending)</option>
+						<option value="ascending" <?php echo !$sortArtist ? 'selected' : ''?>>Name (ascending)</option>
+						<option value="descending" <?php echo $sortArtist ? 'selected' : ''?>>Name (descending)</option>
 					</select>
 				</form>
 			</div>
@@ -151,9 +151,9 @@ $artworkSearchResults = $artworkRepository->getArtworkBySearchQuery($searchQuery
 
 					<!-- Form to change the sort parameter -->
 					<select name="sortParameter" onchange="this.form.submit()" class="form-select mx-2">
-						<option value="Title" <?php echo $sortParameter == "Title" ? 'selected' : ''?>>title</option>
-						<option value="LastName" <?php echo $sortParameter == "LastName" ? 'selected' : ''?>>artist name</option>
-						<option value="YearOfWork" <?php echo $sortParameter == "YearOfWork" ? 'selected' : ''?>>year</option>
+						<option value="Title" <?php echo $sortParameter == "Title" ? 'selected' : ''?>>Title</option>
+						<option value="LastName" <?php echo $sortParameter == "LastName" ? 'selected' : ''?>>Artist name</option>
+						<option value="YearOfWork" <?php echo $sortParameter == "YearOfWork" ? 'selected' : ''?>>Year</option>
 					</select>
 
 					<!-- Form to change the sort order -->
