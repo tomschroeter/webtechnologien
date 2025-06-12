@@ -31,10 +31,17 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $password = $_POST['password'] ?? '';
     $password2 = $_POST['password2'] ?? '';
 
+    $validPhoneNumber = preg_match('/^\+?[0-9\s\-\(\)\.\/xXextEXT\*#]{5,30}$/', $phone);
     $validPassword = preg_match('/^(?=.*[A-Z])(?=.*\d)(?=.*[\W_]).{6,}$/', $password);
 
-    if (!$lastName || !$city || !$address || !$country || !filter_var($email, FILTER_VALIDATE_EMAIL) || !$validPassword) {
-        $error = 'validation';
+    if (!$lastName || !$city || !$address || !$country || !$email || !$password) {
+        $error = 'empty_field';
+    } elseif (!$validPhoneNumber) {
+        $error = 'invalid_phone_number';
+    } elseif (!filter_var($email, FILTER_VALIDATE_EMAIL)) {
+        $error = 'invalid_email';
+    } elseif (!$validPassword) {
+        $error = 'invalid_password';
     } elseif ($password !== $password2) {
         $error = 'password_mismatch';
     } elseif ($repo->userExists($username)) {
@@ -73,11 +80,16 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     <?php require_once "navbar.php"; ?>
     <h1 class="mt-3">Register</h1>
 
-    <?php if ($error === 'validation'): ?>
+    <?php if ($error === 'empty_field'): ?>
+        <div class="alert alert-danger">Please fill out all required fields.</div>
+    <?php elseif ($error === 'invalid_phone_number'): ?>
+        <div class="alert alert-danger">The phone number doesn't have a valid format.</div>
+    <?php elseif ($error === 'invalid_email'): ?>
+        <div class="alert alert-danger">The E-Mail doesn't have a valid format.</div>
+    <?php elseif ($error === 'invalid_password'): ?>
         <div class="alert alert-danger">
-            Please fill out all required fields correctly.<br>
             The password must contain at least 6 characters, one uppercase letter, one number, and one special character.
-        </div>
+.       </div>
     <?php elseif ($error === 'exists'): ?>
         <div class="alert alert-warning">Username already exists. Please choose another one.</div>
     <?php elseif ($error === 'password_mismatch'): ?>
