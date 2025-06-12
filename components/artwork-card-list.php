@@ -19,24 +19,26 @@ function renderArtworkCardList($artworks) {
                     </h5>
                     <div class="d-flex align-items-center mt-auto">
                         <a href="<?php echo $artworkLink ?>" class="btn btn-primary flex-fill mr-2">View</a>
-                        <form method="post" action="/favorites-handler.php" class="d-flex">
-                            <?php
-                            $isInFavorites = isset($_SESSION['favoriteArtworks']) && in_array($artwork->getArtworkId(), $_SESSION['favoriteArtworks']);
-                            ?>
-                            <?php if ($isInFavorites): ?>
-                                <input type="hidden" name="action" value="remove_artwork_from_favorites">
-                                <input type="hidden" name="artworkId" value="<?php echo $artwork->getArtworkId() ?>">
-                                <button type="submit" class="btn btn-outline-danger">
-                                    ♥
-                                </button>
-                            <?php else: ?>
-                                <input type="hidden" name="action" value="add_artwork_to_favorites">
-                                <input type="hidden" name="artworkId" value="<?php echo $artwork->getArtworkId() ?>">
-                                <button type="submit" class="btn btn-primary">
-                                    ♡
-                                </button>
-                            <?php endif; ?>
-                        </form>
+                        <?php if (isset($_SESSION['customerId'])): ?>
+                            <form method="post" action="/favorites-handler.php" class="d-flex">
+                                <?php
+                                $isInFavorites = isset($_SESSION['favoriteArtworks']) && in_array($artwork->getArtworkId(), $_SESSION['favoriteArtworks']);
+                                ?>
+                                <?php if ($isInFavorites): ?>
+                                    <input type="hidden" name="action" value="remove_artwork_from_favorites">
+                                    <input type="hidden" name="artworkId" value="<?php echo $artwork->getArtworkId() ?>">
+                                    <button type="submit" class="btn btn-outline-danger">
+                                        ♥
+                                    </button>
+                                <?php else: ?>
+                                    <input type="hidden" name="action" value="add_artwork_to_favorites">
+                                    <input type="hidden" name="artworkId" value="<?php echo $artwork->getArtworkId() ?>">
+                                    <button type="submit" class="btn btn-primary">
+                                        ♡
+                                    </button>
+                                <?php endif; ?>
+                            </form>
+                        <?php endif; ?>
                     </div>
                 </div>
             </div>
