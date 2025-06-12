@@ -43,9 +43,9 @@ $artworks = $artworkRepository->getAllArtworks($sortBy, $sortOrder);
         <!-- Preserve the current sort order when changing field -->
         <input type="hidden" name="order" value="<?php echo $sortOrder ?>">
         <select name="sort" onchange="this.form.submit()" class="form-select">
-          <option value="title" <?php echo $sortBy == 'title' ? 'selected' : ''?>>Titel</option>
-          <option value="artist" <?php echo $sortBy == 'artist' ? 'selected' : ''?>>Artist Name</option>
-          <option value="year" <?php echo $sortBy == 'year' ? 'selected' : ''?>>Jahr</option>
+          <option value="title" <?php echo $sortBy == 'title' ? 'selected' : ''?>>title</option>
+          <option value="artist" <?php echo $sortBy == 'artist' ? 'selected' : ''?>>artist name</option>
+          <option value="year" <?php echo $sortBy == 'year' ? 'selected' : ''?>>year</option>
         </select>
       </form>
 
@@ -54,8 +54,8 @@ $artworks = $artworkRepository->getAllArtworks($sortBy, $sortOrder);
         <!-- Preserve the current sort field when changing order -->
         <input type="hidden" name="sort" value="<?php echo $sortBy ?>">
         <select name="order" onchange="this.form.submit()" class="form-select">
-          <option value="asc" <?php echo $sortOrder == 'asc' ? 'selected' : ''?>>Aufsteigend</option>
-          <option value="desc" <?php echo $sortOrder == 'desc' ? 'selected' : ''?>>Absteigend</option>
+          <option value="asc" <?php echo $sortOrder == 'asc' ? 'selected' : ''?>>ascending</option>
+          <option value="desc" <?php echo $sortOrder == 'desc' ? 'selected' : ''?>>descending</option>
         </select>
       </form>
 

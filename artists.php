@@ -25,8 +25,8 @@ $artists = $artistRepository->getAllArtists($sort);
     <h1 class="flex-grow-1 mb-0">Artists</h1>
     <form method="get">
       <select name="sort" onchange="this.form.submit()" class="form-select">
-        <option value="ascending" <?php echo !$sort ? 'selected' : ''?>>Name (aufsteigend)</option>
-        <option value="descending" <?php echo $sort ? 'selected' : ''?>>Name (absteigend)</option>
+        <option value="ascending" <?php echo !$sort ? 'selected' : ''?>>name (ascending)</option>
+        <option value="descending" <?php echo $sort ? 'selected' : ''?>>name (descending)</option>
       </select>
     </form>
   </div>

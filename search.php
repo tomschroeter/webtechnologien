@@ -63,7 +63,7 @@ $artworkSearchResults = $artworkRepository->getArtworkBySearchQuery($searchQuery
 ?>
 
 <body class="container">
-	<h2 class="flex-grow-1 mb-1 mt-3">Suchergebnisse</h2>
+	<h2 class="flex-grow-1 mb-1 mt-3">Search Results</h2>
 
 	<?php if (isset($message)): ?>
         <div class="alert alert-<?php echo $messageType ?> alert-dismissible fade show" role="alert">
@@ -87,8 +87,8 @@ $artworkSearchResults = $artworkRepository->getArtworkBySearchQuery($searchQuery
 						<?php endif; ?>
 					<?php endforeach; ?>
 					<select name="sortArtist" onchange="this.form.submit()" class="form-select">
-						<option value="ascending" <?php echo !$sortArtist ? 'selected' : ''?>>Name (aufsteigend)</option>
-						<option value="descending" <?php echo $sortArtist ? 'selected' : ''?>>Name (absteigend)</option>
+						<option value="ascending" <?php echo !$sortArtist ? 'selected' : ''?>>name (ascending)</option>
+						<option value="descending" <?php echo $sortArtist ? 'selected' : ''?>>name (descending)</option>
 					</select>
 				</form>
 			</div>
@@ -151,15 +151,15 @@ $artworkSearchResults = $artworkRepository->getArtworkBySearchQuery($searchQuery
 
 					<!-- Form to change the sort parameter -->
 					<select name="sortParameter" onchange="this.form.submit()" class="form-select mx-2">
-						<option value="Title" <?php echo $sortParameter == "Title" ? 'selected' : ''?>>Titel</option>
-						<option value="LastName" <?php echo $sortParameter == "LastName" ? 'selected' : ''?>>Artist Name</option>
-						<option value="YearOfWork" <?php echo $sortParameter == "YearOfWork" ? 'selected' : ''?>>Jahr</option>
+						<option value="Title" <?php echo $sortParameter == "Title" ? 'selected' : ''?>>title</option>
+						<option value="LastName" <?php echo $sortParameter == "LastName" ? 'selected' : ''?>>artist name</option>
+						<option value="YearOfWork" <?php echo $sortParameter == "YearOfWork" ? 'selected' : ''?>>year</option>
 					</select>
 
 					<!-- Form to change the sort order -->
 					<select name="sortArtwork" onchange="this.form.submit()" class="form-select">
-						<option value="ascending" <?php echo !$sortArtwork ? 'selected' : ''?>>aufsteigend</option>
-						<option value="descending" <?php echo $sortArtwork ? 'selected' : ''?>>absteigend</option>
+						<option value="ascending" <?php echo !$sortArtwork ? 'selected' : ''?>>ascending</option>
+						<option value="descending" <?php echo $sortArtwork ? 'selected' : ''?>>descending</option>
 					</select>
 				</form>
 			</div>
