@@ -43,9 +43,9 @@ $artworks = $artworkRepository->getAllArtworks($sortBy, $sortOrder);
         <!-- Preserve the current sort order when changing field -->
         <input type="hidden" name="order" value="<?php echo $sortOrder ?>">
         <select name="sort" onchange="this.form.submit()" class="form-select">
-          <option value="title" <?php echo $sortBy == 'title' ? 'selected' : ''?>>title</option>
-          <option value="artist" <?php echo $sortBy == 'artist' ? 'selected' : ''?>>artist name</option>
-          <option value="year" <?php echo $sortBy == 'year' ? 'selected' : ''?>>year</option>
+          <option value="title" <?php echo $sortBy == 'title' ? 'selected' : ''?>>Title</option>
+          <option value="artist" <?php echo $sortBy == 'artist' ? 'selected' : ''?>>Artist name</option>
+          <option value="year" <?php echo $sortBy == 'year' ? 'selected' : ''?>>Year</option>
         </select>
       </form>
 
