@@ -8,29 +8,29 @@ require_once dirname(__DIR__)."/src/navbar.php";
 
 <body class="container">
     <div class="mt-4 mb-5">
-        <h1>Über uns</h1>
+        <h1>About Us</h1>
         <hr>
         <div class="card shadow-sm mb-4">
             <div class="card-body">
-                <h2 class="h4 card-title">Unser Manifest</h2>
+                <h2 class="h4 card-title">Our Manifesto</h2>
                 <p class="card-text">
-                    Wir sind eine Gruppe von Studierenden, die ihre allererste Webanwendung erstellt. Diese Website ist ein hypothetisches Projekt, das im Rahmen einer Belegaufgabe entwickelt wurde, um die Grundlagen der Webentwicklung zu erlernen.
+                    We are a group of students creating their very first web application. This website is a hypothetical project developed as part of an assignment to learn the fundamentals of web development.
                 </p>
                 <p class="card-text">
-                    Wir wollen gemeinsam Neues zu entdecken, experimentieren und Spaß bei der Entwicklung haben. Diese Seite ist ein Beweis für unseren Lernerfolg und die gute Teamarbeit.
+                    We want to discover new things together, experiment, and have fun during development. This site is proof of our learning success and good teamwork.
                 </p>
                 <p class="card-text">
-                    Bitte beachten Sie: Diese Website ist dient ausschließlich zu Ausbildungszwecken und gehört keinem echten Unternehmen.
+                    Please note: This website is for educational purposes only and does not belong to any real company.
                 </p>
             </div>
         </div>
         <div class="card shadow-sm">
             <div class="card-body">
-                <h2 class="h4 card-title">Impressum</h2>
-                <p class="mb-1"><strong>Inhaber:</strong> Programmers Having Pizza (PHP) GmbH</p>
-                <p class="mb-1"><strong>Firmensitz:</strong> Hochschulring 1, 15745 Wildau</p>
-                <p class="mb-1"><strong>E-Mail:</strong> <a href="mailto:artists@php.dev">artists@php.dev</a></p>
-                <p class="mb-1"><strong>Telefon:</strong> +49 123 4567890</p>
+                <h2 class="h4 card-title">Imprint</h2>
+                <p class="mb-1"><strong>Owner:</strong> Programmers Having Pizza (PHP) GmbH</p>
+                <p class="mb-1"><strong>Company Address:</strong> Hochschulring 1, 15745 Wildau</p>
+                <p class="mb-1"><strong>Email:</strong> <a href="mailto:artists@php.dev">artists@php.dev</a></p>
+                <p class="mb-1"><strong>Phone:</strong> +49 123 4567890</p>
                 <p class="mb-0"><strong>Management:</strong> Arne Gutschick, Tim Fuchs, Kian van der Meer, Carlos Slaiwa, Tom Schröter</p>
             </div>
         </div>
