@@ -14,7 +14,7 @@ $genres = $genreRepository->getAllGenres();
 
 <body class="container">
   <h1 class="mt-3 mb-3">Genres</h1>
-  <p class="text-muted">Gefunden: <?php echo count($genres)?> Genres</p>
+  <p class="text-muted">Found: <?php echo count($genres)?> genres</p>
 
   <!-- List to display all genres -->
   <ul class="list-group mb-5">
@@ -29,7 +29,7 @@ $imagePath =  "/assets/images/genres/square-thumbs/".$genre->getGenreId().".jpg"
 $placeholderPath = "/assets/placeholder/genres/square-thumbs/placeholder.svg";
 $correctImagePath = getImagePathOrPlaceholder($imagePath, $placeholderPath);
 ?>
-          <img src="<?php echo $correctImagePath?>" alt="Themenbild" style="max-width: 100px; max-height: 100px; object-fit: cover;">
+          <img src="<?php echo $correctImagePath?>" alt="Genre image" style="max-width: 100px; max-height: 100px; object-fit: cover;">
         </a>
       </li>
     <?php endforeach; ?>
