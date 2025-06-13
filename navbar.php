@@ -1,6 +1,4 @@
 <?php
-require_once dirname(__DIR__) . "/src/router/router.php";
-
 if (session_status() === PHP_SESSION_NONE) {
   session_start();
 }
@@ -8,7 +6,7 @@ if (session_status() === PHP_SESSION_NONE) {
 
 <div class="navbar-fullwidth">
   <nav class="navbar sticky-top navbar-expand-sm navbar-light bg-light">
-    <a class="navbar-brand" href="<?php echo route("home") ?>">
+    <a class="navbar-brand" href="/">
       <img src="/assets/svgs/logo.svg" alt="Logo" style="height: 40px; width: 40px;">
     </a>
     <button class="navbar-toggler d-lg-none" type="button" data-toggle="collapse" data-target="#collapsibleNavId"
@@ -24,19 +22,19 @@ if (session_status() === PHP_SESSION_NONE) {
       ?>
       <ul class="navbar-nav mr-auto mt-2 mt-lg-0">
         <li class="nav-item <?php echo ($currentRoute === 'home') ? 'active' : ''; ?>">
-          <a class="nav-link" href="<?php echo route("home") ?>">Home <?php if ($currentRoute === 'home'): ?><span class="sr-only">(current)</span><?php endif; ?></a>
+          <a class="nav-link" href="/">Home <?php if ($currentRoute === 'home'): ?><span class="sr-only">(current)</span><?php endif; ?></a>
         </li>
         <li class="nav-item <?php echo ($currentRoute === 'about') ? 'active' : ''; ?>">
-          <a class="nav-link" href="<?php echo route("about") ?>">About <?php if ($currentRoute === 'about'): ?><span class="sr-only">(current)</span><?php endif; ?></a>
+          <a class="nav-link" href="/about">About <?php if ($currentRoute === 'about'): ?><span class="sr-only">(current)</span><?php endif; ?></a>
         </li>
         <li class="nav-item dropdown <?php echo $isBrowseActive ? 'active' : ''; ?>">
           <a class="nav-link dropdown-toggle" href="#" id="dropdownBrowse" data-toggle="dropdown" aria-haspopup="true"
             aria-expanded="false">Browse</a>
           <div class="dropdown-menu" aria-labelledby="dropdownBrowse">
-            <a class="dropdown-item <?php echo ($currentRoute === 'artists') ? 'active' : ''; ?>" href="<?php echo route("artists") ?>">Artists</a>
-            <a class="dropdown-item <?php echo ($currentRoute === 'artworks') ? 'active' : ''; ?>" href="<?php echo route("artworks") ?>">Artworks</a>
-            <a class="dropdown-item <?php echo ($currentRoute === 'genres') ? 'active' : ''; ?>" href="<?php echo route("genres") ?>">Genres</a>
-            <a class="dropdown-item <?php echo ($currentRoute === 'subjects') ? 'active' : ''; ?>" href="<?php echo route("subjects") ?>">Subjects</a>
+            <a class="dropdown-item <?php echo ($currentRoute === 'artists') ? 'active' : ''; ?>" href="/artists">Artists</a>
+            <a class="dropdown-item <?php echo ($currentRoute === 'artworks') ? 'active' : ''; ?>" href="/artworks">Artworks</a>
+            <a class="dropdown-item <?php echo ($currentRoute === 'genres') ? 'active' : ''; ?>" href="/genres">Genres</a>
+            <a class="dropdown-item <?php echo ($currentRoute === 'subjects') ? 'active' : ''; ?>" href="/subjects">Subjects</a>
           </div>
         </li>
       </ul>
@@ -57,16 +55,16 @@ if (session_status() === PHP_SESSION_NONE) {
               <span class="dropdown-item-text font-weight-bold text-dark">
                  <?= htmlspecialchars($_SESSION['username']) ?>
               </span>
-              <a class="dropdown-item" href="<?php echo route("account") ?>">My Account</a>
-              <a class="dropdown-item" href="<?php echo route("favorites") ?>">Favorites</a>
+              <a class="dropdown-item" href="/account">My Account</a>
+              <a class="dropdown-item" href="/favorites">Favorites</a>
               <?php if ($_SESSION['isAdmin'] ?? false): ?>
-                <a class="dropdown-item" href="<?php echo route("admin_users") ?>">Manage Users</a>
+                <a class="dropdown-item" href="/manage-users">Manage Users</a>
               <?php endif; ?>
               <div class="dropdown-divider"></div>
               <a class="dropdown-item text-danger" href="/logout.php">Logout</a>
             <?php else: ?>
-              <a class="dropdown-item" href="<?php echo route("register") ?>">Register</a>
-              <a class="dropdown-item" href="<?php echo route("login") ?>">Login</a>
+              <a class="dropdown-item" href="/register">Register</a>
+              <a class="dropdown-item" href="/login">Login</a>
             <?php endif; ?>
           </div>
         </li>
