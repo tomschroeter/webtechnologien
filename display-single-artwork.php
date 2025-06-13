@@ -89,15 +89,14 @@ $correctLargeImagePath = getImagePathOrPlaceholder($largeImagePath, $placeholder
             <div class="col-md-6">
                 <a href="#" data-toggle="modal" data-target="#imageModal">
                     <img src="<?php echo $correctImagePath ?>" 
-                         alt="<?php echo htmlspecialchars($artwork->getTitle()) ?>" 
-                         class="img-fluid" 
-                         style="width: 100%; height: 400px; object-fit: contain; cursor: pointer; border: 1px solid #ddd; background-color: #f8f9fa;">
-                </a>
+                        alt="<?php echo htmlspecialchars($artwork->getTitle()) ?>" 
+                        class="img-fluid" 
+                        style="max-width: 100%; height: auto; object-fit: contain; cursor: pointer; border: 1px solid #ddd; background-color: #f8f9fa;">                    </a>
                 
                 <!-- Modal for large image -->
                 <div class="modal fade" id="imageModal" tabindex="-1" role="dialog" aria-labelledby="imageModalLabel" aria-hidden="true">
                     <div class="modal-dialog modal-lg" role="document" style="height: 95vh; margin: 2.5vh auto;">
-                        <div class="modal-content" style="height: 100%;">
+                        <div class="modal-content" style="height: auto;">
                             <div class="modal-header">
                                 <h5 class="modal-title" id="imageModalLabel"><?php echo htmlspecialchars($artwork->getTitle()) ?></h5>
                                 <button type="button" class="close" data-dismiss="modal" aria-label="Close">
@@ -106,9 +105,9 @@ $correctLargeImagePath = getImagePathOrPlaceholder($largeImagePath, $placeholder
                             </div>
                             <div class="modal-body text-center d-flex align-items-center justify-content-center" style="flex: 1; padding: 20px;">
                                 <img src="<?php echo $correctLargeImagePath ?>" 
-                                     alt="<?php echo htmlspecialchars($artwork->getTitle()) ?>" 
-                                     class="img-fluid"
-                                     style="height: 100%; width: auto; object-fit: contain;">
+                                    alt="<?php echo htmlspecialchars($artwork->getTitle()) ?>" 
+                                    class="img-fluid"
+                                    style="height: 100%; width: auto; object-fit: contain;">
                             </div>
                         </div>
                     </div>
@@ -131,27 +130,27 @@ $correctLargeImagePath = getImagePathOrPlaceholder($largeImagePath, $placeholder
                     <?php endif; ?>
                 </div>
 
-                <!-- Add/Remove Favorites Form if logged in -->
-                <?php 
-                $isInFavorites = isset($_SESSION['favoriteArtworks']) && in_array($artwork->getArtworkId(), $_SESSION['favoriteArtworks']);
-                ?>
-                <?php if (isset($_SESSION['customerId'])): ?>
-                    <form method="post" action="/favorites-handler.php" class="mb-3">
-                        <?php if ($isInFavorites): ?>
-                            <input type="hidden" name="action" value="remove_artwork_from_favorites">
-                            <input type="hidden" name="artworkId" value="<?php echo $artwork->getArtworkId() ?>">
-                            <button type="submit" class="btn btn-outline-danger">
-                                ♥ Remove from Favorites
-                            </button>
-                        <?php else: ?>
-                            <input type="hidden" name="action" value="add_artwork_to_favorites">
-                            <input type="hidden" name="artworkId" value="<?php echo $artwork->getArtworkId() ?>">
-                            <button type="submit" class="btn btn-primary">
-                                ♡ Add to Favorites
-                            </button>
-                        <?php endif; ?>
-                    </form>
-                <?php endif; ?>
+            <!-- Add/Remove Favorites Form if logged in -->
+            <?php 
+            $isInFavorites = isset($_SESSION['favoriteArtworks']) && in_array($artwork->getArtworkId(), $_SESSION['favoriteArtworks']);
+            ?>
+            <?php if (isset($_SESSION['customerId'])): ?>
+                <form method="post" action="/favorites-handler.php" class="mb-3">
+                    <?php if ($isInFavorites): ?>
+                        <input type="hidden" name="action" value="remove_artwork_from_favorites">
+                        <input type="hidden" name="artworkId" value="<?php echo $artwork->getArtworkId() ?>">
+                        <button type="submit" class="btn btn-outline-danger">
+                            ♥ Remove from Favorites
+                        </button>
+                    <?php else: ?>
+                        <input type="hidden" name="action" value="add_artwork_to_favorites">
+                        <input type="hidden" name="artworkId" value="<?php echo $artwork->getArtworkId() ?>">
+                        <button type="submit" class="btn btn-primary">
+                            ♡ Add to Favorites
+                        </button>
+                    <?php endif; ?>
+                </form>
+            <?php endif; ?>
 
                 <table class="table table-bordered">
                     <thead class="thead-dark">
@@ -192,7 +191,7 @@ $correctLargeImagePath = getImagePathOrPlaceholder($largeImagePath, $placeholder
                                 <td>
                                     <?php foreach ($genres as $index => $genre): ?>
                                         <a href="<?php echo route('genres', ['id' => $genre->getGenreId()]) ?>" 
-                                           class="text-decoration-none"><?php echo htmlspecialchars($genre->getGenreName()) ?></a><?php if ($index < count($genres) - 1): ?>, <?php endif; ?>
+                                        class="text-decoration-none"><?php echo htmlspecialchars($genre->getGenreName()) ?></a><?php if ($index < count($genres) - 1): ?>, <?php endif; ?>
                                     <?php endforeach; ?>
                                 </td>
                             </tr>
@@ -204,7 +203,7 @@ $correctLargeImagePath = getImagePathOrPlaceholder($largeImagePath, $placeholder
                                 <td>
                                     <?php foreach ($subjects as $index => $subject): ?>
                                         <a href="<?php echo route('subjects', ['id' => $subject->getSubjectId()]) ?>" 
-                                           class="text-decoration-none"><?php echo htmlspecialchars($subject->getSubjectName()) ?></a><?php if ($index < count($subjects) - 1): ?>, <?php endif; ?>
+                                        class="text-decoration-none"><?php echo htmlspecialchars($subject->getSubjectName()) ?></a><?php if ($index < count($subjects) - 1): ?>, <?php endif; ?>
                                     <?php endforeach; ?>
                                 </td>
                             </tr>

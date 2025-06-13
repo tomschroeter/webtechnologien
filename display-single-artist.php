@@ -40,13 +40,13 @@ try {
 	<h1><?php echo htmlspecialchars($artist->getFirstName() . ' ' . $artist->getLastName()) ?></h1>
 	
 	<?php if (isset($message)): ?>
-        <div class="alert alert-<?php echo $messageType ?> alert-dismissible fade show" role="alert">
-            <?php echo htmlspecialchars($message) ?>
-            <button type="button" class="close" data-dismiss="alert" aria-label="Close">
-                <span aria-hidden="true">&times;</span>
-            </button>
-        </div>
-    <?php endif; ?>
+		<div class="alert alert-<?php echo $messageType ?> alert-dismissible fade show" role="alert">
+			<?php echo htmlspecialchars($message) ?>
+			<button type="button" class="close" data-dismiss="alert" aria-label="Close">
+				<span aria-hidden="true">&times;</span>
+			</button>
+		</div>
+	<?php endif; ?>
 	
 	<div class="container mt-3">
 		<div class="row">
@@ -63,27 +63,27 @@ try {
 			<div class="col-md-8">
 				<p><?php echo htmlspecialchars($artist->getDetails()) ?></p>
 
-				<!-- Add/Remove Artist Favorites Form if logged in -->
-                <?php 
-                $isInFavorites = isset($_SESSION['favoriteArtists']) && in_array($artist->getArtistId(), $_SESSION['favoriteArtists']);
-                ?>
-				<?php if (isset($_SESSION['customerId'])): ?>
-					<form method="post" action="/favorites-handler.php" class="mb-3">
-						<?php if ($isInFavorites): ?>
-							<input type="hidden" name="action" value="remove_artist_from_favorites">
-							<input type="hidden" name="artistId" value="<?php echo $artist->getArtistId() ?>">
-							<button type="submit" class="btn btn-outline-danger">
-								♥ Remove from Favorites
-							</button>
-						<?php else: ?>
-							<input type="hidden" name="action" value="add_artist_to_favorites">
-							<input type="hidden" name="artistId" value="<?php echo $artist->getArtistId() ?>">
-							<button type="submit" class="btn btn-primary">
-								♡ Add to Favorites
-							</button>
-						<?php endif; ?>
-					</form>
-				<?php endif; ?>
+			<!-- Add/Remove Artist Favorites Form if logged in -->
+			<?php 
+			$isInFavorites = isset($_SESSION['favoriteArtists']) && in_array($artist->getArtistId(), $_SESSION['favoriteArtists']);
+			?>
+			<?php if (isset($_SESSION['customerId'])): ?>
+				<form method="post" action="/favorites-handler.php" class="mb-3">
+					<?php if ($isInFavorites): ?>
+						<input type="hidden" name="action" value="remove_artist_from_favorites">
+						<input type="hidden" name="artistId" value="<?php echo $artist->getArtistId() ?>">
+						<button type="submit" class="btn btn-outline-danger">
+							♥ Remove from Favorites
+						</button>
+					<?php else: ?>
+						<input type="hidden" name="action" value="add_artist_to_favorites">
+						<input type="hidden" name="artistId" value="<?php echo $artist->getArtistId() ?>">
+						<button type="submit" class="btn btn-primary">
+							♡ Add to Favorites
+						</button>
+					<?php endif; ?>
+				</form>
+			<?php endif; ?>
 
 				<!-- Artist details -->
 				<table class="table table-bordered w-75 mt-4">
@@ -108,10 +108,10 @@ try {
 
 		<h2 class="mt-5">Artworks by <?php echo htmlspecialchars($artist->getFirstName() . ' ' . $artist->getLastName()) ?></h2>
 		<div class="row mt-4">
-            <?php 
-            require_once dirname(__DIR__) . "/src/components/artwork-card-list.php";
-            renderArtworkCardList($artworks);
-            ?>
+			<?php 
+			require_once dirname(__DIR__) . "/src/components/artwork-card-list.php";
+			renderArtworkCardList($artworks);
+			?>
 		</div>
 	</div>
 

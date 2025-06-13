@@ -46,7 +46,7 @@ class ArtworkRepository
         }
 
         // Add 0 in front of image file name if name is 5 characters long
-        
+        $artwork = fixFilePath($artwork);
 
         $this->db->disconnect();
 

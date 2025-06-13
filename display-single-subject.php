@@ -34,8 +34,8 @@ try {
 ?>
 
 <body class="container">
-	<br>
-	<h1> <?php echo $subject->getSubjectName()?></h1>
+    <br>
+    <h1> <?php echo $subject->getSubjectName()?></h1>
     <?php if (isset($message)): ?>
         <div class="alert alert-<?php echo $messageType ?> alert-dismissible fade show" role="alert">
             <?php echo htmlspecialchars($message) ?>
@@ -44,17 +44,17 @@ try {
             </button>
         </div>
     <?php endif; ?>
-	<div class="container mt-3">
-		<div class="row">
+    <div class="container mt-3">
+        <div class="row">
             <!-- Displays subject image -->
             <?php 
-require_once dirname(__DIR__) . "/src/components/find_image_ref.php";
-$imagePath =  "/assets/images/subjects/square-medium/".$subject->getSubjectId().".jpg";
-$placeholderPath = "/assets/placeholder/subjects/square-medium/placeholder.svg";
-$correctImagePath = getImagePathOrPlaceholder($imagePath, $placeholderPath);
-?>
+                require_once dirname(__DIR__) . "/src/components/find_image_ref.php";
+                $imagePath =  "/assets/images/subjects/square-medium/".$subject->getSubjectId().".jpg";
+                $placeholderPath = "/assets/placeholder/subjects/square-medium/placeholder.svg";
+                $correctImagePath = getImagePathOrPlaceholder($imagePath, $placeholderPath);
+            ?>
             <img src="<?php echo $correctImagePath?>" alt="Bild von <?php echo $subject->getSubjectName()?>">
-		</div>
+        </div>
         <h2 class="mt-5">Artworks for <?php echo $subject->getSubjectName()?> </h2>
         <div class="row mt-4">
             <?php 
@@ -62,7 +62,7 @@ $correctImagePath = getImagePathOrPlaceholder($imagePath, $placeholderPath);
                 renderArtworkCardList($artworks);
             ?>
         </div>
-	</div>
-	<?php require_once dirname(__DIR__) . "/src/bootstrap.php"; ?>
+    </div>
+    <?php require_once dirname(__DIR__) . "/src/bootstrap.php"; ?>
 </body>
 </html>
