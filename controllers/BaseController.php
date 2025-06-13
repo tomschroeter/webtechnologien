@@ -34,8 +34,9 @@ abstract class BaseController
         // Add content to data for layout
         $data['content'] = $content;
         
-        // Render with layout
-        return $this->render($layout, $data);
+        // Render with layout and output directly
+        echo $this->render($layout, $data);
+        exit(); // Always exit after rendering to prevent further output
     }
     
     protected function redirect($url)

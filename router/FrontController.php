@@ -24,6 +24,7 @@ class FrontController
             'GET' => [
                 '/' => ['HomeController', 'index'],
                 '/index' => ['HomeController', 'index'],
+                '/about' => ['HomeController', 'about'],
                 '/artists' => ['ArtistController', 'index'],
                 '/artists/{id}' => ['ArtistController', 'show'],
                 '/artworks' => ['ArtworkController', 'index'],

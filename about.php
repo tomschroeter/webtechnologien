@@ -1,3 +1,9 @@
+<?php
+// Try MVC routing first
+require_once "mvc_bootstrap.php";
+
+// If we reach here, MVC didn't handle the route - continue with original file
+?>
 <!DOCTYPE html>
 <html lang="en">
 

@@ -35,6 +35,23 @@ class HomeController extends BaseController
             'title' => 'Home - Art Gallery'
         ];
         
-        echo $this->renderWithLayout('home/index', $data);
+        $this->renderWithLayout('home/index', $data);
+    }
+    
+    public function about()
+    {
+        if (session_status() === PHP_SESSION_NONE) {
+            session_start();
+        }
+        
+        // Get flash message if any
+        $flashMessage = $this->getFlashMessage();
+        
+        $data = [
+            'flashMessage' => $flashMessage,
+            'title' => 'About Us - Art Gallery'
+        ];
+        
+        $this->renderWithLayout('home/about', $data);
     }
 }
