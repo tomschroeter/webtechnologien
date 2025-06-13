@@ -7,6 +7,11 @@ if (session_status() === PHP_SESSION_NONE) {
     session_start();
 }
 
+if (isset($_SESSION['customerId'])) {
+    header("Location: account");
+    exit;
+}
+
 $db = new Database();
 $repo = new CustomerLogonRepository($db);
 

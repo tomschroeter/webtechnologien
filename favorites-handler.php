@@ -1,6 +1,11 @@
 <?php
 session_start();
 
+if ($_SERVER['REQUEST_METHOD'] !== 'POST' || !isset($_SESSION['customerId'])) {
+    header("Location: error.php?error=unauthorized");
+    exit();
+}
+
 // Handle Add Artist Favorites
 if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['action'])) {
     try {
