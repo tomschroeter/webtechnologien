@@ -36,7 +36,7 @@ class ArtistController extends BaseController
             'title' => 'Artists - Art Gallery'
         ];
         
-        echo $this->renderWithLayout('artists/index', $data);
+        $this->renderWithLayout('artists/index', $data);
     }
     
     public function show($id)
@@ -67,7 +67,7 @@ class ArtistController extends BaseController
                 'title' => $artist->getFirstName() . ' ' . $artist->getLastName() . ' - Artists'
             ];
             
-            echo $this->renderWithLayout('artists/show', $data);
+            $this->renderWithLayout('artists/show', $data);
             
         } catch (Exception $e) {
             error_log("Error loading artist: " . $e->getMessage());
