@@ -78,7 +78,7 @@ class ArtworkController extends BaseController
             'title' => 'Artworks - Art Gallery'
         ];
         
-        echo $this->renderWithLayout('artworks/index', $data);
+        $this->renderWithLayout('artworks/index', $data);
     }
     
     public function show($id)
@@ -110,7 +110,7 @@ class ArtworkController extends BaseController
                 'title' => $artwork->getTitle() . ' - Artworks'
             ];
             
-            echo $this->renderWithLayout('artworks/show', $data);
+            $this->renderWithLayout('artworks/show', $data);
             
         } catch (Exception $e) {
             error_log("Error loading artwork: " . $e->getMessage());
