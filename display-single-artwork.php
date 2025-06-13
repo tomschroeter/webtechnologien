@@ -1,3 +1,14 @@
+<?php
+// Try MVC routing first
+$mvcHandled = require_once dirname(__DIR__) . "/src/mvc_bootstrap.php";
+
+// If MVC handled the request, we're done
+if ($mvcHandled) {
+    return;
+}
+
+// Otherwise, fall back to original behavior
+?>
 <!DOCTYPE html>
 <html lang="en">
 
