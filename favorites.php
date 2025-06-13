@@ -14,6 +14,11 @@ if (session_status() === PHP_SESSION_NONE) {
     session_start();
 }
 
+if (!isset($_SESSION['customerId'])) {
+    header("Location: error.php?error=notLoggedIn");
+    exit;
+}
+
 $db = new Database();
 $artworkRepository = new ArtworkRepository($db);
 $artistRepository = new ArtistRepository($db);

@@ -131,10 +131,11 @@ $correctLargeImagePath = getImagePathOrPlaceholder($largeImagePath, $placeholder
                         <?php endif; ?>
                     </div>
 
-                    <!-- Add/Remove Favorites Form -->
-                    <?php 
-                    $isInFavorites = isset($_SESSION['favoriteArtworks']) && in_array($artwork->getArtworkId(), $_SESSION['favoriteArtworks']);
-                    ?>
+                <!-- Add/Remove Favorites Form if logged in -->
+                <?php 
+                $isInFavorites = isset($_SESSION['favoriteArtworks']) && in_array($artwork->getArtworkId(), $_SESSION['favoriteArtworks']);
+                ?>
+                <?php if (isset($_SESSION['customerId'])): ?>
                     <form method="post" action="/favorites-handler.php" class="mb-3">
                         <?php if ($isInFavorites): ?>
                             <input type="hidden" name="action" value="remove_artwork_from_favorites">
@@ -150,6 +151,7 @@ $correctLargeImagePath = getImagePathOrPlaceholder($largeImagePath, $placeholder
                             </button>
                         <?php endif; ?>
                     </form>
+                <?php endif; ?>
 
                     <table class="table table-bordered">
                         <thead class="thead-dark">

@@ -64,10 +64,11 @@ try {
 				<div class="col-md-8">
 					<p><?php echo htmlspecialchars($artist->getDetails()) ?></p>
 
-					<!-- Add/Remove Artist Favorites Form -->
-					<?php 
-					$isInFavorites = isset($_SESSION['favoriteArtists']) && in_array($artist->getArtistId(), $_SESSION['favoriteArtists']);
-					?>
+				<!-- Add/Remove Artist Favorites Form if logged in -->
+                <?php 
+                $isInFavorites = isset($_SESSION['favoriteArtists']) && in_array($artist->getArtistId(), $_SESSION['favoriteArtists']);
+                ?>
+				<?php if (isset($_SESSION['customerId'])): ?>
 					<form method="post" action="/favorites-handler.php" class="mb-3">
 						<?php if ($isInFavorites): ?>
 							<input type="hidden" name="action" value="remove_artist_from_favorites">
@@ -83,6 +84,7 @@ try {
 							</button>
 						<?php endif; ?>
 					</form>
+				<?php endif; ?>
 
 					<!-- Artist details -->
 					<table class="table table-bordered w-75 mt-4">
