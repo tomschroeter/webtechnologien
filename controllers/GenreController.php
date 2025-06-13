@@ -31,7 +31,7 @@ class GenreController extends BaseController
             'title' => 'Genres - Art Gallery'
         ];
         
-        echo $this->renderWithLayout('genres/index', $data);
+        $this->renderWithLayout('genres/index', $data);
     }
     
     public function show($id)
@@ -61,7 +61,7 @@ class GenreController extends BaseController
                 'title' => $genre->getGenreName() . ' - Genres'
             ];
             
-            echo $this->renderWithLayout('genres/show', $data);
+            $this->renderWithLayout('genres/show', $data);
             
         } catch (Exception $e) {
             error_log("Error loading genre: " . $e->getMessage());

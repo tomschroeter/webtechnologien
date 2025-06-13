@@ -31,7 +31,7 @@ class SubjectController extends BaseController
             'title' => 'Subjects - Art Gallery'
         ];
         
-        echo $this->renderWithLayout('subjects/index', $data);
+        $this->renderWithLayout('subjects/index', $data);
     }
     
     public function show($id)
@@ -61,7 +61,7 @@ class SubjectController extends BaseController
                 'title' => $subject->getSubjectName() . ' - Subjects'
             ];
             
-            echo $this->renderWithLayout('subjects/show', $data);
+            $this->renderWithLayout('subjects/show', $data);
             
         } catch (Exception $e) {
             error_log("Error loading subject: " . $e->getMessage());

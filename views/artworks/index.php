@@ -1,3 +1,6 @@
+<?php
+require_once dirname(dirname(__DIR__)) . "/components/find_image_ref.php";
+?>
 <!-- Form providing the ability to sort artworks -->
 <div class="d-flex align-items-center mt-3 mb-3">
   <h1 class="flex-grow-1 mb-0">Artworks</h1>
@@ -31,30 +34,34 @@
 
 <!-- List to display all artworks -->
 <ul class="list-group mb-5">
-  <?php foreach ($artworks as $artwork): ?>
-    <li class="list-group-item d-flex justify-content-between align-items-center">
-      <a href="<?php echo route('artworks', ['id' => $artwork->getArtworkId()])?>"
-         class="d-flex justify-content-between align-items-center w-100 text-decoration-none text-dark">
-        <div>
-          <h5 class="mb-1"><?php echo $artwork->getTitle()?></h5>
-          <p class="mb-1">
-            <?php
-              // Get artist name - need to handle this in controller instead
-              echo isset($artwork->artistName) ? $artwork->artistName : 'Unknown Artist';
-            ?>
-            <?php if ($artwork->getYearOfWork()): ?>
-              <span class="text-muted">(<?php echo $artwork->getYearOfWork()?>)</span>
-            <?php endif; ?>
-          </p>
-        </div>
-        <!-- Check if artwork image exists -->
-        <?php $imagePath = "/assets/images/works/square-small/".$artwork->getImageFileName().".jpg";
-      $placeholderPath = "/assets/placeholder/works/square-small/placeholder.svg";
-      $correctImagePath = getImagePathOrPlaceholder($imagePath, $placeholderPath);
-      ?>
-        <img src="<?php echo $correctImagePath?>" alt="<?php echo $artwork->getTitle()?>" 
-             style="max-width: 100px; max-height: 100px; object-fit: cover;">
-      </a>
-    </li>
-  <?php endforeach; ?>
+  <?php if (!empty($artworks)): ?>
+    <?php foreach ($artworks as $artwork): ?>
+      <li class="list-group-item d-flex justify-content-between align-items-center">
+        <a href="/artworks/<?php echo $artwork->getArtworkID()?>"
+           class="d-flex justify-content-between align-items-center w-100 text-decoration-none text-dark">
+          <div>
+            <h5 class="mb-1"><?php echo htmlspecialchars($artwork->getTitle())?></h5>
+            <p class="mb-1">
+              <?php
+                // Get artist name - need to handle this in controller instead
+                echo isset($artwork->artistName) ? htmlspecialchars($artwork->artistName) : 'Unknown Artist';
+              ?>
+              <?php if ($artwork->getYearOfWork()): ?>
+                <span class="text-muted">(<?php echo htmlspecialchars($artwork->getYearOfWork())?>)</span>
+              <?php endif; ?>
+            </p>
+          </div>
+          <!-- Check if artwork image exists -->
+          <?php $imagePath = "/assets/images/works/square-small/".$artwork->getImageFileName().".jpg";
+        $placeholderPath = "/assets/placeholder/works/square-small/placeholder.svg";
+        $correctImagePath = getImagePathOrPlaceholder($imagePath, $placeholderPath);
+        ?>
+          <img src="<?php echo $correctImagePath?>" alt="<?php echo htmlspecialchars($artwork->getTitle())?>" 
+               style="max-width: 100px; max-height: 100px; object-fit: cover;">
+        </a>
+      </li>
+    <?php endforeach; ?>
+  <?php else: ?>
+    <li class="list-group-item">No artworks found.</li>
+  <?php endif; ?>
 </ul>
