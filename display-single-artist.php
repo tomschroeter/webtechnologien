@@ -63,25 +63,27 @@ try {
 			<div class="col-md-8">
 				<p><?php echo htmlspecialchars($artist->getDetails()) ?></p>
 
-				<!-- Add/Remove Artist Favorites Form -->
+				<!-- Add/Remove Artist Favorites Form if logged in -->
                 <?php 
                 $isInFavorites = isset($_SESSION['favoriteArtists']) && in_array($artist->getArtistId(), $_SESSION['favoriteArtists']);
                 ?>
-                <form method="post" action="/favorites-handler.php" class="mb-3">
-                    <?php if ($isInFavorites): ?>
-                        <input type="hidden" name="action" value="remove_artist_from_favorites">
-                        <input type="hidden" name="artistId" value="<?php echo $artist->getArtistId() ?>">
-                        <button type="submit" class="btn btn-outline-danger">
-                            ♥ Remove from Favorites
-                        </button>
-                    <?php else: ?>
-                        <input type="hidden" name="action" value="add_artist_to_favorites">
-                        <input type="hidden" name="artistId" value="<?php echo $artist->getArtistId() ?>">
-                        <button type="submit" class="btn btn-primary">
-                            ♡ Add to Favorites
-                        </button>
-                    <?php endif; ?>
-                </form>
+				<?php if (isset($_SESSION['customerId'])): ?>
+					<form method="post" action="/favorites-handler.php" class="mb-3">
+						<?php if ($isInFavorites): ?>
+							<input type="hidden" name="action" value="remove_artist_from_favorites">
+							<input type="hidden" name="artistId" value="<?php echo $artist->getArtistId() ?>">
+							<button type="submit" class="btn btn-outline-danger">
+								♥ Remove from Favorites
+							</button>
+						<?php else: ?>
+							<input type="hidden" name="action" value="add_artist_to_favorites">
+							<input type="hidden" name="artistId" value="<?php echo $artist->getArtistId() ?>">
+							<button type="submit" class="btn btn-primary">
+								♡ Add to Favorites
+							</button>
+						<?php endif; ?>
+					</form>
+				<?php endif; ?>
 
 				<!-- Artist details -->
 				<table class="table table-bordered w-75 mt-4">
