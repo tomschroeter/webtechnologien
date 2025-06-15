@@ -80,7 +80,7 @@ if (session_status() === PHP_SESSION_NONE) {
                 <a class="dropdown-item" href="/manage-users">Manage Users</a>
               <?php endif; ?>
               <div class="dropdown-divider"></div>
-              <a class="dropdown-item text-danger" href="/logout.php">Logout</a>
+              <a class="dropdown-item text-danger" href="/logout">Logout</a>
             <?php else: ?>
               <a class="dropdown-item" href="/register">Register</a>
               <a class="dropdown-item" href="/login">Login</a>

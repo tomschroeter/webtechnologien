@@ -37,7 +37,12 @@ class FrontController
                 '/register' => ['AuthController', 'showRegister'],
                 '/account' => ['AuthController', 'showAccount'],
                 '/favorites' => ['AuthController', 'showFavorites'],
+                '/logout' => ['AuthController', 'logout'],
                 '/manage-users' => ['AdminController', 'manageUsers'],
+            ],
+            'POST' => [
+                '/login' => ['AuthController', 'processLogin'],
+                '/register' => ['AuthController', 'processRegister'],
             ]
         ];
     }

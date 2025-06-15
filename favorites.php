@@ -2,6 +2,10 @@
 <html lang="en">
 
 <?php
+// Try MVC routing first
+require_once dirname(__DIR__) . "/src/mvc_bootstrap.php";
+
+// If we reach here, MVC didn't handle the route, continue with original logic
 require_once dirname(__DIR__) . "/src/head.php";
 require_once dirname(__DIR__) . "/src/navbar.php";
 require_once dirname(__DIR__) . "/src/Database.php";
