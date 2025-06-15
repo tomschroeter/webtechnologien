@@ -1,4 +1,8 @@
 <?php
+// Try MVC routing first
+require_once "mvc_bootstrap.php";
+
+// If we reach here, MVC didn't handle the route, continue with original logic
 require_once "Database.php";
 require_once "repositories/CustomerLogonRepository.php";
 require_once "classes/Customer.php";

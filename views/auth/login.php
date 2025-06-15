@@ -1,18 +1,21 @@
-<div class="row justify-content-center mt-5">
-    <div class="col-md-6">
-        <div class="card">
-            <div class="card-header">
-                <h3 class="text-center">Login</h3>
-            </div>
-            <div class="card-body">
-                <!-- This would include the original login form from login.php -->
-                <p class="text-center">
-                    <a href="/login.php" class="btn btn-primary">Continue to Login Page</a>
-                </p>
-                <p class="text-center text-muted">
-                    This is the MVC version. The original login functionality is preserved in login.php
-                </p>
-            </div>
-        </div>
+<h1 class="mt-3">Login</h1>
+
+<?php if ($error === 'missing'): ?>
+    <div class="alert alert-warning">Please enter username and password.</div>
+<?php elseif ($error === 'invalid'): ?>
+    <div class="alert alert-danger">Invalid username or password.</div>
+<?php elseif ($logout): ?>
+    <div class="alert alert-success">You were logged out successfully.</div>
+<?php endif; ?>
+
+<form method="POST" action="/login" class="mt-4">
+    <div class="form-group">
+        <label>Username</label>
+        <input name="username" class="form-control" placeholder="Username" required>
     </div>
-</div>
+    <div class="form-group">
+        <label>Password</label>
+        <input name="password" type="password" class="form-control" placeholder="Password" required>
+    </div>
+    <button type="submit" class="btn btn-primary">Login</button>
+</form>

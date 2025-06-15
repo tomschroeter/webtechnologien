@@ -35,10 +35,10 @@
     <?php endif; ?>
 
     <!-- Welcome message for newly registered users -->
-    <?php if (isset($_GET['welcome']) && isset($_SESSION['username'])): ?>
+    <?php if (isset($_GET['welcome']) && $_GET['welcome'] === '1' && isset($_SESSION['username'])): ?>
         <div class="alert alert-success alert-dismissible fade show mt-3" role="alert">
-            <strong>Welcome to our Art Gallery, <?= htmlspecialchars($_SESSION['username']) ?>!</strong> 
-            Thank you for registering. You can now explore our collection and add artworks to your favorites.
+            <strong>Welcome to Art Gallery, <?= htmlspecialchars($_SESSION['username']) ?>!</strong> 
+            Your account has been created successfully.
             <button type="button" class="close" data-dismiss="alert" aria-label="Close">
                 <span aria-hidden="true">&times;</span>
             </button>
