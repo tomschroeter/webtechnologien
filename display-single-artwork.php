@@ -91,7 +91,7 @@ $correctLargeImagePath = getImagePathOrPlaceholder($largeImagePath, $placeholder
                     <img src="<?php echo $correctImagePath ?>" 
                         alt="<?php echo htmlspecialchars($artwork->getTitle()) ?>" 
                         class="img-fluid" 
-                        style="max-width: auto; height: 100%; object-fit: contain; cursor: pointer; border: 1px solid #ddd; background-color: #f8f9fa;"></a>
+                        style="max-width: auto; max-height: auto; object-fit: contain; cursor: pointer; border: 1px solid #ddd; background-color: #f8f9fa;"></a>
                 
                 <!-- Modal for large image -->
                 <div class="modal fade" id="imageModal" tabindex="-1" role="dialog" aria-labelledby="imageModalLabel" aria-hidden="true">
