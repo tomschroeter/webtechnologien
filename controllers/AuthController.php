@@ -467,4 +467,109 @@ class AuthController extends BaseController
             $this->redirect($redirectUrl);
         }
     }
+    
+    public function changePassword()
+    {
+        if (session_status() === PHP_SESSION_NONE) {
+            session_start();
+        }
+        
+        $this->requireAuth();
+        
+        $userId = (int)$_SESSION['customerId'];
+        $user = $this->customerRepository->getUserDetailsById($userId);
+
+        if (!$user) {
+            $this->redirectWithMessage('/account', 'User not found.', 'error');
+            return;
+        }
+
+        // CSRF token generation
+        if (empty($_SESSION['csrf_token'])) {
+            $_SESSION['csrf_token'] = bin2hex(random_bytes(32));
+        }
+
+        $error = $_GET['error'] ?? null;
+        $flashMessage = $this->getFlashMessage();
+        
+        $data = [
+            'user' => $user,
+            'csrf_token' => $_SESSION['csrf_token'],
+            'error' => $error,
+            'flashMessage' => $flashMessage,
+            'title' => 'Change Password'
+        ];
+        
+        echo $this->renderWithLayout('auth/change-password', $data);
+    }
+    
+    public function updatePassword()
+    {
+        if (session_status() === PHP_SESSION_NONE) {
+            session_start();
+        }
+        
+        $this->requireAuth();
+        
+        // CSRF token validation
+        if (!isset($_POST['csrf_token']) || $_POST['csrf_token'] !== $_SESSION['csrf_token']) {
+            $this->redirectWithMessage('/account', 'Invalid security token. Please try again.', 'error');
+            return;
+        }
+        
+        $userId = (int)$_SESSION['customerId'];
+        $user = $this->customerRepository->getUserDetailsById($userId);
+        
+        if (!$user) {
+            $this->redirectWithMessage('/account', 'User not found.', 'error');
+            return;
+        }
+        
+        $oldPassword = $_POST['oldPassword'] ?? '';
+        $newPassword1 = $_POST['newPassword1'] ?? '';
+        $newPassword2 = $_POST['newPassword2'] ?? '';
+        
+        $errors = [];
+        
+        // Get current user logon data
+        $userLogon = $this->customerRepository->getActiveUserByUsername($user['UserName']);
+        
+        // Validate old password
+        if (!$userLogon || !password_verify($oldPassword, $userLogon['Pass'])) {
+            $errors[] = 'Current password is incorrect.';
+        }
+        
+        // Validate new passwords match
+        if ($newPassword1 !== $newPassword2) {
+            $errors[] = 'New passwords do not match.';
+        }
+        
+        // Validate password strength
+        if (!preg_match('/^(?=.*[A-Z])(?=.*\d)(?=.*[\W_]).{6,}$/', $newPassword1)) {
+            $errors[] = 'New password must be at least 6 characters and contain an uppercase letter, a digit, and a special character.';
+        }
+        
+        // Check if new password is same as old
+        if (empty($errors) && password_verify($newPassword1, $userLogon['Pass'])) {
+            $errors[] = 'New password must be different from your current password.';
+        }
+        
+        if (!empty($errors)) {
+            $_SESSION['validation_errors'] = $errors;
+            $this->redirect('/change-password?error=validation');
+            return;
+        }
+        
+        try {
+            $hashed = password_hash($newPassword1, PASSWORD_DEFAULT);
+            $salt = substr($hashed, 7, 22);
+            $this->customerRepository->updateCustomerPassword($userId, $hashed, $salt);
+            
+            $this->redirectWithMessage('/account', 'Password changed successfully.', 'success');
+            
+        } catch (Exception $e) {
+            $_SESSION['validation_errors'] = ["An error occurred while updating your password. Please try again."];
+            $this->redirect('/change-password?error=update');
+        }
+    }
 }

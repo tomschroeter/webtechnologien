@@ -41,6 +41,7 @@ class FrontController
                 '/manage-users' => ['AdminController', 'manageUsers'],
                 '/edit-profile' => ['AuthController', 'editProfile'],
                 '/edit-profile/{id}' => ['AuthController', 'editProfile'],
+                '/change-password' => ['AuthController', 'changePassword'],
             ],
             'POST' => [
                 '/login' => ['AuthController', 'processLogin'],
@@ -48,6 +49,7 @@ class FrontController
                 '/manage-users' => ['AdminController', 'manageUsers'],
                 '/edit-profile' => ['AuthController', 'updateProfile'],
                 '/edit-profile/{id}' => ['AuthController', 'updateProfile'],
+                '/change-password' => ['AuthController', 'updatePassword'],
                 '/api/favorites/artists/{id}/toggle' => ['AuthController', 'toggleArtistFavoriteAjax'],
                 '/api/favorites/artworks/{id}/toggle' => ['AuthController', 'toggleArtworkFavoriteAjax'],
             ]

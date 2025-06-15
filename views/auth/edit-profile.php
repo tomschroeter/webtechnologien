@@ -84,6 +84,6 @@ if (!empty($validationErrors)) {
     </div>
   </div>
   <?php if (!$isAdminEdit): ?>
-    <a href="/edit-password" class="btn btn-secondary">Change Password</a>
+    <a href="/change-password" class="btn btn-secondary">Change Password</a>
   <?php endif; ?>
 </form>
