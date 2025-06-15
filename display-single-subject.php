@@ -48,7 +48,7 @@ try {
 		<div class="row">
             <!-- Displays subject image -->
             <?php 
-require_once dirname(__DIR__) . "/src/components/find_image_ref.php";
+require_once dirname(__DIR__) . "/src/components/find-image-ref.php";
 $imagePath =  "/assets/images/subjects/square-medium/".$subject->getSubjectId().".jpg";
 $placeholderPath = "/assets/placeholder/subjects/square-medium/placeholder.svg";
 $correctImagePath = getImagePathOrPlaceholder($imagePath, $placeholderPath);
