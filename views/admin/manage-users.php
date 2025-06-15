@@ -17,21 +17,23 @@
     </thead>
     <tbody>
         <?php foreach ($users as $user): ?>
-            <tr>
+            <tr data-user-id="<?= $user['CustomerID'] ?>">
                 <td><?= htmlspecialchars($user['FirstName'] . ' ' . $user['LastName']) ?></td>
                 <td><?= htmlspecialchars($user['Email']) ?></td>
                 <td><?= htmlspecialchars($user['UserName']) ?></td>
-                <td><?= $user['isAdmin'] ? 'Admin' : 'User' ?></td>
-                <td><?= $user['State'] == 1 ? 'Active' : 'Inactive' ?></td>
-                <td>
+                <td class="role-cell"><?= $user['isAdmin'] ? 'Admin' : 'User' ?></td>
+                <td class="status-cell"><?= $user['State'] == 1 ? 'Active' : 'Inactive' ?></td>
+                <td class="actions-cell">
                     <a class="btn btn-sm btn-primary" href="/edit-user?id=<?= $user['CustomerID'] ?>">Edit</a>
 
                     <?php if (!$user['isAdmin']): ?>
+                        <!-- Form for promoting user -->
                         <form method="POST" action="/manage-users" class="d-inline" onsubmit="return confirm('Are you sure you want to promote this user?')">
                             <input type="hidden" name="customerId" value="<?= $user['CustomerID'] ?>">
                             <button name="action" value="promote" class="btn btn-sm btn-success">Promote</button>
                         </form>
                     <?php elseif ($user['isAdmin'] && !($user['isAdmin'] && $adminCount <= 1)): ?>
+                        <!-- Form for demoting user -->
                         <form method="POST" action="/manage-users" class="d-inline" onsubmit="return confirm('Are you sure you want to demote this user?')">
                             <input type="hidden" name="customerId" value="<?= $user['CustomerID'] ?>">
                             <button name="action" value="demote" class="btn btn-sm btn-warning">Demote</button>
@@ -39,7 +41,8 @@
                     <?php endif; ?>
 
                     <?php if (!($user['isAdmin'] && $adminCount <= 1)): ?>
-                        <form method="POST" action="/manage-users" class="d-inline" onsubmit="return confirm('Are you sure you want to change status?')">
+                        <!-- Form for changing user status -->
+                        <form method="POST" action="/manage-users" class="d-inline" onsubmit="return confirm('Are you sure you want to change this user\'s status?')">
                             <input type="hidden" name="customerId" value="<?= $user['CustomerID'] ?>">
                             <button name="action" value="<?= $user['State'] == 1 ? 'deactivate' : 'activate' ?>"
                                 class="btn btn-sm btn-<?= $user['State'] == 1 ? 'secondary' : 'primary' ?>">

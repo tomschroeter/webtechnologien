@@ -74,25 +74,40 @@ try {
 			<div class="col-md-8">
 				<p><?php echo htmlspecialchars($artist->getDetails()) ?></p>
 
-				<!-- Add/Remove Artist Favorites Form -->
+				<!-- Add/Remove Artist Favorites -->
                 <?php 
                 $isInFavorites = isset($_SESSION['favoriteArtists']) && in_array($artist->getArtistId(), $_SESSION['favoriteArtists']);
                 ?>
-                <form method="post" action="/favorites-handler.php" class="mb-3">
-                    <?php if ($isInFavorites): ?>
-                        <input type="hidden" name="action" value="remove_artist_from_favorites">
-                        <input type="hidden" name="artistId" value="<?php echo $artist->getArtistId() ?>">
-                        <button type="submit" class="btn btn-outline-danger">
+                <div class="favorites-container mb-3">
+                    <button type="button" 
+                            class="btn favorite-btn <?php echo $isInFavorites ? 'btn-outline-danger' : 'btn-primary' ?>"
+                            data-type="artist"
+                            data-id="<?php echo $artist->getArtistId() ?>"
+                            data-is-favorite="<?php echo $isInFavorites ? 'true' : 'false' ?>">
+                        <?php if ($isInFavorites): ?>
                             ♥ Remove from Favorites
-                        </button>
-                    <?php else: ?>
-                        <input type="hidden" name="action" value="add_artist_to_favorites">
-                        <input type="hidden" name="artistId" value="<?php echo $artist->getArtistId() ?>">
-                        <button type="submit" class="btn btn-primary">
+                        <?php else: ?>
                             ♡ Add to Favorites
-                        </button>
-                    <?php endif; ?>
-                </form>
+                        <?php endif; ?>
+                    </button>
+                    
+                    <!-- Fallback form for non-JS users -->
+                    <form method="post" action="/favorites-handler.php" class="d-none fallback-form">
+                        <?php if ($isInFavorites): ?>
+                            <input type="hidden" name="action" value="remove_artist_from_favorites">
+                            <input type="hidden" name="artistId" value="<?php echo $artist->getArtistId() ?>">
+                            <button type="submit" class="btn btn-outline-danger">
+                                ♥ Remove from Favorites
+                            </button>
+                        <?php else: ?>
+                            <input type="hidden" name="action" value="add_artist_to_favorites">
+                            <input type="hidden" name="artistId" value="<?php echo $artist->getArtistId() ?>">
+                            <button type="submit" class="btn btn-primary">
+                                ♡ Add to Favorites
+                            </button>
+                        <?php endif; ?>
+                    </form>
+                </div>
 
 				<!-- Artist details -->
 				<table class="table table-bordered w-75 mt-4">

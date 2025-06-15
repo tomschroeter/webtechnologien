@@ -107,10 +107,20 @@ $artworkSearchResults = $artworkRepository->getArtworkBySearchQuery($searchQuery
                     </a>
                     <div class="d-flex align-items-center" style="gap: 0.5rem;">
                         <!-- Display add to favorites button -->
-                        <form method="post" action="/favorites-handler.php" class="mr-2 mb-0">
                         <?php
-                            $isInFavorites = isset($_SESSION['favoriteArtists']) && in_array($artist->getArtistId(), $_SESSION['favoriteArtists']);
+                        $isInFavorites = isset($_SESSION['favoriteArtists']) && in_array($artist->getArtistId(), $_SESSION['favoriteArtists']);
                         ?>
+                        <button type="button" 
+                                class="btn favorite-btn <?php echo $isInFavorites ? 'btn-outline-danger' : 'btn-primary' ?>"
+                                data-type="artist"
+                                data-id="<?php echo $artist->getArtistId() ?>"
+                                data-is-favorite="<?php echo $isInFavorites ? 'true' : 'false' ?>"
+                                title="<?php echo $isInFavorites ? 'Remove from Favorites' : 'Add to Favorites' ?>">
+                            <?php echo $isInFavorites ? '♥' : '♡' ?>
+                        </button>
+                        
+                        <!-- Fallback form for non-JS users -->
+                        <form method="post" action="/favorites-handler.php" class="mr-2 mb-0 d-none fallback-form">
                         <?php if ($isInFavorites): ?>
                             <input type="hidden" name="action" value="remove_artist_from_favorites">
                             <input type="hidden" name="artistId" value="<?php echo $artist->getArtistId() ?>">
@@ -180,10 +190,20 @@ $artworkSearchResults = $artworkRepository->getArtworkBySearchQuery($searchQuery
                     </a>
                     <div class="d-flex align-items-center" style="gap: 0.5rem;">
                         <!-- Display add to favorites button -->
-                        <form method="post" action="/favorites-handler.php" class="mr-2 mb-0">
-                            <?php
-                                $isInFavorites = isset($_SESSION['favoriteArtworks']) && in_array($combined->getArtwork()->getArtworkId(), $_SESSION['favoriteArtworks']);
-                            ?>
+                        <?php
+                        $isInFavorites = isset($_SESSION['favoriteArtworks']) && in_array($combined->getArtwork()->getArtworkId(), $_SESSION['favoriteArtworks']);
+                        ?>
+                        <button type="button" 
+                                class="btn favorite-btn <?php echo $isInFavorites ? 'btn-outline-danger' : 'btn-primary' ?>"
+                                data-type="artwork"
+                                data-id="<?php echo $combined->getArtwork()->getArtworkId() ?>"
+                                data-is-favorite="<?php echo $isInFavorites ? 'true' : 'false' ?>"
+                                title="<?php echo $isInFavorites ? 'Remove from Favorites' : 'Add to Favorites' ?>">
+                            <?php echo $isInFavorites ? '♥' : '♡' ?>
+                        </button>
+                        
+                        <!-- Fallback form for non-JS users -->
+                        <form method="post" action="/favorites-handler.php" class="mr-2 mb-0 d-none fallback-form">
                             <?php if ($isInFavorites): ?>
                                 <input type="hidden" name="action" value="remove_artwork_from_favorites">
                                 <input type="hidden" name="artworkId" value="<?php echo $combined->getArtwork()->getArtworkId() ?>">
