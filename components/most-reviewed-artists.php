@@ -24,13 +24,13 @@ $mostReviewedArtists = $artistRepository->findMostReviewed(3);
             alt="Artist Image">
           <div class="card-body p-2">
             <h4 class="card-title h6 mb-1">
-              <?php $position ?>.
+              <?= $position ?>.
               <a href="artists/<?= $artistId ?>" style="color: black;">
-                <?php htmlspecialchars($artistName) ?>
+                <?= htmlspecialchars($artistName) ?>
               </a>
             </h4>
             <p class="card-text small mb-0">
-              <?php $reviewCount ?> Reviews
+              <?= $reviewCount ?> Reviews
             </p>
           </div>
         </div>
