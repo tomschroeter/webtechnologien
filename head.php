@@ -8,11 +8,12 @@
     $lastSegment = $segments[0] ?? '';
 
     // Fallback for root
-    if (empty($lastSegment)) {
+    if (empty($lastSegment) or $lastSegment === 'index') {
       echo 'Home';
     } else {
-      // Capitalize and handle dash-separated segments if needed
-      echo ucfirst($lastSegment);
+      // Replace dashes with spaces, then capitalize
+      $title = str_replace('-', ' ', $lastSegment);
+      echo ucwords($title);
     }
     ?>
   </title>
