@@ -33,8 +33,10 @@ if (session_status() === PHP_SESSION_NONE) {
     </div>
   <?php endif; ?>
   <br>
-
-  <?php require_once dirname(__DIR__) . '/src/components/random-carousel.php' ?>
+  <br>
+  <div>
+    <?php require_once dirname(__DIR__) . '/src/components/random-carousel.php' ?>
+  </div>
 
   <div style="display: flex; gap: 40px; justify-content: center; flex-wrap: wrap; width: 100%; padding: 30px; box-sizing: border-box;">
     <div style="flex: 1 1 45%; min-width: 300px; justify-content: center; background: #fff; border: 1px solid #ddd; border-radius: 8px; box-shadow: 0 4px 8px rgba(0,0,0,0.1); padding: 20px;">
@@ -51,7 +53,7 @@ if (session_status() === PHP_SESSION_NONE) {
   <div style="width: 100%; box-sizing: border-box; padding: 30px;">
     <div style="width: 100%; background: #fff; border: 1px solid #ddd; border-radius: 8px; box-shadow: 0 4px 8px rgba(0,0,0,0.1); padding: 30px;">
       <h2 class="mx-auto pb-4" style="width: fit-content;">Recent Reviews</h2>
-      <?php require_once 'components/recent-reviews.php'; ?>
+      <?php require_once dirname(__DIR__) . '/src/components/recent-reviews.php'; ?>
     </div>
   </div>
   <?php require_once 'bootstrap.php'; ?>
