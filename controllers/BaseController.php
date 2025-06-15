@@ -79,13 +79,13 @@ abstract class BaseController
             session_start();
         }
         
-        return $_SESSION['user_id'] ?? null;
+        return $_SESSION['customerId'] ?? null;
     }
     
     protected function requireAuth()
     {
         if (!$this->getCurrentUser()) {
-            $this->redirect('/login.php');
+            $this->redirect('/login');
         }
     }
 }

@@ -43,6 +43,7 @@ class FrontController
             'POST' => [
                 '/login' => ['AuthController', 'processLogin'],
                 '/register' => ['AuthController', 'processRegister'],
+                '/manage-users' => ['AdminController', 'manageUsers'],
             ]
         ];
     }
