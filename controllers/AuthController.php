@@ -2,6 +2,8 @@
 
 require_once dirname(__DIR__) . "/controllers/BaseController.php";
 require_once dirname(__DIR__) . "/repositories/CustomerLogonRepository.php";
+require_once dirname(__DIR__) . "/repositories/ArtistRepository.php";
+require_once dirname(__DIR__) . "/repositories/ArtworkRepository.php";
 require_once dirname(__DIR__) . "/Database.php";
 require_once dirname(__DIR__) . "/classes/Customer.php";
 require_once dirname(__DIR__) . "/classes/CustomerLogon.php";
@@ -10,11 +12,15 @@ class AuthController extends BaseController
 {
     private $db;
     private $customerRepository;
+    private $artistRepository;
+    private $artworkRepository;
     
     public function __construct()
     {
         $this->db = new Database();
         $this->customerRepository = new CustomerLogonRepository($this->db);
+        $this->artistRepository = new ArtistRepository($this->db);
+        $this->artworkRepository = new ArtworkRepository($this->db);
     }
     
     public function showLogin()
@@ -208,10 +214,81 @@ class AuthController extends BaseController
             $this->redirect('/login');
         }
         
-        // Load favorites logic would go here
-        // For now, we'll just render the favorites view
+        // Get favorite artists and artworks from session
+        $favoriteArtistIds = $_SESSION['favoriteArtists'] ?? [];
+        $favoriteArtworkIds = $_SESSION['favoriteArtworks'] ?? [];
+        
+        $favoriteArtists = [];
+        $favoriteArtworks = [];
+        $cleanupNeeded = false;
+        
+        // Fetch favorite artists
+        if (!empty($favoriteArtistIds)) {
+            foreach ($favoriteArtistIds as $artistId) {
+                try {
+                    $artist = $this->artistRepository->getArtistById($artistId);
+                    if ($artist) {
+                        $favoriteArtists[] = $artist;
+                    } else {
+                        // Remove invalid artist from session
+                        if (($key = array_search($artistId, $_SESSION['favoriteArtists'])) !== false) {
+                            unset($_SESSION['favoriteArtists'][$key]);
+                            $cleanupNeeded = true;
+                        }
+                    }
+                } catch (Exception $e) {
+                    // Remove invalid artist from session
+                    if (($key = array_search($artistId, $_SESSION['favoriteArtists'])) !== false) {
+                        unset($_SESSION['favoriteArtists'][$key]);
+                        $cleanupNeeded = true;
+                    }
+                }
+            }
+        }
+        
+        // Fetch favorite artworks  
+        if (!empty($favoriteArtworkIds)) {
+            foreach ($favoriteArtworkIds as $artworkId) {
+                try {
+                    $artwork = $this->artworkRepository->findById($artworkId);
+                    if ($artwork) {
+                        // Get artist information for the artwork
+                        try {
+                            $artist = $this->artistRepository->getArtistById($artwork->getArtistId());
+                            $favoriteArtworks[] = ['artwork' => $artwork, 'artist' => $artist];
+                        } catch (Exception $e) {
+                            // If artist not found, still include artwork without artist info
+                            $favoriteArtworks[] = ['artwork' => $artwork, 'artist' => null];
+                        }
+                    } else {
+                        // Remove invalid artwork from session
+                        if (($key = array_search($artworkId, $_SESSION['favoriteArtworks'])) !== false) {
+                            unset($_SESSION['favoriteArtworks'][$key]);
+                            $cleanupNeeded = true;
+                        }
+                    }
+                } catch (Exception $e) {
+                    // Remove invalid artwork from session
+                    if (($key = array_search($artworkId, $_SESSION['favoriteArtworks'])) !== false) {
+                        unset($_SESSION['favoriteArtworks'][$key]);
+                        $cleanupNeeded = true;
+                    }
+                }
+            }
+        }
+        
+        // Re-index arrays if cleanup was needed
+        if ($cleanupNeeded) {
+            $_SESSION['favoriteArtists'] = array_values($_SESSION['favoriteArtists'] ?? []);
+            $_SESSION['favoriteArtworks'] = array_values($_SESSION['favoriteArtworks'] ?? []);
+        }
+        
+        $flashMessage = $this->getFlashMessage();
         
         $data = [
+            'favoriteArtists' => $favoriteArtists,
+            'favoriteArtworks' => $favoriteArtworks,
+            'flashMessage' => $flashMessage,
             'title' => 'My Favorites - Art Gallery'
         ];
         
