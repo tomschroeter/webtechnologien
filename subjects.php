@@ -13,8 +13,8 @@ $subjects = $subjectRepository->getAllSubjects();
 ?>
 
 <body class="container">
-  <h1 class="mt-3 mb-3">Themen</h1>
-  <p class="text-muted">Gefunden: <?php echo count($subjects)?> Themen</p>
+  <h1 class="mt-3 mb-3">Subjects</h1>
+  <p class="text-muted">Found: <?php echo count($subjects)?> subjects</p>
 
   <!-- List to display all subjects -->
   <ul class="list-group mb-5">
@@ -28,7 +28,7 @@ $subjects = $subjectRepository->getAllSubjects();
         $placeholderPath = "/assets/placeholder/subjects/square-thumb/placeholder.svg";
         $correctImagePath = getImagePathOrPlaceholder($imagePath, $placeholderPath);
         ?>
-          <img src="<?php echo $correctImagePath?>" alt="Themenbild" style="max-width: 100px; max-height: 100px; object-fit: cover;">
+          <img src="<?php echo $correctImagePath?>" alt="Subject image" style="max-width: 100px; max-height: 100px; object-fit: cover;">
         </a>
       </li>
     <?php endforeach; ?>

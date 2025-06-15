@@ -113,8 +113,8 @@ if (isset($_GET['filterBy'])) {
 						<?php endif; ?>
 					<?php endforeach; ?>
 					<select name="sortArtist" onchange="this.form.submit()" class="form-select">
-						<option value="ascending" <?php echo !$sortArtist ? 'selected' : '' ?>>Name (aufsteigend)</option>
-						<option value="descending" <?php echo $sortArtist ? 'selected' : '' ?>>Name (absteigend)</option>
+						<option value="ascending" <?php echo !$sortArtist ? 'selected' : '' ?>>Name (ascending)</option>
+						<option value="descending" <?php echo $sortArtist ? 'selected' : '' ?>>Name (descending)</option>
 					</select>
 				</form>
 			</div>
@@ -132,25 +132,28 @@ if (isset($_GET['filterBy'])) {
 							</span>
 						</a>
 						<div class="d-flex align-items-center" style="gap: 0.5rem;">
-							<!-- Display add to favourites button -->
-							<form method="post" action="/favorites-handler.php" class="mr-2 mb-0">
-								<?php
-								$isInFavorites = isset($_SESSION['favoriteArtists']) && in_array($artist->getArtistId(), $_SESSION['favoriteArtists']);
-								?>
-								<?php if ($isInFavorites): ?>
-									<input type="hidden" name="action" value="remove_artist_from_favorites">
-									<input type="hidden" name="artistId" value="<?php echo $artist->getArtistId() ?>">
-									<button type="submit" class="btn btn-outline-danger">
-										♥
-									</button>
-								<?php else: ?>
-									<input type="hidden" name="action" value="add_artist_to_favorites">
-									<input type="hidden" name="artistId" value="<?php echo $artist->getArtistId() ?>">
-									<button type="submit" class="btn btn-primary">
-										♡
-									</button>
-								<?php endif; ?>
-							</form>
+							<!-- Display add to favorites button if logged in -->
+							<?php if (isset($_SESSION['customerId'])): ?>
+								<form method="post" action="/favorites-handler.php" class="mr-2 mb-0">
+									<?php
+									$isInFavorites = isset($_SESSION['favoriteArtists']) && in_array($artist->getArtistId(), $_SESSION['favoriteArtists']);
+									?>
+									<?php if ($isInFavorites): ?>
+										<input type="hidden" name="action" value="remove_artist_from_favorites">
+										<input type="hidden" name="artistId" value="<?php echo $artist->getArtistId() ?>">
+										<button type="submit" class="btn btn-outline-danger">
+											♥
+										</button>
+									<?php else: ?>
+										<input type="hidden" name="action" value="add_artist_to_favorites">
+										<input type="hidden" name="artistId" value="<?php echo $artist->getArtistId() ?>">
+										<button type="submit" class="btn btn-primary">
+											♡
+										</button>
+									<?php endif; ?>
+								</form>
+							<?php endif; ?>
+
 							<!-- Checks if artists' image exists -->
 							<?php $imagePath = "/assets/images/artists/square-thumb/" . $artist->getArtistId() . ".jpg";
 							$placeholderPath = "/assets/placeholder/artists/square-thumb/placeholder.svg";
@@ -178,15 +181,15 @@ if (isset($_GET['filterBy'])) {
 
 					<!-- Form to change the sort parameter -->
 					<select name="sortParameter" onchange="this.form.submit()" class="form-select mx-2">
-						<option value="Title" <?php echo $sortParameter == "Title" ? 'selected' : '' ?>>Titel</option>
-						<option value="LastName" <?php echo $sortParameter == "LastName" ? 'selected' : '' ?>>Künstlername</option>
-						<option value="YearOfWork" <?php echo $sortParameter == "YearOfWork" ? 'selected' : '' ?>>Jahr</option>
+						<option value="Title" <?php echo $sortParameter == "Title" ? 'selected' : '' ?>>Title</option>
+						<option value="LastName" <?php echo $sortParameter == "LastName" ? 'selected' : '' ?>>Artist name</option>
+						<option value="YearOfWork" <?php echo $sortParameter == "YearOfWork" ? 'selected' : '' ?>>Year</option>
 					</select>
 
 					<!-- Form to change the sort order -->
 					<select name="sortArtwork" onchange="this.form.submit()" class="form-select">
-						<option value="ascending" <?php echo !$sortArtwork ? 'selected' : '' ?>>aufsteigend</option>
-						<option value="descending" <?php echo $sortArtwork ? 'selected' : '' ?>>absteigend</option>
+						<option value="ascending" <?php echo !$sortArtwork ? 'selected' : '' ?>>ascending</option>
+						<option value="descending" <?php echo $sortArtwork ? 'selected' : '' ?>>descending</option>
 					</select>
 				</form>
 			</div>
@@ -206,25 +209,28 @@ if (isset($_GET['filterBy'])) {
 							</span>
 						</a>
 						<div class="d-flex align-items-center" style="gap: 0.5rem;">
-							<!-- Display add to favourites button -->
-							<form method="post" action="/favorites-handler.php" class="mr-2 mb-0">
-								<?php
-								$isInFavorites = isset($_SESSION['favoriteArtworks']) && in_array($combined->getArtwork()->getArtworkId(), $_SESSION['favoriteArtworks']);
-								?>
-								<?php if ($isInFavorites): ?>
-									<input type="hidden" name="action" value="remove_artwork_from_favorites">
-									<input type="hidden" name="artworkId" value="<?php echo $combined->getArtwork()->getArtworkId() ?>">
-									<button type="submit" class="btn btn-outline-danger">
-										♥
-									</button>
-								<?php else: ?>
-									<input type="hidden" name="action" value="add_artwork_to_favorites">
-									<input type="hidden" name="artworkId" value="<?php echo $combined->getArtwork()->getArtworkId() ?>">
-									<button type="submit" class="btn btn-primary">
-										♡
-									</button>
-								<?php endif; ?>
-							</form>
+							<!-- Display add to favorites button if logged in -->
+							<?php if (isset($_SESSION['customerId'])): ?>
+								<form method="post" action="/favorites-handler.php" class="mr-2 mb-0">
+									<?php
+									$isInFavorites = isset($_SESSION['favoriteArtworks']) && in_array($combined->getArtwork()->getArtworkId(), $_SESSION['favoriteArtworks']);
+									?>
+									<?php if ($isInFavorites): ?>
+										<input type="hidden" name="action" value="remove_artwork_from_favorites">
+										<input type="hidden" name="artworkId" value="<?php echo $combined->getArtwork()->getArtworkId() ?>">
+										<button type="submit" class="btn btn-outline-danger">
+											♥
+										</button>
+									<?php else: ?>
+										<input type="hidden" name="action" value="add_artwork_to_favorites">
+										<input type="hidden" name="artworkId" value="<?php echo $combined->getArtwork()->getArtworkId() ?>">
+										<button type="submit" class="btn btn-primary">
+											♡
+										</button>
+									<?php endif; ?>
+								</form>
+							<?php endif; ?>
+
 							<!-- Checks if artworks' image exists -->
 							<?php $imagePath = "/assets/images/works/square-small/" . $combined->getArtwork()->getImageFileName() . ".jpg";
 							$placeholderPath = "/assets/placeholder/works/square-small/placeholder.svg";
@@ -240,7 +246,7 @@ if (isset($_GET['filterBy'])) {
 
 		<!-- Output if search didn't return a result -->
 	<?php else: ?>
-		<?php echo 'Es wurden keinen Ergebnisse für den Suchbegriff' . ' "' . $searchQuery . '" ' . 'gefunden.'; ?>
+		<?php echo 'No results were found for the search term' . ' "' . $searchQuery . '"' . '.'; ?>
 	<?php endif; ?>
 	<?php require_once dirname(__DIR__) . "/src/bootstrap.php"; ?>
 </body>

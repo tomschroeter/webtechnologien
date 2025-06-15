@@ -248,4 +248,62 @@ class CustomerLogonRepository
 
         throw new Exception("Unknown hash type in db");
     }
+
+    public function getCustomerById(int $id): ?array
+    {
+        if (!$this->db->isConnected()) {
+            $this->db->connect();
+        }
+        $stmt = $this->db->prepareStatement("SELECT * FROM customers WHERE CustomerId = :id");
+        $stmt->bindValue("id", $id, PDO::PARAM_INT);
+        $stmt->execute();
+        $customer = $stmt->fetch();
+        $this->db->disconnect();
+        return $customer ?: null;
+    }
+
+    public function updateCustomerFullInfo(
+        int $id,
+        string $first,
+        string $last,
+        string $address,
+        string $city,
+        ?string $region,
+        string $country,
+        ?string $postal,
+        ?string $phone,
+        string $email
+    ): void {
+        if (!$this->db->isConnected()) {
+            $this->db->connect();
+        }
+        $stmt = $this->db->prepareStatement(
+            "UPDATE customers SET FirstName = :first, LastName = :last, Address = :address, City = :city, Region = :region, Country = :country, Postal = :postal, Phone = :phone, Email = :email WHERE CustomerId = :id"
+        );
+        $stmt->bindValue("first", $first);
+        $stmt->bindValue("last", $last);
+        $stmt->bindValue("address", $address);
+        $stmt->bindValue("city", $city);
+        $stmt->bindValue("region", $region);
+        $stmt->bindValue("country", $country);
+        $stmt->bindValue("postal", $postal);
+        $stmt->bindValue("phone", $phone);
+        $stmt->bindValue("email", $email);
+        $stmt->bindValue("id", $id);
+        $stmt->execute();
+        $this->db->disconnect();
+    }
+
+    public function updateCustomerPassword(int $id, string $hashed, string $salt): void
+    {
+        if (!$this->db->isConnected()) {
+            $this->db->connect();
+        }
+        $stmt = $this->db->prepareStatement("UPDATE customerlogon SET Pass = :pass, Salt = :salt, DateLastModified = NOW() WHERE CustomerId = :id");
+        $stmt->bindValue("pass", $hashed);
+        $stmt->bindValue("salt", $salt);
+        $stmt->bindValue("id", $id);
+        $stmt->execute();
+        $this->db->disconnect();
+    }
 }
