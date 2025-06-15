@@ -50,7 +50,7 @@ try {
     <div class="row">
       <!-- Displays genre image -->
       <?php 
-      require_once dirname(__DIR__) . "/src/components/find_image_ref.php";
+      require_once dirname(__DIR__) . "/src/components/find-image-ref.php";
       $imagePath = "/assets/images/genres/square-medium/" . $genre->getGenreId() . ".jpg";
       $placeholderPath = "/assets/placeholder/genres/square-medium/placeholder.svg";
       $correctImagePath = getImagePathOrPlaceholder($imagePath, $placeholderPath);

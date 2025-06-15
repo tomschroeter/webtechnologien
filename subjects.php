@@ -5,7 +5,7 @@
 require_once dirname(__DIR__)."/src/head.php";
 require_once dirname(__DIR__)."/src/repositories/SubjectRepository.php";
 require_once dirname(__DIR__)."/src/navbar.php";
-require_once dirname(__DIR__)."/src/components/find_image_ref.php";
+require_once dirname(__DIR__)."/src/components/find-image-ref.php";
 
 $subjectRepository = new SubjectRepository(new Database());
 
