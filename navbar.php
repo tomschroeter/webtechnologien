@@ -15,8 +15,27 @@ if (session_status() === PHP_SESSION_NONE) {
     </button>
     <div class="collapse navbar-collapse" id="collapsibleNavId">
       <?php
-      $currentScript = basename($_SERVER['SCRIPT_NAME'], '.php');
-      $currentRoute = $currentScript === 'index' ? 'home' : $currentScript;
+      // Get the current path from REQUEST_URI for MVC routing
+      $currentPath = parse_url($_SERVER['REQUEST_URI'], PHP_URL_PATH);
+      $currentPath = trim($currentPath, '/'); // Remove leading/trailing slashes
+      
+      // Determine current route based on path
+      if (empty($currentPath) || $currentPath === 'index') {
+          $currentRoute = 'home';
+      } elseif ($currentPath === 'about') {
+          $currentRoute = 'about';
+      } elseif (strpos($currentPath, 'artists') === 0) {
+          $currentRoute = 'artists';
+      } elseif (strpos($currentPath, 'artworks') === 0) {
+          $currentRoute = 'artworks';
+      } elseif (strpos($currentPath, 'genres') === 0) {
+          $currentRoute = 'genres';
+      } elseif (strpos($currentPath, 'subjects') === 0) {
+          $currentRoute = 'subjects';
+      } else {
+          $currentRoute = '';
+      }
+      
       $browseRoutes = ['artists', 'artworks', 'genres', 'subjects'];
       $isBrowseActive = in_array($currentRoute, $browseRoutes);
       ?>
