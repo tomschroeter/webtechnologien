@@ -95,9 +95,9 @@ class ArtworkController extends BaseController
         $artworkId = (int)$id;
         
         try {
-            $artwork = $this->artworkRepository->getArtworkById($artworkId);
+            $artwork = $this->artworkRepository->findById($artworkId);
             $artist = $this->artistRepository->getArtistById($artwork->getArtistId());
-            $reviews = $this->reviewRepository->getReviewsByArtworkId($artworkId);
+            $reviews = $this->reviewRepository->getAllReviewsWithCustomerInfo($artworkId);
             
             if (!$artwork) {
                 $this->redirect("/error.php?error=artworkNotFound");
