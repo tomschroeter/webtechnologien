@@ -178,35 +178,46 @@ class ArtistRepository
             $this->db->connect();
         }
 
-        $sortOrder = $sortDesc ? "DESC" : "ASC";
-
-        // Build the SQL query dynamically
         $sql = "SELECT * FROM artists WHERE 1=1";
+        $params = [];
 
         if (!empty($name)) {
-            $sql .= " AND LastName LIKE '%" . addslashes($name) . "%'";
+            $nameParts = preg_split('/\s+/', trim($name));
+
+            if (count($nameParts) >= 2) {
+                // First and last name provided
+                $sql .= " AND FirstName LIKE :firstName AND LastName LIKE :lastName";
+                $params['firstName'] = '%' . $nameParts[0] . '%';
+                $params['lastName'] = '%' . $nameParts[1] . '%';
+            } else {
+                // Only last name (or ambiguous input)
+                $sql .= " AND LastName LIKE :name";
+                $params['name'] = '%' . $name . '%';
+            }
         }
 
         if (!empty($nationality)) {
-            $sql .= " AND Nationality = '" . addslashes($nationality) . "'";
+            $sql .= " AND Nationality = :nationality";
+            $params['nationality'] = $nationality;
         }
 
         if (!empty($startYear)) {
-            $sql .= " AND (YearOfBirth >= " . intval($startYear) . " OR YearOfBirth IS NULL)";
+            $sql .= " AND (YearOfBirth >= :startYear OR YearOfBirth IS NULL)";
+            $params['startYear'] = (int) $startYear;
         }
 
         if (!empty($endYear)) {
-            $sql .= " AND (YearOfBirth <= " . intval($endYear) . " OR YearOfBirth IS NULL)";
+            $sql .= " AND (YearOfBirth <= :endYear OR YearOfBirth IS NULL)";
+            $params['endYear'] = (int) $endYear;
         }
 
-        $sql .= " ORDER BY LastName {$sortOrder}";
+        $sql .= " ORDER BY LastName " . ($sortDesc ? "DESC" : "ASC");
 
         $stmt = $this->db->prepareStatement($sql);
-        $stmt->execute();
+        $stmt->execute($params);
 
         $artists = [];
-
-        foreach ($stmt as $row) {
+        while ($row = $stmt->fetch(PDO::FETCH_ASSOC)) {
             $artists[] = Artist::createArtistFromRecord($row);
         }
 
@@ -214,4 +225,5 @@ class ArtistRepository
 
         return $artists;
     }
+
 }

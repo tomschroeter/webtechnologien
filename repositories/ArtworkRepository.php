@@ -287,22 +287,23 @@ class ArtworkRepository
             $this->db->connect();
         }
 
-        // Mapping of sort parameter to prevent SQL injections
+        // Mapping of sort parameter to prevent SQL injections (whitelist approach)
         $sortMap = [
             'title' => 'a.Title',
             'lastname' => 'ar.LastName',
             'yearofwork' => 'a.YearOfWork'
         ];
-        $sortField = $sortMap[strtolower($sortParameter)] ?? 'Title';
-
+        $sortField = $sortMap[strtolower($sortParameter)] ?? 'a.Title';
         $sortOrder = $sortDesc ? "DESC" : "ASC";
 
-        // Build the SQL query dynamically
+        // Build the base SQL query
         $sql = "SELECT DISTINCT a.*, ar.FirstName, ar.LastName
-            FROM artworks a
-            INNER JOIN artists ar ON a.ArtistID = ar.ArtistID";
+                FROM artworks a
+                INNER JOIN artists ar ON a.ArtistID = ar.ArtistID";
 
-        // Join with artworkgenres + genres if genre filter is provided
+        $params = [];
+
+        // Conditionally join with genres if genre filter is provided
         if (!empty($genreName)) {
             $sql .= " INNER JOIN artworkgenres ag ON a.ArtWorkID = ag.ArtWorkID";
             $sql .= " INNER JOIN genres g ON ag.GenreID = g.GenreID";
@@ -310,36 +311,35 @@ class ArtworkRepository
 
         $sql .= " WHERE 1=1";
 
+        // Add conditions with named parameter binding
         if (!empty($title)) {
-            $safeTitle = addslashes($title); // or use prepared statement
-            $sql .= " AND a.Title LIKE '%$safeTitle%'";
+            $sql .= " AND a.Title LIKE :title";
+            $params['title'] = "%" . $title . "%";
         }
 
         if (!empty($genreName)) {
-            $safeGenre = addslashes($genreName); // or use prepared statement
-            $sql .= " AND g.GenreName = '$safeGenre'";
+            $sql .= " AND g.GenreName = :genreName";
+            $params['genreName'] = $genreName;
         }
 
         if (!empty($startYear)) {
-            $sql .= " AND (a.YearOfWork >= " . intval($startYear) . " OR a.YearOfWork IS NULL)";
+            $sql .= " AND (a.YearOfWork >= :startYear OR a.YearOfWork IS NULL)";
+            $params['startYear'] = (int) $startYear;
         }
 
         if (!empty($endYear)) {
-            $sql .= " AND (a.YearOfWork <= " . intval($endYear) . " OR a.YearOfWork IS NULL)";
+            $sql .= " AND (a.YearOfWork <= :endYear OR a.YearOfWork IS NULL)";
+            $params['endYear'] = (int) $endYear;
         }
 
-        $sql .= " ORDER BY {$sortField} {$sortOrder}"; //{$sortField} {$sortOrder}
+        $sql .= " ORDER BY {$sortField} {$sortOrder}";
 
         $stmt = $this->db->prepareStatement($sql);
-        $stmt->execute();
+        $stmt->execute($params);
 
         $artworks = [];
-
-        foreach ($stmt as $row) {
-            // Add 0 in front of image file name if name is 5 characters long
-            if (strlen($row['ImageFileName']) < 6) {
-                $row['ImageFileName'] = '0' . $row['ImageFileName'];
-            }
+        while ($row = $stmt->fetch(PDO::FETCH_ASSOC)) {
+            $row = fixFilePath($row);
 
             $artwork = Artwork::createArtworkFromRecord($row);
             $artistFirstName = $row['FirstName'];
