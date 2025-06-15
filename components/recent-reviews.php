@@ -31,7 +31,7 @@ if ($reviews):
         <div style="color: #f5b301; font-size: 1.2rem; margin: 10px 0 2px;"><?= $stars ?></div>
         <p style="font-size: 0.85rem; color: #888; margin-bottom: 10px;"><?= $date ?></p>
         <p style="margin: 0;"><?=$shortComment?></p>
-<div style="position: absolute; bottom: 0; left: 0; width: 100%; height: 100px; background: linear-gradient(to top, #f9f9f9, transparent); pointer-events: none;"></div>      </div>
+<div style="position: absolute; bottom: 0; left: 0; width: 100%; height: 140px; background: linear-gradient(to top, #f9f9f9, transparent); pointer-events: none;"></div>      </div>
     <?php endforeach; ?>
   </div>
 <?php else: ?>
