@@ -1,7 +1,7 @@
 <?php
 
-require_once dirname(__DIR__)."/Database.php";
-require_once dirname(__DIR__)."/classes/Artist.php";
+require_once dirname(__DIR__) . "/Database.php";
+require_once dirname(__DIR__) . "/classes/Artist.php";
 
 class ArtistRepository
 {
@@ -14,7 +14,7 @@ class ArtistRepository
 
     /**
      * @return Artist[]
-    */
+     */
     public function getAllArtists(bool $sortDesc): array
     {
         if (!$this->db->isConnected()) {
@@ -77,8 +77,8 @@ class ArtistRepository
 
 
     /**
-    * @throws Exception if artist couldn't be found
-    */
+     * @throws Exception if artist couldn't be found
+     */
     public function getArtistById(int $artistId): Artist
     {
         if (!$this->db->isConnected()) {
@@ -132,4 +132,98 @@ class ArtistRepository
 
         return $artists;
     }
+
+    /**
+     * Summary of getArtistNationalities
+     * @return array
+     */
+    public function getArtistNationalities()
+    {
+        if (!$this->db->isConnected()) {
+            $this->db->connect();
+        }
+
+        $sql = "
+        SELECT DISTINCT nationality FROM artists 
+        WHERE nationality IS NOT NULL 
+        ORDER BY nationality;
+        ";
+
+        $stmt = $this->db->prepareStatement($sql);
+        $stmt->execute();
+
+        $nationalities = [];
+
+        foreach ($stmt as $row) {
+            $nationalities[] = $row['nationality']; // Fixed: use [] instead of ::append() and access the column
+        }
+
+        $this->db->disconnect();
+
+        return $nationalities;
+    }
+
+    /**
+     * Summary of getArtistByAdvancedSearch
+     * @param mixed $name
+     * @param mixed $startYear
+     * @param mixed $endYear
+     * @param mixed $nationality
+     * @param bool $sortDesc
+     * @return Artist[]
+     */
+    public function getArtistByAdvancedSearch($name = null, $startYear = null, $endYear = null, $nationality = null, bool $sortDesc)
+    {
+        if (!$this->db->isConnected()) {
+            $this->db->connect();
+        }
+
+        $sql = "SELECT * FROM artists WHERE 1=1";
+        $params = [];
+
+        if (!empty($name)) {
+            $nameParts = preg_split('/\s+/', trim($name));
+
+            if (count($nameParts) >= 2) {
+                // First and last name provided
+                $sql .= " AND FirstName LIKE :firstName AND LastName LIKE :lastName";
+                $params['firstName'] = '%' . $nameParts[0] . '%';
+                $params['lastName'] = '%' . $nameParts[1] . '%';
+            } else {
+                // Only last name (or ambiguous input)
+                $sql .= " AND LastName LIKE :name";
+                $params['name'] = '%' . $name . '%';
+            }
+        }
+
+        if (!empty($nationality)) {
+            $sql .= " AND Nationality = :nationality";
+            $params['nationality'] = $nationality;
+        }
+
+        if (!empty($startYear)) {
+            $sql .= " AND (YearOfBirth >= :startYear OR YearOfBirth IS NULL)";
+            $params['startYear'] = (int) $startYear;
+        }
+
+        if (!empty($endYear)) {
+            $sql .= " AND (YearOfBirth <= :endYear OR YearOfBirth IS NULL)";
+            $params['endYear'] = (int) $endYear;
+        }
+
+        $sql .= " ORDER BY LastName " . ($sortDesc ? "DESC" : "ASC");
+
+        $stmt = $this->db->prepareStatement($sql);
+        $stmt->execute($params);
+
+        $artists = [];
+        while ($row = $stmt->fetch(PDO::FETCH_ASSOC)) {
+            $artists[] = Artist::createArtistFromRecord($row);
+        }
+
+        $this->db->disconnect();
+
+        return $artists;
+    }
+
 }
