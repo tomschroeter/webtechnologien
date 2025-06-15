@@ -1,7 +1,7 @@
 <?php
 
 require_once dirname(__DIR__) . "/controllers/HomeController.php";
-require_once dirname(__DIR__) . "/controllers/ArtistController.php"; 
+require_once dirname(__DIR__) . "/controllers/ArtistController.php";
 require_once dirname(__DIR__) . "/controllers/ArtworkController.php";
 require_once dirname(__DIR__) . "/controllers/GenreController.php";
 require_once dirname(__DIR__) . "/controllers/SubjectController.php";
@@ -44,6 +44,8 @@ class FrontController
                 '/login' => ['AuthController', 'processLogin'],
                 '/register' => ['AuthController', 'processRegister'],
                 '/manage-users' => ['AdminController', 'manageUsers'],
+                '/api/favorites/artists/{id}/toggle' => ['AuthController', 'toggleArtistFavoriteAjax'],
+                '/api/favorites/artworks/{id}/toggle' => ['AuthController', 'toggleArtworkFavoriteAjax'],
             ]
         ];
     }
@@ -93,7 +95,8 @@ class FrontController
             $params = [];
             
             // Convert route pattern to regex
-            $regex = preg_replace('/\{(\w+)\}/', '(\d+)', $pattern);
+            // Handle both {id} for regular routes and {id} for API routes
+            $regex = preg_replace('/\{(\w+)\}/', '([^/]+)', $pattern);
             $regex = '#^' . $regex . '$#';
             
             if (preg_match($regex, $uri, $matches)) {

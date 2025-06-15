@@ -217,4 +217,102 @@ class AuthController extends BaseController
         
         echo $this->renderWithLayout('auth/favorites', $data);
     }
+    
+    public function toggleArtistFavoriteAjax($artistId)
+    {
+        if (session_status() === PHP_SESSION_NONE) {
+            session_start();
+        }
+        
+        if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
+            $this->jsonResponse(['success' => false, 'message' => 'Invalid request method'], 405);
+        }
+        
+        $artistId = (int)$artistId;
+        if (!$artistId) {
+            $this->jsonResponse(['success' => false, 'message' => 'Invalid artist ID'], 400);
+        }
+        
+        try {
+            if (!isset($_SESSION['favoriteArtists'])) {
+                $_SESSION['favoriteArtists'] = [];
+            }
+            
+            $isFavorite = in_array($artistId, $_SESSION['favoriteArtists']);
+            
+            if ($isFavorite) {
+                // Remove from favorites
+                if (($key = array_search($artistId, $_SESSION['favoriteArtists'])) !== false) {
+                    unset($_SESSION['favoriteArtists'][$key]);
+                    $_SESSION['favoriteArtists'] = array_values($_SESSION['favoriteArtists']);
+                }
+                $this->jsonResponse([
+                    'success' => true,
+                    'message' => 'Artist removed from favorites!',
+                    'isFavorite' => false,
+                    'action' => 'removed'
+                ]);
+            } else {
+                // Add to favorites
+                $_SESSION['favoriteArtists'][] = $artistId;
+                $this->jsonResponse([
+                    'success' => true,
+                    'message' => 'Artist added to favorites!',
+                    'isFavorite' => true,
+                    'action' => 'added'
+                ]);
+            }
+        } catch (Exception $e) {
+            $this->jsonResponse(['success' => false, 'message' => 'Error updating favorites'], 500);
+        }
+    }
+    
+    public function toggleArtworkFavoriteAjax($artworkId)
+    {
+        if (session_status() === PHP_SESSION_NONE) {
+            session_start();
+        }
+        
+        if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
+            $this->jsonResponse(['success' => false, 'message' => 'Invalid request method'], 405);
+        }
+        
+        $artworkId = (int)$artworkId;
+        if (!$artworkId) {
+            $this->jsonResponse(['success' => false, 'message' => 'Invalid artwork ID'], 400);
+        }
+        
+        try {
+            if (!isset($_SESSION['favoriteArtworks'])) {
+                $_SESSION['favoriteArtworks'] = [];
+            }
+            
+            $isFavorite = in_array($artworkId, $_SESSION['favoriteArtworks']);
+            
+            if ($isFavorite) {
+                // Remove from favorites
+                if (($key = array_search($artworkId, $_SESSION['favoriteArtworks'])) !== false) {
+                    unset($_SESSION['favoriteArtworks'][$key]);
+                    $_SESSION['favoriteArtworks'] = array_values($_SESSION['favoriteArtworks']);
+                }
+                $this->jsonResponse([
+                    'success' => true,
+                    'message' => 'Artwork removed from favorites!',
+                    'isFavorite' => false,
+                    'action' => 'removed'
+                ]);
+            } else {
+                // Add to favorites
+                $_SESSION['favoriteArtworks'][] = $artworkId;
+                $this->jsonResponse([
+                    'success' => true,
+                    'message' => 'Artwork added to favorites!',
+                    'isFavorite' => true,
+                    'action' => 'added'
+                ]);
+            }
+        } catch (Exception $e) {
+            $this->jsonResponse(['success' => false, 'message' => 'Error updating favorites'], 500);
+        }
+    }
 }

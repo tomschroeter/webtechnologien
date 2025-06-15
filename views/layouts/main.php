@@ -51,6 +51,9 @@
     </div> <!-- End container -->
     
     <?php require_once dirname(dirname(__DIR__)) . "/bootstrap.php"; ?>
+    
+    <!-- Include favorites JavaScript -->
+    <script src="/assets/js/favorites.js"></script>
 </body>
 
 </html>
