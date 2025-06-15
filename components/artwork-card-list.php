@@ -30,23 +30,6 @@ function renderArtworkCardList($artworks) {
                                 title="<?php echo $isInFavorites ? 'Remove from Favorites' : 'Add to Favorites' ?>">
                             <?php echo $isInFavorites ? '♥' : '♡' ?>
                         </button>
-                        
-                        <!-- Fallback form for non-JS users -->
-                        <form method="post" action="/favorites-handler.php" class="d-flex fallback-form">
-                            <?php if ($isInFavorites): ?>
-                                <input type="hidden" name="action" value="remove_artwork_from_favorites">
-                                <input type="hidden" name="artworkId" value="<?php echo $artwork->getArtworkId() ?>">
-                                <button type="submit" class="btn btn-outline-danger">
-                                    ♥
-                                </button>
-                            <?php else: ?>
-                                <input type="hidden" name="action" value="add_artwork_to_favorites">
-                                <input type="hidden" name="artworkId" value="<?php echo $artwork->getArtworkId() ?>">
-                                <button type="submit" class="btn btn-primary">
-                                    ♡
-                                </button>
-                            <?php endif; ?>
-                        </form>
                     </div>
                 </div>
             </div>
