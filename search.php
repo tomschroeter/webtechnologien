@@ -20,17 +20,13 @@ $db = new Database();
 $artistRepository = new ArtistRepository($db);
 $artworkRepository = new ArtworkRepository($db);
 
-if (isset($_GET['filterBy'])) {
-	$filterBy = $_GET['filterBy'];
-} else {
-	$filterBy = '';
-}
+$filterBy = isset($_GET['filterBy']) ? $_GET['filterBy'] : '';
 // Checks if search query has been submitted
 if (isset($_GET['searchQuery'])) {
 	$searchQuery = trim($_GET['searchQuery']);
 } else {
 	if ($filterBy !== '') {
-		$searchQuery = "Leancups";
+		$searchQuery = "Couldn't find any results that fit the searching criteria";
 	} else {
 		header("Location: /error.php?error=missingParam");
 		exit();
@@ -44,80 +40,45 @@ if (strlen($searchQuery) < 3 && $filterBy === '') {
 }
 
 // Checks if sort parameter for displayed artworks is set
-if (isset($_GET['sortParameter'])) {
-	$sortParameter = $_GET['sortParameter'];
-} else {
-	$sortParameter = "Title"; // search by title by default
-}
+$sortParameter = isset($_GET['sortParameter']) ? $_GET['sortParameter'] : 'Title'; // search by title by default
 
 // Checks if user sets sort order for displayed artists
-if (isset($_GET['sortArtist'])) {
-	$sortArtist = ($_GET['sortArtist'] === 'descending');
-} else {
-	$sortArtist = false; // sort from a-z by default
-}
+$sortArtist = isset($_GET['sortArtist']) ? $_GET['sortArtist'] === 'descending' : false; // sort from a-z by default
 
 // Checks if user sets sort order for displayed artworks
-if (isset($_GET['sortArtwork'])) {
-	$sortArtwork = ($_GET['sortArtwork'] === 'descending');
-} else {
-	$sortArtwork = false; // sort from lowest to highest by default
-}
+$sortArtwork = isset($_GET['sortArtwork']) ? $_GET['sortArtwork'] === 'descending' : false; // sort from lowest to highest by default
 
 // Artist filters
-if (isset($_GET['artistName'])) {
-	$artistName = $_GET['artistName'];
-} else {
-	$artistName = null;
-}
 
-if (isset($_GET['artistStartDate'])) {
-	$artistStartDate = $_GET['artistStartDate'];
-} else {
-	$artistStartDate = null;
-}
+$artistName = isset($_GET['artistName']) ? $_GET['artistName'] : null;
 
-if (isset($_GET['artistEndDate'])) {
-	$artistEndDate = $_GET['artistEndDate'];
-} else {
-	$artistEndDate = null;
-}
+$artistStartDate = isset($_GET['artistStartDate']) ? $_GET['artistStartDate'] : null;
 
-if (isset($_GET['artistNationality'])) {
-	$artistNationality = $_GET['artistNationality'];
-} else {
-	$artistNationality = null;
-}
+$artistEndDate = isset($_GET['artistEndDate']) ? $_GET['artistEndDate'] : null;
+
+$artistNationality = isset($_GET['artistNationality']) ? $_GET['artistNationality'] : null;
 
 // Artwork filters
-if (isset($_GET['artworkTitle'])) {
-	$artworkTitle = $_GET['artworkTitle'];
-} else {
-	$artworkTitle = null;
-}
 
-if (isset($_GET['artworkStartDate'])) {
-	$artworkStartDate = $_GET['artworkStartDate'];
-} else {
-	$artworkStartDate = null;
-}
+$artworkTitle = isset($_GET['artworkTitle']) ? $_GET['artworkTitle'] : null;
 
-if (isset($_GET['artworkEndDate'])) {
-	$artworkEndDate = $_GET['artworkEndDate'];
-} else {
-	$artworkEndDate = null;
-}
+$artworkStartDate = isset($_GET['artworkStartDate']) ? $_GET['artworkStartDate'] : null;
 
-if (isset($_GET['artworkGenre'])) {
-	$artworkGenre = $_GET['artworkGenre'];
-} else {
-	$artworkGenre = null;
-}
+$artworkEndDate = isset($_GET['artworkEndDate']) ? $_GET['artworkEndDate'] : null;
+
+$artworkGenre = isset($_GET['artworkGenre']) ? $_GET['artworkGenre'] : null;
 
 if (isset($_GET['filterBy'])) {
-	$artistSearchResults = $artistRepository->getArtistByAdvancedSearch($artistName, $artistStartDate, $artistEndDate, $artistNationality, $sortArtist);
-
-	$artworkSearchResults = $artworkRepository->getArtworksByAdvancedSearch($artworkTitle, $artworkStartDate, $artworkEndDate, $artworkGenre, $sortParameter, $sortArtwork);
+	switch ($filterBy) {
+		case 'artist':
+			$artistSearchResults = $artistRepository->getArtistByAdvancedSearch($artistName, $artistStartDate, $artistEndDate, $artistNationality, $sortArtist);
+			$artworkSearchResults = [];
+			break;
+		case 'artwork':
+			$artistSearchResults = [];
+			$artworkSearchResults = $artworkRepository->getArtworksByAdvancedSearch($artworkTitle, $artworkStartDate, $artworkEndDate, $artworkGenre, $sortParameter, $sortArtwork);
+			break;
+	}
 } else {
 	// Get results for all artists that fit the search query
 	$artistSearchResults = $artistRepository->getArtistBySearchQuery($searchQuery, $sortArtist);
