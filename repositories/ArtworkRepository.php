@@ -1,13 +1,13 @@
 <?php
 
-require_once dirname(__DIR__)."/Database.php";
-require_once dirname(__DIR__)."/classes/Artwork.php";
-require_once dirname(__DIR__)."/classes/Gallery.php";
-require_once dirname(__DIR__)."/repositories/ArtistRepository.php";
-require_once dirname(__DIR__)."/repositories/SubjectRepository.php";
-require_once dirname(__DIR__)."/repositories/GenreRepository.php";
-require_once dirname(__DIR__)."/dtos/ArtworkWithArtistName.php";
-require_once dirname(__DIR__)."/components/fix-file-path.php";
+require_once dirname(__DIR__) . "/Database.php";
+require_once dirname(__DIR__) . "/classes/Artwork.php";
+require_once dirname(__DIR__) . "/classes/Gallery.php";
+require_once dirname(__DIR__) . "/repositories/ArtistRepository.php";
+require_once dirname(__DIR__) . "/repositories/SubjectRepository.php";
+require_once dirname(__DIR__) . "/repositories/GenreRepository.php";
+require_once dirname(__DIR__) . "/dtos/ArtworkWithArtistName.php";
+require_once dirname(__DIR__) . "/components/fix-file-path.php";
 
 class ArtworkRepository
 {
@@ -54,8 +54,8 @@ class ArtworkRepository
     }
 
     /**
-    * @return Artwork[]
-    */
+     * @return Artwork[]
+     */
     public function getArtworksByArtist(int $artistId): array
     {
         if (!$this->db->isConnected()) {
@@ -93,8 +93,8 @@ class ArtworkRepository
     }
 
     /**
-    * @return Artwork[]
-    */
+     * @return Artwork[]
+     */
     public function getArtworksBySubject(int $subjectId): array
     {
         if (!$this->db->isConnected()) {
@@ -134,8 +134,8 @@ class ArtworkRepository
     }
 
     /**
-    * @return Artwork[]
-    */
+     * @return Artwork[]
+     */
     public function getArtworksByGenre(int $genreId): array
     {
         if (!$this->db->isConnected()) {
@@ -271,7 +271,8 @@ class ArtworkRepository
         return $artworks;
     }
 
-    public function getTopRatedArtworks() {
+    public function getTopRatedArtworks()
+    {
         if (!$this->db->isConnected()) {
             $this->db->connect();
         }
@@ -296,7 +297,7 @@ class ArtworkRepository
             // Add 0 in front of image file name if name is 5 characters long
             $row['ImageFileName'] = fixFilePath(($row['ImageFileName']));
             $rating = $row['avg_rating'];
-            $artistFirstName  = $row['FirstName'];
+            $artistFirstName = $row['FirstName'];
             $artistLastName = $row['LastName'];
             $artwork = Artwork::createArtworkFromRecord($row);
             $artworksWithRating[] = new ArtworkWithRatingAndArtistName($artwork, $artistFirstName, $artistLastName, $rating);
@@ -307,8 +308,10 @@ class ArtworkRepository
         return $artworksWithRating;
     }
 
-    public function getRandomArtworks(): array {
-        if (!$this->db->isConnected()) $this->db->connect();
+    public function getRandomArtworks(): array
+    {
+        if (!$this->db->isConnected())
+            $this->db->connect();
 
         $sql = "SELECT * FROM artworks ORDER BY RAND() LIMIT 4";
         $stmt = $this->db->prepareStatement($sql);
@@ -322,5 +325,5 @@ class ArtworkRepository
 
         $this->db->disconnect();
         return $artworks;
-}
+    }
 }

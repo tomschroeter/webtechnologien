@@ -3,12 +3,12 @@ require_once "Database.php";
 require_once "repositories/CustomerLogonRepository.php";
 
 if (session_status() === PHP_SESSION_NONE) {
-    session_start();
+  session_start();
 }
 
 if (!($_SESSION['isAdmin'] ?? false)) {
-    header("Location: /error.php?error=unauthorized");
-    exit;
+  header("Location: /error.php?error=unauthorized");
+  exit;
 }
 
 $db = new Database();
@@ -16,53 +16,56 @@ $repo = new CustomerLogonRepository($db);
 
 $id = $_GET['id'] ?? null;
 if (!$id || !is_numeric($id)) {
-    header("Location: /error.php?error=invalidId");
-    exit;
+  header("Location: /error.php?error=invalidId");
+  exit;
 }
 
-$user = $repo->getUserDetailsById((int)$id);
+$user = $repo->getUserDetailsById((int) $id);
 
 if (!$user) {
-    header("Location: /error.php?error=userNotFound");
-    exit;
+  header("Location: /error.php?error=userNotFound");
+  exit;
 }
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-    $first = trim($_POST['firstName'] ?? '');
-    $last = trim($_POST['lastName'] ?? '');
-    $email = trim($_POST['email'] ?? '');
-    $isAdmin = isset($_POST['isAdmin']) && $_POST['isAdmin'] === '1';
+  $first = trim($_POST['firstName'] ?? '');
+  $last = trim($_POST['lastName'] ?? '');
+  $email = trim($_POST['email'] ?? '');
+  $isAdmin = isset($_POST['isAdmin']) && $_POST['isAdmin'] === '1';
 
-    if (!$last || !filter_var($email, FILTER_VALIDATE_EMAIL)) {
-        header("Location: edit-user.php?id=$id&error=invalidInput");
-        exit;
-    }
-
-    $repo->updateCustomerBasicInfo((int)$id, $first, $last, $email);
-    $repo->updateUserAdmin((int)$id, $isAdmin);
-
-    // Check if admin is demoting themselves
-    if (isset($_SESSION['customerId']) && 
-        (int)$id === (int)$_SESSION['customerId'] && 
-        !$isAdmin && 
-        ($_SESSION['isAdmin'] ?? false)) {
-        
-        // Update session to reflect they're no longer admin
-        $_SESSION['isAdmin'] = false;
-        
-        // Redirect to home page instead of manage-users
-        header("Location: /index.php");
-        exit;
-    }
-
-    header("Location: manage-users.php");
+  if (!$last || !filter_var($email, FILTER_VALIDATE_EMAIL)) {
+    header("Location: edit-user.php?id=$id&error=invalidInput");
     exit;
+  }
+
+  $repo->updateCustomerBasicInfo((int) $id, $first, $last, $email);
+  $repo->updateUserAdmin((int) $id, $isAdmin);
+
+  // Check if admin is demoting themselves
+  if (
+    isset($_SESSION['customerId']) &&
+    (int) $id === (int) $_SESSION['customerId'] &&
+    !$isAdmin &&
+    ($_SESSION['isAdmin'] ?? false)
+  ) {
+
+    // Update session to reflect they're no longer admin
+    $_SESSION['isAdmin'] = false;
+
+    // Redirect to home page instead of manage-users
+    header("Location: /index.php");
+    exit;
+  }
+
+  header("Location: manage-users.php");
+  exit;
 }
 ?>
 
 <!DOCTYPE html>
 <html lang="en">
 <?php require_once "head.php"; ?>
+
 <body class="container">
   <?php require_once dirname(__DIR__) . "/src/navbar.php"; ?>
   <h1 class="mt-3">Edit User</h1>
@@ -92,4 +95,5 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
   </form>
   <?php require_once dirname(__DIR__) . "/src/bootstrap.php"; ?>
 </body>
+
 </html>

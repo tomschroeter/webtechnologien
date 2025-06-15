@@ -1,5 +1,6 @@
 <?php
-function renderStars($rating) {
+function renderStars($rating): string
+{
     $stars = '';
     $fullStars = floor($rating);
     $halfStar = ($rating - $fullStars) >= 0.5;
@@ -17,5 +18,4 @@ function renderStars($rating) {
 
     return $stars;
 }
-
 ?>

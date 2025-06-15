@@ -11,7 +11,7 @@ require_once dirname(__DIR__) . "/src/repositories/GenreRepository.php";
 require_once dirname(__DIR__) . "/src/repositories/SubjectRepository.php";
 require_once dirname(__DIR__) . "/src/repositories/GalleryRepository.php";
 require_once dirname(__DIR__) . "/src/repositories/ReviewRepository.php";
-require_once dirname(__DIR__) . "/src/dtos/ReviewStats.php";
+require_once dirname(__DIR__) . "/src/dtos/ReviewWithStats.php";
 require_once dirname(__DIR__) . "/src/router/router.php";
 require_once dirname(__DIR__) . "/src/components/find-image-ref.php";
 
@@ -60,7 +60,7 @@ try {
     $genres = [];
     $subjects = [];
     $reviews = [];
-    $reviewStats = new ReviewStats(0.0, 0);
+    $reviewStats = new ReviewWithStats(0.0, 0);
     $gallery = null;
 }
 

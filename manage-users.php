@@ -3,7 +3,7 @@ require_once dirname(__DIR__) . "/src/Database.php";
 require_once dirname(__DIR__) . "/src/repositories/CustomerLogonRepository.php";
 
 if (session_status() === PHP_SESSION_NONE) {
-    session_start();
+  session_start();
 }
 
 if (!($_SESSION['isAdmin'] ?? false)) {
@@ -16,7 +16,7 @@ $repo = new CustomerLogonRepository($db);
 
 // Handle user updates
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-  $customerID = (int)($_POST['customerId'] ?? 0);
+  $customerID = (int) ($_POST['customerId'] ?? 0);
   $action = $_POST['action'] ?? '';
 
   // Check if trying to demote the last admin
@@ -45,14 +45,16 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
       $repo->updateUserAdmin($customerID, true);
     } elseif ($action === 'demote') {
       $repo->updateUserAdmin($customerID, false);
-      
+
       // Check if admin is demoting themselves
-      if (isset($_SESSION['customerId']) && 
-          $customerID === (int)$_SESSION['customerId']) {
-        
+      if (
+        isset($_SESSION['customerId']) &&
+        $customerID === (int) $_SESSION['customerId']
+      ) {
+
         // Update session to reflect they're no longer admin
         $_SESSION['isAdmin'] = false;
-        
+
         // Redirect to home page instead of manage-users
         header("Location: /index.php");
         exit;
@@ -81,7 +83,8 @@ $adminCount = $repo->countActiveAdmins();
   <h1 class="mt-3">User Management</h1>
 
   <?php if (isset($_GET['error']) && $_GET['error'] === 'lastadmin'): ?>
-    <div class="alert alert-danger">Cannot demote or deactivate the last administrator. There must be at least one active admin.</div>
+    <div class="alert alert-danger">Cannot demote or deactivate the last administrator. There must be at least one active
+      admin.</div>
   <?php endif; ?>
 
   <table class="table table-bordered mt-4">

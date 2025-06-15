@@ -1,7 +1,7 @@
 <?php
 
-require_once dirname(__DIR__)."/Database.php";
-require_once dirname(__DIR__)."/classes/Subject.php";
+require_once dirname(__DIR__) . "/Database.php";
+require_once dirname(__DIR__) . "/classes/Subject.php";
 
 class SubjectRepository
 {
@@ -38,8 +38,8 @@ class SubjectRepository
     }
 
     /**
-    * @throws Exception if subject couldn't be found
-    */
+     * @throws Exception if subject couldn't be found
+     */
     public function getSubjectById(int $subjectId): Subject
     {
         if (!$this->db->isConnected()) {
