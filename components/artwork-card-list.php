@@ -3,7 +3,7 @@ require_once dirname(__DIR__) . "/components/find_image_ref.php";
 
 function renderArtworkCardList($artworks) {
     foreach ($artworks as $artwork) {
-        $artworkLink = route('artworks', ['id' => $artwork->getArtworkId()]);
+        $artworkLink = "/artworks/" . $artwork->getArtworkId();
         $imagePath = "/assets/images/works/square-medium/" . $artwork->getImageFileName() . ".jpg";
         $placeholderPath = "/assets/placeholder/works/square-medium/placeholder.svg";
         $correctImagePath = getImagePathOrPlaceholder($imagePath, $placeholderPath);
