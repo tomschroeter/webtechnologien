@@ -53,11 +53,11 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $_SESSION['isAdmin'] = false;
 
     // Redirect to home page instead of manage-users
-    header("Location: /index.php");
+    header("Location: /index");
     exit;
   }
 
-  header("Location: manage-users.php");
+  header("Location: manage-users");
   exit;
 }
 ?>
