@@ -54,18 +54,18 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     } else {
         try {
             $customer = new Customer($firstName, $lastName, $address, $city, $country, $postal, $email, $region, $phone);
-            
+
             $hashed = password_hash($password, PASSWORD_DEFAULT);
             $logon = new CustomerLogon($username, $hashed, 1, 0, date("Y-m-d H:i:s"), date("Y-m-d H:i:s"));
-            
+
             // Use atomic registration method to prevent race conditions
             $customerId = $repo->registerCustomer($customer, $logon);
-            
+
             // Automatically log the user in after successful registration
             $_SESSION['customerId'] = $customerId;  // This should be consistent
             $_SESSION['username'] = $username;
             $_SESSION['isAdmin'] = false; // New users are always regular users
-            
+
             // Redirect to home page (logged in)
             header("Location: index.php?welcome=1");
             exit;
@@ -94,7 +94,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     <?php elseif ($error === 'invalid_password'): ?>
         <div class="alert alert-danger">
             The password must contain at least 6 characters, one uppercase letter, one number, and one special character.
-.       </div>
+            . </div>
     <?php elseif ($error === 'exists'): ?>
         <div class="alert alert-warning">Username already exists. Please choose another one.</div>
     <?php elseif ($error === 'password_mismatch'): ?>
@@ -109,51 +109,61 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         <div class="form-row">
             <div class="form-group col-md-6">
                 <label>First Name</label>
-                <input name="firstName" class="form-control" placeholder="First Name" value="<?= htmlspecialchars($firstName ?? '') ?>">
+                <input name="firstName" class="form-control" placeholder="First Name"
+                    value="<?= htmlspecialchars($firstName ?? '') ?>">
             </div>
             <div class="form-group col-md-6">
                 <label>Last Name</label>
-                <input name="lastName" class="form-control" placeholder="Last Name*" required value="<?= htmlspecialchars($lastName ?? '') ?>">
+                <input name="lastName" class="form-control" placeholder="Last Name*" required
+                    value="<?= htmlspecialchars($lastName ?? '') ?>">
             </div>
         </div>
         <div class="form-row">
             <div class="form-group col-md-6">
                 <label>Address</label>
-                <input name="address" class="form-control" placeholder="Address*" required value="<?= htmlspecialchars($address ?? '') ?>">
+                <input name="address" class="form-control" placeholder="Address*" required
+                    value="<?= htmlspecialchars($address ?? '') ?>">
             </div>
             <div class="form-group col-md-6">
                 <label>City</label>
-                <input name="city" class="form-control" placeholder="City*" required value="<?= htmlspecialchars($city ?? '') ?>">
+                <input name="city" class="form-control" placeholder="City*" required
+                    value="<?= htmlspecialchars($city ?? '') ?>">
             </div>
         </div>
         <div class="form-row">
             <div class="form-group col-md-4">
                 <label>Region</label>
-                <input name="region" class="form-control" placeholder="Region (optional)" value="<?= htmlspecialchars($region ?? '') ?>">
+                <input name="region" class="form-control" placeholder="Region (optional)"
+                    value="<?= htmlspecialchars($region ?? '') ?>">
             </div>
             <div class="form-group col-md-4">
                 <label>Country</label>
-                <input name="country" class="form-control" placeholder="Country*" required value="<?= htmlspecialchars($country ?? '') ?>">
+                <input name="country" class="form-control" placeholder="Country*" required
+                    value="<?= htmlspecialchars($country ?? '') ?>">
             </div>
             <div class="form-group col-md-4">
                 <label>Postal</label>
-                <input name="postal" class="form-control" placeholder="Postal Code" value="<?= htmlspecialchars($postal ?? '') ?>">
+                <input name="postal" class="form-control" placeholder="Postal Code"
+                    value="<?= htmlspecialchars($postal ?? '') ?>">
             </div>
         </div>
         <div class="form-row">
             <div class="form-group col-md-6">
                 <label>Phone</label>
-                <input name="phone" class="form-control" placeholder="Phone (optional)" value="<?= htmlspecialchars($phone ?? '') ?>">
+                <input name="phone" class="form-control" placeholder="Phone (optional)"
+                    value="<?= htmlspecialchars($phone ?? '') ?>">
             </div>
             <div class="form-group col-md-6">
                 <label>Email</label>
-                <input name="email" type="email" class="form-control" placeholder="Email*" required value="<?= htmlspecialchars($email ?? '') ?>">
+                <input name="email" type="email" class="form-control" placeholder="Email*" required
+                    value="<?= htmlspecialchars($email ?? '') ?>">
             </div>
         </div>
         <hr>
         <div class="form-group">
             <label>Username</label>
-            <input name="username" class="form-control" placeholder="Username*" required value="<?= htmlspecialchars($username ?? '') ?>">
+            <input name="username" class="form-control" placeholder="Username*" required
+                value="<?= htmlspecialchars($username ?? '') ?>">
         </div>
         <div class="form-row">
             <div class="form-group col-md-6">
@@ -165,7 +175,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 <input name="password2" type="password" class="form-control" placeholder="Repeat Password*" required>
             </div>
         </div>
-        <small class="form-text text-muted mb-3">Your password must be at least 6 characters, contain an uppercase letter, a digit, and a special character.</small>
+        <small class="form-text text-muted mb-3">Your password must be at least 6 characters, contain an uppercase
+            letter, a digit, and a special character.</small>
         <button type="submit" class="btn btn-primary">Register</button>
     </form>
 

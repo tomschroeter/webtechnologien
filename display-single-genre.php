@@ -12,7 +12,7 @@ if (session_status() === PHP_SESSION_NONE) {
 }
 
 $db = new Database();
-$genreRepository = new GenreRepository ($db);
+$genreRepository = new GenreRepository($db);
 $artworkRepository = new ArtworkRepository($db);
 
 // Checks if id is set correctly in URL
@@ -38,18 +38,18 @@ try {
   <h1><?php echo $genre->getGenreName() ?></h1>
 
   <?php if (isset($message)): ?>
-        <div class="alert alert-<?php echo $messageType ?> alert-dismissible fade show" role="alert">
-            <?php echo htmlspecialchars($message) ?>
-            <button type="button" class="close" data-dismiss="alert" aria-label="Close">
-                <span aria-hidden="true">&times;</span>
-            </button>
-        </div>
-    <?php endif; ?>
+    <div class="alert alert-<?php echo $messageType ?> alert-dismissible fade show" role="alert">
+      <?php echo htmlspecialchars($message) ?>
+      <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+        <span aria-hidden="true">&times;</span>
+      </button>
+    </div>
+  <?php endif; ?>
 
   <div class="container mt-3">
     <div class="row">
       <!-- Displays genre image -->
-      <?php 
+      <?php
       require_once dirname(__DIR__) . "/src/components/find-image-ref.php";
       $imagePath = "/assets/images/genres/square-medium/" . $genre->getGenreId() . ".jpg";
       $placeholderPath = "/assets/placeholder/genres/square-medium/placeholder.svg";
@@ -65,9 +65,9 @@ try {
     </div>
     <h2 class="mt-5">Artworks for <?php echo $genre->getGenreName() ?></h2>
     <div class="row mt-4">
-      <?php 
-        require_once dirname(__DIR__) . "/src/components/artwork-card-list.php";
-        renderArtworkCardList($artworks);
+      <?php
+      require_once dirname(__DIR__) . "/src/components/artwork-card-list.php";
+      renderArtworkCardList($artworks);
       ?>
     </div>
   </div>

@@ -67,3 +67,21 @@ class ReviewWithCustomerInfoAndArtwork
         return $this->customerCity . ' (' . $this->customerCountry . ')';
     }
 }
+
+/**
+ * https://stackoverflow.com/questions/20763744/type-hinting-specify-an-array-of-objects
+ *
+ * For type completion:
+ * @extends \ArrayObject<ReviewWithCustomerInfoAndArtwork>
+ */
+class ReviewWithCustomerInfoAndArtworkArray extends \ArrayObject
+{
+    public function offsetSet(mixed $key, mixed $val): void
+    {
+        if (!$val instanceof ReviewWithCustomerInfoAndArtwork) {
+            throw new \InvalidArgumentException('Value must be an ReviewWithCustomerInfoAndArtwork instance');
+        }
+
+        parent::offsetSet($key, $val);
+    }
+}

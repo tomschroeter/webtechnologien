@@ -4,20 +4,24 @@ require_once dirname(__DIR__) . "/Database.php";
 require_once dirname(__DIR__) . "/classes/Review.php";
 require_once dirname(__DIR__) . "/dtos/ReviewWithCustomerInfo.php";
 require_once dirname(__DIR__) . "/dtos/ReviewWithCustomerInfoAndArtwork.php";
-require_once dirname(__DIR__) . "/dtos/ReviewStats.php";
+require_once dirname(__DIR__) . "/dtos/ReviewWithStats.php";
 
-class ReviewRepository {
+class ReviewRepository
+{
     private Database $db;
 
-    public function __construct(Database $db) {
+    public function __construct(Database $db)
+    {
         $this->db = $db;
     }
 
     /**
      * Fügt eine neue Bewertung hinzu.
      */
-    public function addReview(Review $review): void {
-        if (!$this->db->isConnected()) $this->db->connect();
+    public function addReview(Review $review): void
+    {
+        if (!$this->db->isConnected())
+            $this->db->connect();
 
         $sql = "
             INSERT INTO reviews (ArtWorkId, CustomerId, ReviewDate, Rating, Comment)
@@ -39,8 +43,10 @@ class ReviewRepository {
     /**
      * Prüft, ob der User das Artwork bereits bewertet hat.
      */
-    public function hasUserReviewed(int $customerId, int $artworkId): bool {
-        if (!$this->db->isConnected()) $this->db->connect();
+    public function hasUserReviewed(int $customerId, int $artworkId): bool
+    {
+        if (!$this->db->isConnected())
+            $this->db->connect();
 
         $sql = "
             SELECT COUNT(*) as review_count
@@ -64,8 +70,10 @@ class ReviewRepository {
      * Holt alle Reviews zu einem bestimmten Artwork
      * @return Review[]
      */
-    public function getAllReviewsForArtwork(int $artworkId): array {
-        if (!$this->db->isConnected()) $this->db->connect();
+    public function getAllReviewsForArtwork(int $artworkId): array
+    {
+        if (!$this->db->isConnected())
+            $this->db->connect();
 
         $sql = "
             SELECT * FROM reviews
@@ -92,8 +100,10 @@ class ReviewRepository {
      * @param int $artworkId
      * @return ReviewWithCustomerInfo[]
      */
-    public function getAllReviewsWithCustomerInfo(int $artworkId): array {
-        if (!$this->db->isConnected()) $this->db->connect();
+    public function getAllReviewsWithCustomerInfo(int $artworkId): array
+    {
+        if (!$this->db->isConnected())
+            $this->db->connect();
 
         $sql = "
             SELECT r.*, c.FirstName, c.LastName, c.City, c.Country
@@ -118,7 +128,7 @@ class ReviewRepository {
                 $row['City'],
                 $row['Country']
             );
-            
+
             $reviews[] = $reviewWithCustomerInfo;
         }
 
@@ -129,8 +139,10 @@ class ReviewRepository {
     /**
      * Deletes a review by ID
      */
-    public function deleteReview(int $reviewId): void {
-        if (!$this->db->isConnected()) $this->db->connect();
+    public function deleteReview(int $reviewId): void
+    {
+        if (!$this->db->isConnected())
+            $this->db->connect();
 
         $sql = "DELETE FROM reviews WHERE ReviewId = :id";
         $stmt = $this->db->prepareStatement($sql);
@@ -143,10 +155,12 @@ class ReviewRepository {
     /**
      * Get review statistics for an artwork
      * @param int $artworkId
-     * @return ReviewStats
+     * @return ReviewWithStats
      */
-    public function getReviewStats(int $artworkId): ReviewStats {
-        if (!$this->db->isConnected()) $this->db->connect();
+    public function getReviewStats(int $artworkId): ReviewWithStats
+    {
+        if (!$this->db->isConnected())
+            $this->db->connect();
 
         $sql = "
             SELECT AVG(Rating) as avgRating, COUNT(*) as totalReviews
@@ -162,13 +176,15 @@ class ReviewRepository {
         $this->db->disconnect();
 
         $averageRating = $result['avgRating'] ? round($result['avgRating'], 1) : 0.0;
-        $totalReviews = (int)$result['totalReviews'];
+        $totalReviews = (int) $result['totalReviews'];
 
-        return new ReviewStats($averageRating, $totalReviews);
+        return new ReviewWithStats($averageRating, $totalReviews);
     }
 
-    public function getRecentReviews() {
-        if (!$this->db->isConnected()) $this->db->connect();
+    public function getRecentReviews()
+    {
+        if (!$this->db->isConnected())
+            $this->db->connect();
 
         $sql = "SELECT r.*, a.*, c.FirstName, c.LastName, c.City, c.Country
         FROM reviews r
@@ -180,7 +196,7 @@ class ReviewRepository {
 
         $stmt = $this->db->prepareStatement($sql);
         $stmt->execute();
-        
+
         $reviews = [];
 
         foreach ($stmt as $row) {

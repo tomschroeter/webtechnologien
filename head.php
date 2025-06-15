@@ -9,10 +9,10 @@
 
     // Fallback for root
     if (empty($lastSegment)) {
-        echo 'Home';
+      echo 'Home';
     } else {
-        // Capitalize and handle dash-separated segments if needed
-        echo ucfirst($lastSegment);
+      // Capitalize and handle dash-separated segments if needed
+      echo ucfirst($lastSegment);
     }
     ?>
   </title>
