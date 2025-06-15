@@ -35,7 +35,7 @@ $artworks = $artworkRepository->getAllArtworks($sortBy, $sortOrder);
 <body class="container">
   <!-- Form providing the ability to sort artworks -->
   <div class="d-flex align-items-center mt-3 mb-3">
-    <h1 class="flex-grow-1 mb-0">Kunstwerke</h1>
+    <h1 class="flex-grow-1 mb-0">Artworks</h1>
     <div class="d-flex gap-2">
 
       <!-- Sort field selector -->
@@ -43,9 +43,9 @@ $artworks = $artworkRepository->getAllArtworks($sortBy, $sortOrder);
         <!-- Preserve the current sort order when changing field -->
         <input type="hidden" name="order" value="<?php echo $sortOrder ?>">
         <select name="sort" onchange="this.form.submit()" class="form-select">
-          <option value="title" <?php echo $sortBy == 'title' ? 'selected' : ''?>>Titel</option>
-          <option value="artist" <?php echo $sortBy == 'artist' ? 'selected' : ''?>>Name des Künstlers</option>
-          <option value="year" <?php echo $sortBy == 'year' ? 'selected' : ''?>>Jahr</option>
+          <option value="title" <?php echo $sortBy == 'title' ? 'selected' : ''?>>Title</option>
+          <option value="artist" <?php echo $sortBy == 'artist' ? 'selected' : ''?>>Artist name</option>
+          <option value="year" <?php echo $sortBy == 'year' ? 'selected' : ''?>>Year</option>
         </select>
       </form>
 
@@ -54,15 +54,15 @@ $artworks = $artworkRepository->getAllArtworks($sortBy, $sortOrder);
         <!-- Preserve the current sort field when changing order -->
         <input type="hidden" name="sort" value="<?php echo $sortBy ?>">
         <select name="order" onchange="this.form.submit()" class="form-select">
-          <option value="asc" <?php echo $sortOrder == 'asc' ? 'selected' : ''?>>Aufsteigend</option>
-          <option value="desc" <?php echo $sortOrder == 'desc' ? 'selected' : ''?>>Absteigend</option>
+          <option value="asc" <?php echo $sortOrder == 'asc' ? 'selected' : ''?>>ascending</option>
+          <option value="desc" <?php echo $sortOrder == 'desc' ? 'selected' : ''?>>descending</option>
         </select>
       </form>
 
     </div>
   </div>
   
-  <p class="text-muted">Gefunden: <?php echo count($artworks)?> Kunstwerke</p>
+  <p class="text-muted">Found: <?php echo count($artworks)?> artworks</p>
   
   <!-- List to display all artworks -->
   <ul class="list-group mb-5">
@@ -75,7 +75,7 @@ $artworks = $artworkRepository->getAllArtworks($sortBy, $sortOrder);
             <p class="mb-1">
               <?php
                 $artist = $artistRepository->getArtistById($artwork->getArtistID());
-        echo $artist ? $artist->getFirstName() . ' ' . $artist->getLastName() : 'Unbekannter Künstler';
+        echo $artist ? $artist->getFirstName() . ' ' . $artist->getLastName() : 'Unknown Artist';
         ?>
               <?php if ($artwork->getYearOfWork()): ?>
                 <span class="text-muted">(<?php echo $artwork->getYearOfWork()?>)</span>
