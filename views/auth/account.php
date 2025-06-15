@@ -52,7 +52,7 @@
             <input name="email" class="form-control" value="<?= htmlspecialchars($customer['Email']) ?>" disabled>
         </div>
     </div>
-    <button type="submit" class="btn btn-primary">Edit Profile</button>
+    <a href="/edit-profile" class="btn btn-primary">Edit Profile</a>
 </form>
 
 <h4 class="mt-4">Account Settings</h4>

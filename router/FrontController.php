@@ -39,11 +39,15 @@ class FrontController
                 '/favorites' => ['AuthController', 'showFavorites'],
                 '/logout' => ['AuthController', 'logout'],
                 '/manage-users' => ['AdminController', 'manageUsers'],
+                '/edit-profile' => ['AuthController', 'editProfile'],
+                '/edit-profile/{id}' => ['AuthController', 'editProfile'],
             ],
             'POST' => [
                 '/login' => ['AuthController', 'processLogin'],
                 '/register' => ['AuthController', 'processRegister'],
                 '/manage-users' => ['AdminController', 'manageUsers'],
+                '/edit-profile' => ['AuthController', 'updateProfile'],
+                '/edit-profile/{id}' => ['AuthController', 'updateProfile'],
                 '/api/favorites/artists/{id}/toggle' => ['AuthController', 'toggleArtistFavoriteAjax'],
                 '/api/favorites/artworks/{id}/toggle' => ['AuthController', 'toggleArtworkFavoriteAjax'],
             ]
