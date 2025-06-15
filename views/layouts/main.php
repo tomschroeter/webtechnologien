@@ -3,27 +3,28 @@
 
 <?php require_once dirname(dirname(__DIR__)) . "/head.php"; ?>
 
-<body class="container">
+<body>
     <?php require_once dirname(dirname(__DIR__)) . "/navbar.php"; ?>
     
-    <!-- Flash Messages -->
-    <?php 
-    $flash = null;
-    if (isset($flashMessage)) {
-        $flash = $flashMessage;
-    }
-    ?>
-    <?php if ($flash): ?>
-        <div class="alert alert-<?= $flash['type'] ?> alert-dismissible fade show mt-3" role="alert">
-            <?= htmlspecialchars($flash['message']) ?>
-            <button type="button" class="close" data-dismiss="alert" aria-label="Close">
-                <span aria-hidden="true">&times;</span>
-            </button>
-        </div>
-    <?php endif; ?>
-    
-    <!-- Login success message -->
-    <?php if (isset($_GET['login']) && $_GET['login'] === 'success' && isset($_SESSION['username'])): ?>
+    <div class="container">
+        <!-- Flash Messages -->
+        <?php 
+        $flash = null;
+        if (isset($flashMessage)) {
+            $flash = $flashMessage;
+        }
+        ?>
+        <?php if ($flash): ?>
+            <div class="alert alert-<?= $flash['type'] ?> alert-dismissible fade show mt-3" role="alert">
+                <?= htmlspecialchars($flash['message']) ?>
+                <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+        <?php endif; ?>
+        
+        <!-- Login success message -->
+        <?php if (isset($_GET['login']) && $_GET['login'] === 'success' && isset($_SESSION['username'])): ?>
         <div class="alert alert-success alert-dismissible fade show mt-3" role="alert">
             <strong>Welcome back, <?= htmlspecialchars($_SESSION['username']) ?>!</strong> 
             You have successfully logged in.
@@ -44,8 +45,10 @@
         </div>
     <?php endif; ?>
     
-    <!-- Main Content -->
-    <?= $content ?>
+        <!-- Main Content -->
+        <?= $content ?>
+        
+    </div> <!-- End container -->
     
     <?php require_once dirname(dirname(__DIR__)) . "/bootstrap.php"; ?>
 </body>

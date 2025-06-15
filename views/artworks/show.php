@@ -48,7 +48,7 @@ $correctLargeImagePath = getImagePathOrPlaceholder($largeImagePath, $placeholder
     </div>
 <?php endif; ?>
 
-<div class="container mt-3">
+<div class="mt-3">
     <div class="row">
         <div class="col-md-6">
             <a href="#" data-toggle="modal" data-target="#imageModal">
@@ -445,7 +445,6 @@ $correctLargeImagePath = getImagePathOrPlaceholder($largeImagePath, $placeholder
             <?php endif; ?>
         </div>
     </div>
-</div>
 
 <script>
 // Handle accordion arrow rotation for general museum information

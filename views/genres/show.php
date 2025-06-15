@@ -1,7 +1,7 @@
 <br>
 <h1><?php echo htmlspecialchars($genre->getGenreName()) ?></h1>
 
-<div class="container mt-4">
+<div class="mt-4">
   <div class="row">
     <div class="col-md-12">
       <h3>Artworks in this Genre</h3>

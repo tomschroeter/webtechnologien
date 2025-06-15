@@ -1,7 +1,7 @@
 <br>
 <h1><?php echo htmlspecialchars($subject->getSubjectName()) ?></h1>
 
-<div class="container mt-4">
+<div class="mt-4">
   <div class="row">
     <div class="col-md-12">
       <h3>Artworks with this Subject</h3>
