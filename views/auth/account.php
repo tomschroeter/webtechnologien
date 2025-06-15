@@ -56,7 +56,7 @@
 </form>
 
 <h4 class="mt-4">Account Settings</h4>
-<form class="mt-4 mb-4" action="/edit-password" method="get">
+<form class="mt-4 mb-4" action="/change-password" method="get">
     <div class="form-row">
         <div class="form-group col-md-6">
             <label>Username</label>
