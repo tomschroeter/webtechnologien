@@ -1,11 +1,5 @@
 // Favorites AJAX functionality
 document.addEventListener('DOMContentLoaded', function() {
-    // Progressive enhancement: Hide fallback forms if JS is enabled
-    const fallbackForms = document.querySelectorAll('.fallback-form');
-    fallbackForms.forEach(form => {
-        form.classList.add('d-none');
-    });
-    
     // Notification function
     function showNotification(message, type = 'info') {
         // Create or get notification container
@@ -68,12 +62,15 @@ document.addEventListener('DOMContentLoaded', function() {
                     const newIsFavorite = data.isFavorite;
                     button.dataset.isFavorite = newIsFavorite ? 'true' : 'false';
                     
+                    // Check if button originally had only heart symbol (for cards) or full text
+                    const isHeartOnly = originalText.trim() === '♡' || originalText.trim() === '♥';
+                    
                     if (newIsFavorite) {
                         button.className = 'btn favorite-btn btn-outline-danger';
-                        button.textContent = '♥ Remove from Favorites';
+                        button.textContent = isHeartOnly ? '♥' : '♥ Remove from Favorites';
                     } else {
                         button.className = 'btn favorite-btn btn-primary';
-                        button.textContent = '♡ Add to Favorites';
+                        button.textContent = isHeartOnly ? '♡' : '♡ Add to Favorites';
                     }
                     
                     showNotification(data.message, 'success');
