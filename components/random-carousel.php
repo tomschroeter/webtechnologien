@@ -45,8 +45,8 @@ $randomArtwork = $allArtworksAsLarge[array_rand($allArtworksAsLarge)];
     <!-- Slide 3 -->
     <div class="carousel-item text-center p-5" style="min-height: 540px; background-color: #f8f9fa;">
       <h2 class="mb-4">Learn More About Your Favorite Pieces</h2>
-      <img src="/assets/carousel-images/artwork_page.png" style="max-height: 300px;" alt="Artwork Page">
-      <img src="/assets/carousel-images/artwork_page_2.png" style="max-height: 300px;" alt="Artwork Page">
+      <img src="/assets/carousel-images/artwork_page.png" style="max-height: 300px;" alt="Artwork Description" class="mx-4">
+      <img src="/assets/carousel-images/artwork_page_2.png" style="max-height: 300px;" alt="Artwork Gallery">
       <h5 class="mt-3">Detailed descriptions, artist background, reviews, and more!</h5>
     </div>
   </div>
