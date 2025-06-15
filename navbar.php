@@ -55,7 +55,7 @@ if (session_status() === PHP_SESSION_NONE) {
         <li class="nav-item mr-2">
           <a href=<?php echo route("advanced") ?>>
             <img src="/assets/svgs/search-advanced.svg" alt="Advanced Search" class="btn btn-outline-secondary nav-link"
-              style="height: 35px; width: 35px;" />
+              style="height: 38px; width: 38px;" />
           </a>
         </li>
       </ul>
