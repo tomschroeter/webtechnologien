@@ -67,7 +67,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             $_SESSION['isAdmin'] = false; // New users are always regular users
 
             // Redirect to home page (logged in)
-            header("Location: index.php?welcome=1");
+            header("Location: index?welcome=1");
             exit;
         } catch (Exception $e) {
             $error = 'database';
