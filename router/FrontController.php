@@ -7,6 +7,7 @@ require_once dirname(__DIR__) . "/controllers/GenreController.php";
 require_once dirname(__DIR__) . "/controllers/SubjectController.php";
 require_once dirname(__DIR__) . "/controllers/AuthController.php";
 require_once dirname(__DIR__) . "/controllers/AdminController.php";
+require_once dirname(__DIR__) . "/controllers/SearchController.php";
 
 class FrontController
 {
@@ -42,6 +43,7 @@ class FrontController
                 '/edit-profile' => ['AuthController', 'editProfile'],
                 '/edit-profile/{id}' => ['AuthController', 'editProfile'],
                 '/change-password' => ['AuthController', 'changePassword'],
+                '/search' => ['SearchController', 'search'],
             ],
             'POST' => [
                 '/login' => ['AuthController', 'processLogin'],
