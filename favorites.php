@@ -80,7 +80,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['action']) && $_POST['
         $messageType = "success";
         
         // Redirect to prevent resubmission
-        header("Location: /favorites.php");
+        header("Location: /favorites");
         exit();
     }
 }
@@ -95,7 +95,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['action']) && $_POST['
         $messageType = "success";
         
         // Redirect to prevent resubmission
-        header("Location: /favorites.php");
+        header("Location: /favorites");
         exit();
     }
 }
