@@ -1,7 +1,7 @@
 <?php
 
-require_once dirname(__DIR__)."/Database.php";
-require_once dirname(__DIR__)."/classes/Genre.php";
+require_once dirname(__DIR__) . "/Database.php";
+require_once dirname(__DIR__) . "/classes/Genre.php";
 
 class GenreRepository
 {

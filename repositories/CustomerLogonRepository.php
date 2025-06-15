@@ -37,7 +37,7 @@ class CustomerLogonRepository
         $stmt->bindValue("username", $username);
         $stmt->execute();
         $result = $stmt->fetch();
-        
+
         $returnValue = $result ?: null;
 
         $this->db->disconnect();
@@ -143,7 +143,7 @@ class CustomerLogonRepository
 
         $stmt = $this->db->prepareStatement("SELECT COUNT(*) FROM customerlogon WHERE isAdmin = 1 AND State = 1");
         $stmt->execute();
-        
+
         $count = (int) $stmt->fetchColumn();
 
         $this->db->disconnect();
@@ -180,7 +180,7 @@ class CustomerLogonRepository
             // Insert login credentials first (let AUTO_INCREMENT handle the CustomerId)
             $hashedPassword = $logon->getPass(); // This should be the complete hash from password_hash()
             $salt = $this->extractSaltFromHash($hashedPassword);
-            
+
             $stmt = $this->db->prepareStatement("
                 INSERT INTO customerlogon (UserName, Pass, Salt, State, Type, DateJoined, DateLastModified, isAdmin)
                 VALUES (:user, :pass, :salt, :state, :type, :joined, :modified, :isAdmin)

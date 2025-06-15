@@ -8,7 +8,7 @@ require_once dirname(__DIR__) . "/src/Database.php";
 require_once dirname(__DIR__) . "/src/repositories/ArtistRepository.php";
 require_once dirname(__DIR__) . "/src/repositories/ArtworkRepository.php";
 require_once dirname(__DIR__) . "/src/router/router.php";
-require_once dirname(__DIR__) . "/src/components/find_image_ref.php";
+require_once dirname(__DIR__) . "/src/components/find-image-ref.php";
 
 if (session_status() === PHP_SESSION_NONE) {
     session_start();
@@ -80,7 +80,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['action']) && $_POST['
         $messageType = "success";
         
         // Redirect to prevent resubmission
-        header("Location: /favorites.php");
+        header("Location: /favorites");
         exit();
     }
 }
@@ -95,7 +95,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['action']) && $_POST['
         $messageType = "success";
         
         // Redirect to prevent resubmission
-        header("Location: /favorites.php");
+        header("Location: /favorites");
         exit();
     }
 }

@@ -1,6 +1,6 @@
 <?php
 
-class ReviewStats
+class ReviewWithStats
 {
     private float $averageRating;
     private int $totalReviews;
@@ -43,7 +43,25 @@ class ReviewStats
         if ($this->totalReviews === 0) {
             return "No reviews yet";
         }
-        
+
         return $this->totalReviews === 1 ? "1 review" : "{$this->totalReviews} reviews";
+    }
+}
+
+/**
+ * https://stackoverflow.com/questions/20763744/type-hinting-specify-an-array-of-objects
+ *
+ * For type completion:
+ * @extends \ArrayObject<ReviewWithStats>
+ */
+class ReviewWithStatsArray extends \ArrayObject
+{
+    public function offsetSet(mixed $key, mixed $val): void
+    {
+        if (!$val instanceof ReviewWithStats) {
+            throw new \InvalidArgumentException('Value must be an ReviewWithStats instance');
+        }
+
+        parent::offsetSet($key, $val);
     }
 }

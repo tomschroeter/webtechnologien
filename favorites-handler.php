@@ -12,16 +12,16 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['action'])) {
         if (!isset($_SESSION['favoriteArtists'])) {
             $_SESSION['favoriteArtists'] = [];
         }
-		if (!isset($_SESSION['favoriteArtworks'])) {
+        if (!isset($_SESSION['favoriteArtworks'])) {
             $_SESSION['favoriteArtworks'] = [];
         }
-        
-		if (isset($_POST['artistId'])){
-        	$artistId = (int)$_POST['artistId'];
-		}
-		if (isset($_POST['artworkId'])){
-        	$artworkId = (int)$_POST['artworkId'];
-		}
+
+        if (isset($_POST['artistId'])) {
+            $artistId = (int) $_POST['artistId'];
+        }
+        if (isset($_POST['artworkId'])) {
+            $artworkId = (int) $_POST['artworkId'];
+        }
 
         if ($_POST['action'] === 'add_artist_to_favorites') {
             if (!in_array($artistId, $_SESSION['favoriteArtists'])) {
@@ -64,7 +64,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['action'])) {
                 $messageType = "info";
             }
         }
-	} catch (Exception $e) {
+    } catch (Exception $e) {
         $message = "Error updating favorites. Please try again.";
         $messageType = "danger";
     }

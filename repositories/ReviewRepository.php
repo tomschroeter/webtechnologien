@@ -3,20 +3,25 @@
 require_once dirname(__DIR__) . "/Database.php";
 require_once dirname(__DIR__) . "/classes/Review.php";
 require_once dirname(__DIR__) . "/dtos/ReviewWithCustomerInfo.php";
-require_once dirname(__DIR__) . "/dtos/ReviewStats.php";
+require_once dirname(__DIR__) . "/dtos/ReviewWithCustomerInfoAndArtwork.php";
+require_once dirname(__DIR__) . "/dtos/ReviewWithStats.php";
 
-class ReviewRepository {
+class ReviewRepository
+{
     private Database $db;
 
-    public function __construct(Database $db) {
+    public function __construct(Database $db)
+    {
         $this->db = $db;
     }
 
     /**
      * Fügt eine neue Bewertung hinzu.
      */
-    public function addReview(Review $review): void {
-        if (!$this->db->isConnected()) $this->db->connect();
+    public function addReview(Review $review): void
+    {
+        if (!$this->db->isConnected())
+            $this->db->connect();
 
         $sql = "
             INSERT INTO reviews (ArtWorkId, CustomerId, ReviewDate, Rating, Comment)
@@ -38,8 +43,10 @@ class ReviewRepository {
     /**
      * Prüft, ob der User das Artwork bereits bewertet hat.
      */
-    public function hasUserReviewed(int $customerId, int $artworkId): bool {
-        if (!$this->db->isConnected()) $this->db->connect();
+    public function hasUserReviewed(int $customerId, int $artworkId): bool
+    {
+        if (!$this->db->isConnected())
+            $this->db->connect();
 
         $sql = "
             SELECT COUNT(*) as review_count
@@ -60,111 +67,150 @@ class ReviewRepository {
     }
 
     /**
- * Holt alle Reviews zu einem bestimmten Artwork
- * @return Review[]
- */
-public function getAllReviewsForArtwork(int $artworkId): array {
-    if (!$this->db->isConnected()) $this->db->connect();
+     * Holt alle Reviews zu einem bestimmten Artwork
+     * @return Review[]
+     */
+    public function getAllReviewsForArtwork(int $artworkId): array
+    {
+        if (!$this->db->isConnected())
+            $this->db->connect();
 
-    $sql = "
-        SELECT * FROM reviews
-        WHERE ArtWorkId = :artworkId
-        ORDER BY ReviewDate DESC
-    ";
+        $sql = "
+            SELECT * FROM reviews
+            WHERE ArtWorkId = :artworkId
+            ORDER BY ReviewDate DESC
+        ";
 
-    $stmt = $this->db->prepareStatement($sql);
-    $stmt->bindValue("artworkId", $artworkId, PDO::PARAM_INT);
-    $stmt->execute();
+        $stmt = $this->db->prepareStatement($sql);
+        $stmt->bindValue("artworkId", $artworkId, PDO::PARAM_INT);
+        $stmt->execute();
 
-    $reviews = [];
+        $reviews = [];
 
-    foreach ($stmt as $row) {
-        $reviews[] = Review::createReviewFromRecord($row);
+        foreach ($stmt as $row) {
+            $reviews[] = Review::createReviewFromRecord($row);
+        }
+
+        $this->db->disconnect();
+        return $reviews;
     }
 
-    $this->db->disconnect();
-    return $reviews;
-}
+    /**
+     * Get all reviews for an artwork with customer information
+     * @param int $artworkId
+     * @return ReviewWithCustomerInfo[]
+     */
+    public function getAllReviewsWithCustomerInfo(int $artworkId): array
+    {
+        if (!$this->db->isConnected())
+            $this->db->connect();
 
-/**
- * Get all reviews for an artwork with customer information
- * @param int $artworkId
- * @return ReviewWithCustomerInfo[]
- */
-public function getAllReviewsWithCustomerInfo(int $artworkId): array {
-    if (!$this->db->isConnected()) $this->db->connect();
+        $sql = "
+            SELECT r.*, c.FirstName, c.LastName, c.City, c.Country
+            FROM reviews r
+            JOIN customers c ON r.CustomerId = c.CustomerID
+            WHERE r.ArtWorkId = :artworkId
+            ORDER BY r.ReviewDate DESC
+        ";
 
-    $sql = "
-        SELECT r.*, c.FirstName, c.LastName, c.City, c.Country
+        $stmt = $this->db->prepareStatement($sql);
+        $stmt->bindValue("artworkId", $artworkId, PDO::PARAM_INT);
+        $stmt->execute();
+
+        $reviews = [];
+
+        foreach ($stmt as $row) {
+            $review = Review::createReviewFromRecord($row);
+            $reviewWithCustomerInfo = new ReviewWithCustomerInfo(
+                $review,
+                $row['FirstName'],
+                $row['LastName'],
+                $row['City'],
+                $row['Country']
+            );
+
+            $reviews[] = $reviewWithCustomerInfo;
+        }
+
+        $this->db->disconnect();
+        return $reviews;
+    }
+
+    /**
+     * Deletes a review by ID
+     */
+    public function deleteReview(int $reviewId): void
+    {
+        if (!$this->db->isConnected())
+            $this->db->connect();
+
+        $sql = "DELETE FROM reviews WHERE ReviewId = :id";
+        $stmt = $this->db->prepareStatement($sql);
+        $stmt->bindValue("id", $reviewId, PDO::PARAM_INT);
+        $stmt->execute();
+
+        $this->db->disconnect();
+    }
+
+    /**
+     * Get review statistics for an artwork
+     * @param int $artworkId
+     * @return ReviewWithStats
+     */
+    public function getReviewStats(int $artworkId): ReviewWithStats
+    {
+        if (!$this->db->isConnected())
+            $this->db->connect();
+
+        $sql = "
+            SELECT AVG(Rating) as avgRating, COUNT(*) as totalReviews
+            FROM reviews
+            WHERE ArtWorkId = :artworkId
+        ";
+
+        $stmt = $this->db->prepareStatement($sql);
+        $stmt->bindValue("artworkId", $artworkId, PDO::PARAM_INT);
+        $stmt->execute();
+
+        $result = $stmt->fetch();
+        $this->db->disconnect();
+
+        $averageRating = $result['avgRating'] ? round($result['avgRating'], 1) : 0.0;
+        $totalReviews = (int) $result['totalReviews'];
+
+        return new ReviewWithStats($averageRating, $totalReviews);
+    }
+
+    public function getRecentReviews()
+    {
+        if (!$this->db->isConnected())
+            $this->db->connect();
+
+        $sql = "SELECT r.*, a.*, c.FirstName, c.LastName, c.City, c.Country
         FROM reviews r
-        JOIN customers c ON r.CustomerId = c.CustomerID
-        WHERE r.ArtWorkId = :artworkId
+        JOIN artworks a ON a.ArtWorkId = r.ArtWorkId
+        JOIN customers c ON c.CustomerID = r.CustomerId
         ORDER BY r.ReviewDate DESC
-    ";
+        LIMIT 3
+        ";
 
-    $stmt = $this->db->prepareStatement($sql);
-    $stmt->bindValue("artworkId", $artworkId, PDO::PARAM_INT);
-    $stmt->execute();
+        $stmt = $this->db->prepareStatement($sql);
+        $stmt->execute();
 
-    $reviews = [];
+        $reviews = [];
 
-    foreach ($stmt as $row) {
-        $review = Review::createReviewFromRecord($row);
-        $reviewWithCustomerInfo = new ReviewWithCustomerInfo(
-            $review,
-            $row['FirstName'],
-            $row['LastName'],
-            $row['City'],
-            $row['Country']
-        );
-        
-        $reviews[] = $reviewWithCustomerInfo;
+        foreach ($stmt as $row) {
+            $review = Review::createReviewFromRecord($row);
+            $artwork = Artwork::createArtworkFromRecord($row);
+            $reviewerFirstName = $row['FirstName'];
+            $reviewerLastName = $row['LastName'];
+            $reviewerCity = $row['City'];
+            $reviewerCountry = $row['Country'];
+            $reviews[] = new ReviewWithCustomerInfoAndArtwork($review, $artwork, $reviewerFirstName, $reviewerLastName, $reviewerCity, $reviewerCountry);
+        }
+
+        $this->db->disconnect();
+
+        return $reviews;
     }
-
-    $this->db->disconnect();
-    return $reviews;
-}
-
-/**
- * Deletes a review by ID
- */
-public function deleteReview(int $reviewId): void {
-    if (!$this->db->isConnected()) $this->db->connect();
-
-    $sql = "DELETE FROM reviews WHERE ReviewId = :id";
-    $stmt = $this->db->prepareStatement($sql);
-    $stmt->bindValue("id", $reviewId, PDO::PARAM_INT);
-    $stmt->execute();
-
-    $this->db->disconnect();
-}
-
-/**
- * Get review statistics for an artwork
- * @param int $artworkId
- * @return ReviewStats
- */
-public function getReviewStats(int $artworkId): ReviewStats {
-    if (!$this->db->isConnected()) $this->db->connect();
-
-    $sql = "
-        SELECT AVG(Rating) as avgRating, COUNT(*) as totalReviews
-        FROM reviews
-        WHERE ArtWorkId = :artworkId
-    ";
-
-    $stmt = $this->db->prepareStatement($sql);
-    $stmt->bindValue("artworkId", $artworkId, PDO::PARAM_INT);
-    $stmt->execute();
-
-    $result = $stmt->fetch();
-    $this->db->disconnect();
-
-    $averageRating = $result['avgRating'] ? round($result['avgRating'], 1) : 0.0;
-    $totalReviews = (int)$result['totalReviews'];
-
-    return new ReviewStats($averageRating, $totalReviews);
-}
-
-
 }

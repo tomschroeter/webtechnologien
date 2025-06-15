@@ -1,7 +1,7 @@
 <?php
 
 return [
-    "home" => "index",
+    "home" => "",
     "test" => "test",
     "artists" => "artists/:id",
     "artworks" => "artworks/:id",
