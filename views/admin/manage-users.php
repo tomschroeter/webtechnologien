@@ -4,6 +4,15 @@
     <div class="alert alert-danger">Cannot demote or deactivate the last administrator. There must be at least one active admin.</div>
 <?php endif; ?>
 
+<?php if (isset($_GET['message'])): ?>
+    <div class="alert alert-success alert-dismissible fade show" role="alert">
+        <?= htmlspecialchars($_GET['message']) ?>
+        <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+        </button>
+    </div>
+<?php endif; ?>
+
 <table class="table table-bordered mt-4">
     <thead class="thead-dark">
         <tr>
@@ -24,7 +33,7 @@
                 <td class="role-cell"><?= $user['isAdmin'] ? 'Admin' : 'User' ?></td>
                 <td class="status-cell"><?= $user['State'] == 1 ? 'Active' : 'Inactive' ?></td>
                 <td class="actions-cell">
-                    <a class="btn btn-sm btn-primary" href="/edit-user?id=<?= $user['CustomerID'] ?>">Edit</a>
+                    <a class="btn btn-sm btn-primary" href="/edit-profile/<?= $user['CustomerID'] ?>">Edit</a>
 
                     <?php if (!$user['isAdmin']): ?>
                         <!-- Form for promoting user -->

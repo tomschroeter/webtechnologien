@@ -315,4 +315,156 @@ class AuthController extends BaseController
             $this->jsonResponse(['success' => false, 'message' => 'Error updating favorites'], 500);
         }
     }
+    
+    public function editProfile($id = null)
+    {
+        if (session_status() === PHP_SESSION_NONE) {
+            session_start();
+        }
+        
+        $this->requireAuth();
+        
+        // Get user ID - either from path parameter (admin editing) or session (user editing own profile)
+        $userId = $id ?? $_GET['id'] ?? null;
+        $isAdminEdit = false;
+        
+        if ($userId) {
+            // Admin editing another user's profile
+            if (!isset($_SESSION['isAdmin']) || !$_SESSION['isAdmin']) {
+                $this->redirectWithMessage('/', 'Access denied. Administrator privileges required.', 'error');
+                return;
+            }
+            $isAdminEdit = true;
+            $userId = (int)$userId;
+        } else {
+            // User editing their own profile
+            $userId = (int)$_SESSION['customerId'];
+        }
+        
+        if (!$userId || !is_numeric($userId)) {
+            $this->redirectWithMessage($isAdminEdit ? '/manage-users' : '/account', 'Invalid user ID.', 'error');
+            return;
+        }
+
+        $user = $this->customerRepository->getUserDetailsById($userId);
+
+        if (!$user) {
+            $this->redirectWithMessage($isAdminEdit ? '/manage-users' : '/account', 'User not found.', 'error');
+            return;
+        }
+
+        $error = $_GET['error'] ?? null;
+        $flashMessage = $this->getFlashMessage();
+        
+        $data = [
+            'user' => $user,
+            'userId' => $userId,
+            'isAdminEdit' => $isAdminEdit,
+            'error' => $error,
+            'flashMessage' => $flashMessage,
+            'title' => $isAdminEdit ? 'Edit User - Admin Panel' : 'Edit Profile'
+        ];
+        
+        echo $this->renderWithLayout('auth/edit-profile', $data);
+    }
+    
+    public function updateProfile($id = null)
+    {
+        if (session_status() === PHP_SESSION_NONE) {
+            session_start();
+        }
+        
+        $this->requireAuth();
+        
+        // Get user ID and determine if this is an admin edit
+        $userId = $id ?? $_POST['userId'] ?? null;
+        $isAdminEdit = false;
+        
+        if ($userId && (int)$userId !== (int)$_SESSION['customerId']) {
+            // Admin editing another user's profile
+            if (!isset($_SESSION['isAdmin']) || !$_SESSION['isAdmin']) {
+                $this->redirectWithMessage('/', 'Access denied. Administrator privileges required.', 'error');
+                return;
+            }
+            $isAdminEdit = true;
+            $userId = (int)$userId;
+        } else {
+            // User editing their own profile
+            $userId = (int)$_SESSION['customerId'];
+        }
+
+        if (!$userId || !is_numeric($userId)) {
+            $redirectUrl = $isAdminEdit ? '/manage-users' : '/account';
+            $this->redirectWithMessage($redirectUrl, 'Invalid user ID.', 'error');
+            return;
+        }
+
+        $first = trim($_POST['firstName'] ?? '');
+        $last = trim($_POST['lastName'] ?? '');
+        $email = trim($_POST['email'] ?? '');
+        $isAdmin = $isAdminEdit && isset($_POST['isAdmin']) && $_POST['isAdmin'] === '1';
+        
+        $errors = [];
+
+        // Validate input
+        if (empty($first)) {
+            $errors[] = "First name is required.";
+        }
+        if (empty($last)) {
+            $errors[] = "Last name is required.";
+        }
+        if (empty($email)) {
+            $errors[] = "Email is required.";
+        } elseif (!filter_var($email, FILTER_VALIDATE_EMAIL)) {
+            $errors[] = "Please enter a valid email address.";
+        }
+
+        // Check if email is already taken by another user
+        $existingUser = $this->customerRepository->getUserByEmail($email);
+        if ($existingUser && $existingUser['CustomerID'] != $userId) {
+            $errors[] = "This email address is already in use by another user.";
+        }
+
+        if (!empty($errors)) {
+            $redirectUrl = $isAdminEdit ? "/edit-profile/$userId?error=validation" : "/edit-profile?error=validation";
+            
+            // Store errors in session for display
+            $_SESSION['validation_errors'] = $errors;
+            $this->redirect($redirectUrl);
+            return;
+        }
+
+        try {
+            $this->customerRepository->updateCustomerBasicInfo($userId, $first, $last, $email);
+            
+            // Only update admin status if this is an admin edit
+            if ($isAdminEdit) {
+                $this->customerRepository->updateUserAdmin($userId, $isAdmin);
+                
+                // Check if admin is demoting themselves
+                if (isset($_SESSION['customerId']) && 
+                    $userId === (int)$_SESSION['customerId'] && 
+                    !$isAdmin && 
+                    ($_SESSION['isAdmin'] ?? false)) {
+                    
+                    // Update session to reflect they're no longer admin
+                    $_SESSION['isAdmin'] = false;
+                    
+                    // Redirect to home page instead of manage-users
+                    $this->redirectWithMessage('/', 'You have been demoted from admin status.', 'info');
+                    return;
+                }
+            }
+
+            $successMessage = $isAdminEdit ? 'User updated successfully.' : 'Your profile has been updated successfully.';
+            $redirectUrl = $isAdminEdit ? '/manage-users' : '/account';
+            $this->redirectWithMessage($redirectUrl, $successMessage, 'success');
+            
+        } catch (Exception $e) {
+            $redirectUrl = $isAdminEdit ? "/edit-profile/$userId?error=update" : "/edit-profile?error=update";
+            
+            $_SESSION['validation_errors'] = ["An error occurred while updating the profile. Please try again."];
+            $this->redirect($redirectUrl);
+        }
+    }
 }

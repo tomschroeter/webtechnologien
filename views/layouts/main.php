@@ -42,9 +42,18 @@
             <button type="button" class="close" data-dismiss="alert" aria-label="Close">
                 <span aria-hidden="true">&times;</span>
             </button>
-        </div>
-    <?php endif; ?>
-    
+        </div>        <?php endif; ?>
+        
+        <!-- URL Message Parameters -->
+        <?php if (isset($_GET['message'])): ?>
+            <div class="alert alert-success alert-dismissible fade show mt-3" role="alert">
+                <?= htmlspecialchars($_GET['message']) ?>
+                <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+        <?php endif; ?>
+        
         <!-- Main Content -->
         <?= $content ?>
         
