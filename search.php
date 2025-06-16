@@ -10,7 +10,7 @@ require_once dirname(__DIR__) . "/src/Database.php";
 require_once dirname(__DIR__) . "/src/repositories/ArtistRepository.php";
 require_once dirname(__DIR__) . "/src/repositories/ArtworkRepository.php";
 require_once dirname(__DIR__) . "/src/dtos/ArtworkWithArtistName.php";
-require_once dirname(__DIR__) . "/src/components/find_image_ref.php";
+require_once dirname(__DIR__) . "/src/components/find-image-ref.php";
 
 if (session_status() === PHP_SESSION_NONE) {
 	session_start();
@@ -23,10 +23,10 @@ $artworkRepository = new ArtworkRepository($db);
 $filterBy = isset($_GET['filterBy']) ? $_GET['filterBy'] : '';
 // Checks if search query has been submitted
 if (isset($_GET['searchQuery'])) {
-	$searchQuery = trim($_GET['searchQuery']);
+	$noResultsMessage = 'No results were found for the search term' . ' "' . trim($_GET['searchQuery']) . '"' . '.';
 } else {
 	if ($filterBy !== '') {
-		$searchQuery = "Couldn't find any results that fit the searching criteria";
+		$noResultsMessage = "Couldn't find any results that fit the searching criteria.";
 	} else {
 		header("Location: /error.php?error=missingParam");
 		exit();
@@ -34,7 +34,7 @@ if (isset($_GET['searchQuery'])) {
 }
 
 // Checks if search query has valid size (>= 3 characters)
-if (strlen($searchQuery) < 3 && $filterBy === '') {
+if (strlen($noResultsMessage) < 3 && $filterBy === '') {
 	header("Location: /error.php?error=tooShort");
 	exit();
 }
@@ -81,9 +81,9 @@ if (isset($_GET['filterBy'])) {
 	}
 } else {
 	// Get results for all artists that fit the search query
-	$artistSearchResults = $artistRepository->getArtistBySearchQuery($searchQuery, $sortArtist);
+	$artistSearchResults = $artistRepository->getArtistBySearchQuery($noResultsMessage, $sortArtist);
 	// Get results for all artworks that fit the search query
-	$artworkSearchResults = $artworkRepository->getArtworkBySearchQuery($searchQuery, $sortParameter, $sortArtwork);
+	$artworkSearchResults = $artworkRepository->getArtworkBySearchQuery($noResultsMessage, $sortParameter, $sortArtwork);
 }
 
 ?>
@@ -246,7 +246,7 @@ if (isset($_GET['filterBy'])) {
 
 		<!-- Output if search didn't return a result -->
 	<?php else: ?>
-		<?php echo 'No results were found for the search term' . ' "' . $searchQuery . '"' . '.'; ?>
+		<?php echo $noResultsMessage ?>
 	<?php endif; ?>
 	<?php require_once dirname(__DIR__) . "/src/bootstrap.php"; ?>
 </body>
