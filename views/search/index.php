@@ -50,7 +50,7 @@ require_once dirname(dirname(__DIR__)) . "/components/find-image-ref.php";
                     </button>
                     
                     <!-- Fallback form for non-JS users -->
-                    <form method="post" action="/api/favorites/artist/<?php echo $artist->getArtistId() ?>" class="mr-2 mb-0 d-none fallback-form">
+                    <form method="post" action="/favorites/artists/<?php echo $artist->getArtistId() ?>/toggle" class="mr-2 mb-0 d-none fallback-form">
                     <?php if ($isInFavorites): ?>
                         <input type="hidden" name="_method" value="DELETE">
                         <button type="submit" class="btn btn-outline-danger">
@@ -130,7 +130,7 @@ require_once dirname(dirname(__DIR__)) . "/components/find-image-ref.php";
                     </button>
                     
                     <!-- Fallback form for non-JS users -->
-                    <form method="post" action="/api/favorites/artwork/<?php echo $combined->getArtwork()->getArtworkId() ?>" class="mr-2 mb-0 d-none fallback-form">
+                    <form method="post" action="/favorites/artworks/<?php echo $combined->getArtwork()->getArtworkId() ?>/toggle" class="mr-2 mb-0 d-none fallback-form">
                         <?php if ($isInFavorites): ?>
                             <input type="hidden" name="_method" value="DELETE">
                             <button type="submit" class="btn btn-outline-danger">

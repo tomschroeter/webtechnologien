@@ -99,26 +99,35 @@ $correctLargeImagePath = getImagePathOrPlaceholder($largeImagePath, $placeholder
                 <?php endif; ?>
             </div>
 
-            <!-- Add/Remove Favorites Form if logged in -->
+            <!-- Add/Remove Favorites -->
             <?php 
             $isInFavorites = isset($_SESSION['favoriteArtworks']) && in_array($artwork->getArtworkId(), $_SESSION['favoriteArtworks']);
             ?>
             <?php if (isset($_SESSION['customerId'])): ?>
-                <form method="post" action="/favorites-handler.php" class="mb-3">
-                    <?php if ($isInFavorites): ?>
-                        <input type="hidden" name="action" value="remove_artwork_from_favorites">
-                        <input type="hidden" name="artworkId" value="<?php echo $artwork->getArtworkId() ?>">
-                        <button type="submit" class="btn btn-outline-danger">
+                <div class="favorites-container mb-3">
+                    <button type="button" 
+                            class="btn favorite-btn <?php echo $isInFavorites ? 'btn-outline-danger' : 'btn-primary' ?>"
+                            data-type="artwork"
+                            data-id="<?php echo $artwork->getArtworkId() ?>"
+                            data-is-favorite="<?php echo $isInFavorites ? 'true' : 'false' ?>">
+                        <?php if ($isInFavorites): ?>
                             ♥ Remove from Favorites
-                        </button>
-                    <?php else: ?>
-                        <input type="hidden" name="action" value="add_artwork_to_favorites">
-                        <input type="hidden" name="artworkId" value="<?php echo $artwork->getArtworkId() ?>">
-                        <button type="submit" class="btn btn-primary">
+                        <?php else: ?>
                             ♡ Add to Favorites
+                        <?php endif; ?>
+                    </button>
+                    
+                    <!-- Fallback form for non-JS users -->
+                    <form method="post" action="/favorites/artworks/<?php echo $artwork->getArtworkId() ?>/toggle" class="d-none fallback-form">
+                        <button type="submit" class="btn <?php echo $isInFavorites ? 'btn-outline-danger' : 'btn-primary' ?>">
+                            <?php if ($isInFavorites): ?>
+                                ♥ Remove from Favorites
+                            <?php else: ?>
+                                ♡ Add to Favorites
+                            <?php endif; ?>
                         </button>
-                    <?php endif; ?>
-                </form>
+                    </form>
+                </div>
             <?php endif; ?>
 
             <table class="table table-bordered">
