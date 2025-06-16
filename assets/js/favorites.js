@@ -47,7 +47,7 @@ document.addEventListener('DOMContentLoaded', function() {
             button.classList.add('loading');
             
             try {
-                const endpoint = `/api/favorites/${type}s/${id}/toggle`;
+                const endpoint = `/favorites/${type}s/${id}/toggle`;
                 const response = await fetch(endpoint, {
                     method: 'POST',
                     headers: {
