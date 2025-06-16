@@ -2,7 +2,7 @@
 require_once dirname(__DIR__) . "/Database.php";
 require_once dirname(__DIR__) . "/repositories/ReviewRepository.php";
 require_once dirname(__DIR__) . "/dtos/ReviewWithCustomerInfoAndArtwork.php";
-require_once dirname(__DIR__) . "/components/render-stars.php";
+require_once __DIR__ . "/render-stars.php";
 
 $db = new Database();
 $reviewRepository = new ReviewRepository($db);

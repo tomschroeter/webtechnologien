@@ -1,6 +1,6 @@
 <?php
 
-require_once dirname(__DIR__) . "/controllers/BaseController.php";
+require_once __DIR__ . "/BaseController.php";
 
 class ErrorController extends BaseController
 {
