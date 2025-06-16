@@ -84,8 +84,8 @@ if (isset($_GET['filterBy'])) {
 			break;
 		default:
 			$artistSearchResults = [];
-    		$artworkSearchResults = [];
-   			break;
+			$artworkSearchResults = [];
+			break;
 	}
 } else {
 	// Get results for all artists that fit the search query
