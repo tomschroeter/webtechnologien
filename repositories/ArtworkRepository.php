@@ -54,8 +54,8 @@ class ArtworkRepository
     }
 
     /**
-      * @return Artwork[]
-      */
+     * @return Artwork[]
+     */
     public function getArtworksByArtist(int $artistId): array
     {
         if (!$this->db->isConnected()) {
@@ -395,8 +395,8 @@ class ArtworkRepository
         $stmt->execute($params);
 
         $artworks = [];
-        while ($row = $stmt->fetch(PDO::FETCH_ASSOC)) {
-            $row = fixFilePath($row);
+        foreach ($stmt as $row) {
+            $row['ImageFileName'] = fixFilePath($row['ImageFileName']);
 
             $artwork = Artwork::createArtworkFromRecord($row);
             $artistFirstName = $row['FirstName'];
