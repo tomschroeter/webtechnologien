@@ -33,16 +33,20 @@ $artworksWithRating = $artworkRepository->getTopRatedArtworks();
         <!-- Display Artworks -->
         <div class="col-md-4 mb-4">
           <div class="card" style="width: 150px; min-height: 260px;">
-            <img class="card-img-top" style="height:150px; width:150px; object-fit:cover;" src="<?= $correctImagePath ?>"
-              alt="">
+            <a href="artworks/<?php echo $artworkId ?>">
+              <img class="card-img-top" style="height:150px; width:150px; object-fit:cover;"
+                src="<?php echo $correctImagePath ?>" alt="">
+            </a>
             <div class="card-body p-2">
               <h4 class="card-title h6 mb-1">
-                <a href="artworks/<?= $artworkId ?>" style="color: black;"><?= htmlspecialchars($artworkTitle) ?></a>
+                <a href="artworks/<?php echo $artworkId ?>"
+                  style="color: black;"><?php echo htmlspecialchars($artworkTitle) ?></a>
               </h4>
               <p class="card-text small mb-1">
-                <a href="artists/<?= $artistId ?>" style="color: black;"><?= htmlspecialchars($artistName) ?></a>
+                <a href="artists/<?php echo $artistId ?>"
+                  style="color: black;"><?php echo htmlspecialchars($artistName) ?></a>
               </p>
-              <p class="card-text text-warning" style="font-size: 0.9rem;"><?= $stars ?></p>
+              <p class="card-text text-warning" style="font-size: 0.9rem;"><?php echo $stars ?></p>
             </div>
           </div>
         </div>
