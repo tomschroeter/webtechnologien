@@ -1,21 +1,25 @@
 <?php
-require_once dirname(dirname(__DIR__)) . "/components/find_image_ref.php";
+require_once dirname(dirname(__DIR__)) . "/components/find-image-ref.php";
+require_once dirname(dirname(__DIR__)) . "/components/render-stars.php";
+require_once dirname(dirname(__DIR__)) . "/Database.php";
 require_once dirname(dirname(__DIR__)) . "/repositories/GenreRepository.php";
 require_once dirname(dirname(__DIR__)) . "/repositories/SubjectRepository.php";
 require_once dirname(dirname(__DIR__)) . "/repositories/GalleryRepository.php";
 require_once dirname(dirname(__DIR__)) . "/repositories/ReviewRepository.php";
-require_once dirname(dirname(__DIR__)) . "/dtos/ReviewStats.php";
+require_once dirname(dirname(__DIR__)) . "/dtos/ReviewWithStats.php";
 
 // Fetch additional data that's not passed from controller
 $db = new Database();
 $genreRepository = new GenreRepository($db);
 $subjectRepository = new SubjectRepository($db);
 $galleryRepository = new GalleryRepository($db);
+$reviewRepo = new ReviewRepository($db);
 
 try {
-    $genres = $genreRepository->getGenresByArtwork($artwork->getArtworkID());
-    $subjects = $subjectRepository->getSubjectsByArtwork($artwork->getArtworkID());
-    $reviewStats = (new ReviewRepository($db))->getReviewStats($artwork->getArtworkID());
+    $genres = $genreRepository->getGenresByArtwork($artwork->getArtworkId());
+    $subjects = $subjectRepository->getSubjectsByArtwork($artwork->getArtworkId());
+    $reviews = $reviewRepo->getAllReviewsWithCustomerInfo($artwork->getArtworkId());
+    $reviewStats = $reviewRepo->getReviewStats($artwork->getArtworkId());
 
     $gallery = null;
     if ($artwork->getGalleryId()) {
@@ -25,7 +29,8 @@ try {
     // Set default values if there's an error fetching additional data
     $genres = [];
     $subjects = [];
-    $reviewStats = new ReviewStats(0.0, 0);
+    $reviews = [];
+    $reviewStats = new ReviewWithStats(0.0, 0);
     $gallery = null;
 }
 
@@ -53,26 +58,25 @@ $correctLargeImagePath = getImagePathOrPlaceholder($largeImagePath, $placeholder
         <div class="col-md-6">
             <a href="#" data-toggle="modal" data-target="#imageModal">
                 <img src="<?php echo $correctImagePath ?>" 
-                     alt="<?php echo htmlspecialchars($artwork->getTitle()) ?>" 
-                     class="img-fluid" 
-                     style="width: 100%; height: 400px; object-fit: contain; cursor: pointer; border: 1px solid #ddd; background-color: #f8f9fa;">
-            </a>
+                    alt="<?php echo htmlspecialchars($artwork->getTitle()) ?>" 
+                    class="img-fluid" 
+                    style="max-width: auto; max-height: auto; object-fit: contain; cursor: pointer; border: 1px solid #ddd; background-color: #f8f9fa;"></a>
             
             <!-- Modal for large image -->
             <div class="modal fade" id="imageModal" tabindex="-1" role="dialog" aria-labelledby="imageModalLabel" aria-hidden="true">
                 <div class="modal-dialog modal-lg" role="document" style="height: 95vh; margin: 2.5vh auto;">
-                    <div class="modal-content" style="height: 100%;">
+                    <div class="modal-content" style="height: auto;">
                         <div class="modal-header">
-                            <h5 class="modal-title" id="imageModalLabel"><?php echo htmlspecialchars($artwork->getTitle()) ?></h5>
+                            <h3 class="modal-title" id="imageModalLabel"><?php echo htmlspecialchars($artwork->getTitle()) ?></h3>
                             <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                                 <span aria-hidden="true">&times;</span>
                             </button>
                         </div>
                         <div class="modal-body text-center d-flex align-items-center justify-content-center" style="flex: 1; padding: 20px;">
                             <img src="<?php echo $correctLargeImagePath ?>" 
-                                 alt="<?php echo htmlspecialchars($artwork->getTitle()) ?>" 
-                                 class="img-fluid"
-                                 style="height: 100%; width: auto; object-fit: contain;">
+                                alt="<?php echo htmlspecialchars($artwork->getTitle()) ?>" 
+                                class="img-fluid"
+                                style="height: 100%; width: auto; object-fit: contain;">
                         </div>
                     </div>
                 </div>
@@ -87,48 +91,35 @@ $correctLargeImagePath = getImagePathOrPlaceholder($largeImagePath, $placeholder
             <div class="mb-3">
                 <?php if ($reviewStats->hasReviews()): ?>
                     <div class="d-flex align-items-center">
-                        <span class="h5 mb-0 mr-2">Rating: <?php echo $reviewStats->getFormattedAverageRatingOutOf5() ?></span>
-                        <small class="text-muted">(based on <?php echo $reviewStats->getReviewText() ?>)</small>
+                        <span class="h5 mb-0 mr-2">Rating: <?php echo $reviewStats->getFormattedAverageRatingOutOf5() . ' ' . renderStars($reviewStats->getFormattedAverageRating()) ?></span>
+                        <small class="text-muted" style="transform: translateY(1px);">(based on <?php echo $reviewStats->getReviewText() ?>)</small>
                     </div>
                 <?php else: ?>
                     <span class="text-muted">No reviews yet</span>
                 <?php endif; ?>
             </div>
 
-            <!-- Add/Remove Favorites -->
+            <!-- Add/Remove Favorites Form if logged in -->
             <?php 
-            $isInFavorites = isset($_SESSION['favoriteArtworks']) && in_array($artwork->getArtworkID(), $_SESSION['favoriteArtworks']);
+            $isInFavorites = isset($_SESSION['favoriteArtworks']) && in_array($artwork->getArtworkId(), $_SESSION['favoriteArtworks']);
             ?>
-            <div class="favorites-container mb-3">
-                <button type="button" 
-                        class="btn favorite-btn <?php echo $isInFavorites ? 'btn-outline-danger' : 'btn-primary' ?>"
-                        data-type="artwork"
-                        data-id="<?php echo $artwork->getArtworkID() ?>"
-                        data-is-favorite="<?php echo $isInFavorites ? 'true' : 'false' ?>">
-                    <?php if ($isInFavorites): ?>
-                        ♥ Remove from Favorites
-                    <?php else: ?>
-                        ♡ Add to Favorites
-                    <?php endif; ?>
-                </button>
-                
-                <!-- Fallback form for non-JS users -->
-                <form method="post" action="/favorites-handler.php" class="d-none fallback-form">
+            <?php if (isset($_SESSION['customerId'])): ?>
+                <form method="post" action="/favorites-handler.php" class="mb-3">
                     <?php if ($isInFavorites): ?>
                         <input type="hidden" name="action" value="remove_artwork_from_favorites">
-                        <input type="hidden" name="artworkId" value="<?php echo $artwork->getArtworkID() ?>">
+                        <input type="hidden" name="artworkId" value="<?php echo $artwork->getArtworkId() ?>">
                         <button type="submit" class="btn btn-outline-danger">
                             ♥ Remove from Favorites
                         </button>
                     <?php else: ?>
                         <input type="hidden" name="action" value="add_artwork_to_favorites">
-                        <input type="hidden" name="artworkId" value="<?php echo $artwork->getArtworkID() ?>">
+                        <input type="hidden" name="artworkId" value="<?php echo $artwork->getArtworkId() ?>">
                         <button type="submit" class="btn btn-primary">
                             ♡ Add to Favorites
                         </button>
                     <?php endif; ?>
                 </form>
-            </div>
+            <?php endif; ?>
 
             <table class="table table-bordered">
                 <thead class="thead-dark">
@@ -290,7 +281,7 @@ $correctLargeImagePath = getImagePathOrPlaceholder($largeImagePath, $placeholder
         </div>
     <?php endif; ?>
 
-    <?php if ($gallery && $gallery->getLatitude() && $gallery->getLongitude()): ?>
+    <?php if ($gallery->getLatitude() && $gallery->getLongitude()): ?>
         <div class="row mt-4">
             <div class="col-12">
                 <div class="card" id="locationAccordion">
@@ -390,16 +381,16 @@ $correctLargeImagePath = getImagePathOrPlaceholder($largeImagePath, $placeholder
             <h3>Reviews</h3>
             
             <?php
+            // TODO: Add authentication check
             // Review form (only if user is logged in and hasn't reviewed yet)
-            require_once dirname(dirname(__DIR__)) . "/repositories/ReviewRepository.php";
-            $reviewRepo = new ReviewRepository($db);
             
             if (isset($_SESSION['customerId'])):
-                $alreadyReviewed = $reviewRepo->hasUserReviewed($_SESSION['customerId'], $artwork->getArtworkID());
+
+                $alreadyReviewed = $reviewRepo->hasUserReviewed($_SESSION['customerId'], $artwork->getArtworkId());
                 
                 if (!$alreadyReviewed): ?>
                     <form method="POST" action="add-review.php" class="mb-3">
-                        <input type="hidden" name="artworkId" value="<?= $artwork->getArtworkID() ?>">
+                        <input type="hidden" name="artworkId" value="<?= $artwork->getArtworkId() ?>">
                         <label for="rating">Rating (1–5):</label>
                         <input type="number" name="rating" min="1" max="5" required class="form-control mb-2">
                         <label for="comment">Comment:</label>
@@ -440,16 +431,16 @@ $correctLargeImagePath = getImagePathOrPlaceholder($largeImagePath, $placeholder
                                         </small>
                                     </div>
                                     
-                                    <!-- Show delete option for admins in top right corner -->
-                                    <?php if ($_SESSION['isAdmin'] ?? false): ?>
-                                        <div>
-                                            <form method="POST" action="delete-review.php" onsubmit="return confirm('Delete this review?')">
-                                                <input type="hidden" name="reviewId" value="<?php echo $reviewWithCustomerInfo->getReview()->getReviewId() ?>">
-                                                <input type="hidden" name="artworkId" value="<?php echo $reviewWithCustomerInfo->getReview()->getArtworkId() ?>">
-                                                <button type="submit" class="btn btn-sm btn-danger">Delete</button>
-                                            </form>
-                                        </div>
-                                    <?php endif; ?>
+                                        <!-- Show delete option for admins in top right corner -->
+                                        <?php if ($_SESSION['isAdmin'] ?? false): ?>
+                                            <div>
+                                                <form method="POST" action="delete-review.php" onsubmit="return confirm('Delete this review?')">
+                                                    <input type="hidden" name="reviewId" value="<?php echo $reviewWithCustomerInfo->getReview()->getReviewId() ?>">
+                                                    <input type="hidden" name="artworkId" value="<?php echo $reviewWithCustomerInfo->getReview()->getArtworkId() ?>">
+                                                    <button type="submit" class="btn btn-sm btn-danger">Delete</button>
+                                                </form>
+                                            </div>
+                                        <?php endif; ?>
                                 </div>
                             </div>
                         </div>
@@ -460,6 +451,7 @@ $correctLargeImagePath = getImagePathOrPlaceholder($largeImagePath, $placeholder
             <?php endif; ?>
         </div>
     </div>
+</div>
 
 <script>
 // Handle accordion arrow rotation for general museum information
@@ -480,83 +472,3 @@ $('#locationCollapse').on('hide.bs.collapse', function () {
     $('#locationArrow').text('▼');
 });
 </script>
-      <table class="table table-bordered">
-        <thead class="thead-dark">
-          <tr><th colspan="2">Artwork Details</th></tr>
-        </thead>
-        <tr>
-          <th>Technique:</th>
-          <td><?php echo htmlspecialchars($artwork->getMedium()) ?></td>
-        </tr>
-        <tr>
-          <th>Width:</th>
-          <td><?php echo htmlspecialchars($artwork->getWidth()) ?> cm</td>
-        </tr>
-        <tr>
-          <th>Height:</th>
-          <td><?php echo htmlspecialchars($artwork->getHeight()) ?> cm</td>
-        </tr>
-        <?php if ($artwork->getYearOfWork()): ?>
-        <tr>
-          <th>Year:</th>
-          <td><?php echo htmlspecialchars($artwork->getYearOfWork()) ?></td>
-        </tr>
-        <?php endif; ?>
-      </table>
-    </div>
-  </div>
-  
-  <!-- Reviews Section -->
-  <div class="mt-5">
-    <h3>Reviews</h3>
-    
-    <?php if (isset($_SESSION['user_id'])): ?>
-      <div class="mb-4">
-        <h4>Add Your Review</h4>
-        <form method="post" action="/add-review.php">
-          <input type="hidden" name="artworkId" value="<?php echo $artwork->getArtworkId() ?>">
-          <div class="form-group">
-            <label for="rating">Rating (1-5):</label>
-            <select name="rating" id="rating" class="form-control" required>
-              <option value="">Select rating</option>
-              <option value="1">1 - Poor</option>
-              <option value="2">2 - Fair</option>
-              <option value="3">3 - Good</option>
-              <option value="4">4 - Very Good</option>
-              <option value="5">5 - Excellent</option>
-            </select>
-          </div>
-          <div class="form-group">
-            <label for="comment">Comment:</label>
-            <textarea name="comment" id="comment" class="form-control" rows="4" required></textarea>
-          </div>
-          <button type="submit" class="btn btn-primary">Submit Review</button>
-        </form>
-      </div>
-    <?php else: ?>
-      <p><a href="/login.php">Login</a> to add a review.</p>
-    <?php endif; ?>
-    
-    <?php if (!empty($reviews)): ?>
-      <div class="reviews-list">
-        <?php foreach ($reviews as $review): ?>
-          <div class="card mb-3">
-            <div class="card-body">
-              <div class="d-flex justify-content-between">
-                <h5 class="card-title">
-                  <?php echo str_repeat('★', $review->getRating()) ?>
-                  <?php echo str_repeat('☆', 5 - $review->getRating()) ?>
-                </h5>
-                <small class="text-muted"><?php echo $review->getDateCreated() ?></small>
-              </div>
-              <p class="card-text"><?php echo htmlspecialchars($review->getComment()) ?></p>
-              <small class="text-muted">by <?php echo htmlspecialchars($review->getCustomerUsername ?? 'Anonymous') ?></small>
-            </div>
-          </div>
-        <?php endforeach; ?>
-      </div>
-    <?php else: ?>
-      <p>No reviews yet. Be the first to review this artwork!</p>
-    <?php endif; ?>
-  </div>
-</div>

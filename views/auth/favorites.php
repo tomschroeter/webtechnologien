@@ -1,7 +1,7 @@
 <h1 class="mt-3">My Favorites</h1>
 
 <?php 
-require_once dirname(dirname(__DIR__)) . "/components/find_image_ref.php";
+require_once dirname(dirname(__DIR__)) . "/components/find-image-ref.php";
 ?>
 
 <?php if (empty($favoriteArtists) && empty($favoriteArtworks)): ?>

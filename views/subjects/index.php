@@ -1,5 +1,5 @@
 <?php
-require_once dirname(dirname(__DIR__)) . "/components/find_image_ref.php";
+require_once dirname(dirname(__DIR__)) . "/components/find-image-ref.php";
 ?>
 <h1 class="mt-3 mb-3">Subjects</h1>
 <p class="text-muted">Found: <?php echo count($subjects)?> subjects</p>

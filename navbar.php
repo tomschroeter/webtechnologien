@@ -5,8 +5,9 @@ if (session_status() === PHP_SESSION_NONE) {
 ?>
 
 <div class="navbar-fullwidth">
-  <nav class="navbar sticky-top navbar-expand-sm navbar-light bg-light">
+  <nav class="navbar sticky-top navbar-expand-sm navbar-light" style="background-color:rgb(240, 243, 246)">
     <a class="navbar-brand" href="/">
+</invoke>
       <img src="/assets/svgs/logo.svg" alt="Logo" style="height: 40px; width: 40px;">
     </a>
     <button class="navbar-toggler d-lg-none" type="button" data-toggle="collapse" data-target="#collapsibleNavId"
@@ -72,7 +73,7 @@ if (session_status() === PHP_SESSION_NONE) {
           <div class="dropdown-menu dropdown-menu-right" aria-labelledby="dropdownProfile">
             <?php if (isset($_SESSION['username'])): ?>
               <span class="dropdown-item-text font-weight-bold text-dark">
-                 <?= htmlspecialchars($_SESSION['username']) ?>
+                <?= htmlspecialchars($_SESSION['username']) ?>
               </span>
               <a class="dropdown-item" href="/account">My Account</a>
               <a class="dropdown-item" href="/favorites">Favorites</a>

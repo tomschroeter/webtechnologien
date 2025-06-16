@@ -86,6 +86,23 @@
 
 ## Recent Updates
 
+### Migration from Main Branch (June 2025)
+- **Merge Conflicts Resolved** - Successfully merged main branch with updated styling and fonts
+- **New Content Migrated** - Updated views with new styling, fonts (Lobster, Lato), and improved layouts
+- **Removed Legacy Files** - Cleaned up old files that were replaced by MVC structure:
+  - `about.php` → MVC about route
+  - `artists.php` → MVC artists route  
+  - `artworks.php` → MVC artworks route
+  - `genres.php` → MVC genres route
+  - `subjects.php` → MVC subjects route
+  - `display-single-artist.php` → MVC artist show route
+  - `display-single-artwork.php` → MVC artwork show route
+  - `display-single-genre.php` → MVC genre show route
+  - `display-single-subject.php` → MVC subject show route
+- **Updated Views** - All MVC views now use the latest styling and content
+- **Enhanced CSS** - Combined AJAX/favorites functionality with new font styling
+- **Improved Components** - Updated artwork-card-list with enhanced favorites functionality
+
 ### 404 Error Handling Implementation (June 2025)
 - **ErrorController.php** - New controller for handling error pages
 - **views/errors/404.php** - Styled 404 error page

@@ -47,9 +47,13 @@ class HomeController extends BaseController
         // Get flash message if any
         $flashMessage = $this->getFlashMessage();
         
+        // Load contributors data
+        require_once dirname(__DIR__) . "/components/contributor-list.php";
+        
         $data = [
             'flashMessage' => $flashMessage,
-            'title' => 'About Us - Art Gallery'
+            'title' => 'About Us - Art Gallery',
+            'contributors' => $contributors
         ];
         
         $this->renderWithLayout('home/about', $data);

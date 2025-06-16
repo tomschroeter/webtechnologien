@@ -1,5 +1,5 @@
 <?php
-require_once dirname(dirname(__DIR__)) . "/components/find_image_ref.php";
+require_once dirname(dirname(__DIR__)) . "/components/find-image-ref.php";
 ?>
 <!-- Form providing the ability to sort the order of displayed artists -->
 <div class="d-flex align-items-center mt-3 mb-3">
@@ -27,7 +27,7 @@ require_once dirname(dirname(__DIR__)) . "/components/find_image_ref.php";
   $placeholderPath = "/assets/placeholder/artists/square-thumb/placeholder.svg";
   $correctImagePath = getImagePathOrPlaceholder($imagePath, $placeholderPath);
   ?>
-          <img src="<?php echo $correctImagePath?>" alt="Artist Image" style="max-width: 100px; max-height: 100px; object-fit: cover;">
+          <img src="<?php echo $correctImagePath?>" alt="Künsterbild" style="max-width: 100px; max-height: 100px; object-fit: cover;">
         </a>
       </li>
     <?php endforeach; ?>

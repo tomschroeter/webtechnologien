@@ -5,7 +5,7 @@
 	<div class="row">
 		<div>		<!-- Artist image -->
 		<?php
-		require_once dirname(dirname(__DIR__)) . "/components/find_image_ref.php";
+		require_once dirname(dirname(__DIR__)) . "/components/find-image-ref.php";
 		$imagePath = "/assets/images/artists/medium/" . $artist->getArtistId() . ".jpg";
 		$placeholderPath = "/assets/placeholder/artists/medium/placeholder.svg";
 		$correctImagePath = getImagePathOrPlaceholder($imagePath, $placeholderPath);

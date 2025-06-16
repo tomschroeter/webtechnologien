@@ -1,5 +1,5 @@
 <?php
-require_once dirname(dirname(__DIR__)) . "/components/find_image_ref.php";
+require_once dirname(dirname(__DIR__)) . "/components/find-image-ref.php";
 ?>
 <!-- Form providing the ability to sort artworks -->
 <div class="d-flex align-items-center mt-3 mb-3">
