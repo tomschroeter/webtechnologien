@@ -1,3 +1,4 @@
+<div class="fullwidth">
   <div style="width: 100%; box-sizing: border-box; margin-bottom: 30px;">
     <?php require_once dirname(dirname(__DIR__)) . '/components/random-carousel.php' ?>
   </div>
@@ -24,3 +25,4 @@
       <?php require_once dirname(dirname(__DIR__)) . '/components/recent-reviews.php'; ?>
     </div>
   </div>
+</div>

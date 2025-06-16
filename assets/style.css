@@ -10,7 +10,7 @@
 /*
   Ensures the navbar always spans the full viewport width, while still having the container tag around the html body
 */
-.navbar-fullwidth {
+.fullwidth {
   position: relative;
   left: 50%;
   right: 50%;
