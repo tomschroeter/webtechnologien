@@ -4,7 +4,7 @@ require_once dirname(__DIR__) . "/components/find-image-ref.php";
 function renderArtworkCardList($artworks)
 {
     foreach ($artworks as $artwork) {
-        $artworkLink = route('artworks', ['id' => $artwork->getArtworkId()]);
+        $artworkLink = "/artworks/" . $artwork->getArtworkId();
         $imagePath = "/assets/images/works/square-medium/" . $artwork->getImageFileName() . ".jpg";
         $placeholderPath = "/assets/placeholder/works/square-medium/placeholder.svg";
         $correctImagePath = getImagePathOrPlaceholder($imagePath, $placeholderPath);
@@ -23,22 +23,28 @@ function renderArtworkCardList($artworks)
                     <div class="d-flex align-items-center mt-auto">
                         <a href="<?php echo $artworkLink ?>" class="btn btn-primary flex-fill mr-2">View</a>
                         <?php if (isset($_SESSION['customerId'])): ?>
-                            <form method="post" action="/favorites-handler.php" class="d-flex">
-                                <?php
-                                $isInFavorites = isset($_SESSION['favoriteArtworks']) && in_array($artwork->getArtworkId(), $_SESSION['favoriteArtworks']);
-                                ?>
+                            <?php
+                            $isInFavorites = isset($_SESSION['favoriteArtworks']) && in_array($artwork->getArtworkId(), $_SESSION['favoriteArtworks']);
+                            ?>
+                            <button type="button" 
+                                    class="btn favorite-btn <?php echo $isInFavorites ? 'btn-outline-danger' : 'btn-primary' ?>"
+                                    data-type="artwork"
+                                    data-id="<?php echo $artwork->getArtworkId() ?>"
+                                    data-is-favorite="<?php echo $isInFavorites ? 'true' : 'false' ?>"
+                                    title="<?php echo $isInFavorites ? 'Remove from Favorites' : 'Add to Favorites' ?>">
+                                <?php echo $isInFavorites ? '♥' : '♡' ?>
+                            </button>
+                            
+                            <!-- Fallback form for non-JS users -->
+                            <form method="post" action="/favorites-handler.php" class="d-none fallback-form">
                                 <?php if ($isInFavorites): ?>
                                     <input type="hidden" name="action" value="remove_artwork_from_favorites">
                                     <input type="hidden" name="artworkId" value="<?php echo $artwork->getArtworkId() ?>">
-                                    <button type="submit" class="btn btn-outline-danger">
-                                        ♥
-                                    </button>
+                                    <button type="submit" class="btn btn-outline-danger">♥</button>
                                 <?php else: ?>
                                     <input type="hidden" name="action" value="add_artwork_to_favorites">
                                     <input type="hidden" name="artworkId" value="<?php echo $artwork->getArtworkId() ?>">
-                                    <button type="submit" class="btn btn-primary">
-                                        ♡
-                                    </button>
+                                    <button type="submit" class="btn btn-primary">♡</button>
                                 <?php endif; ?>
                             </form>
                         <?php endif; ?>

@@ -1,39 +1,9 @@
 RewriteEngine On
+
+# Route everything through index.php for MVC handling
 RewriteCond %{REQUEST_FILENAME} !-f
 RewriteCond %{REQUEST_FILENAME} !-d
-
-# URL artists/*** ruft display-single-artist.php auf
-RewriteRule ^artists/(.+)$ display-single-artist.php?id=$1 [L]
-
-# URL artists/ wird auf artists umgeleitet
-RewriteRule ^artists/?$ artists.php [L]
-
-# URL subjects/*** ruft display-single-subject.php auf
-RewriteRule ^subjects/(.+)$ display-single-subject.php?id=$1 [L]
-
-# URL subjects/ wird auf subjects umgeleitet
-RewriteRule ^subjects/?$ subjects.php [L]
-
-# URL artworks/*** ruft display-single-artwork.php auf
-RewriteRule ^artworks/(.+)$ display-single-artwork.php?id=$1 [L]
-
-# URL artworks/*** ruft display-single-artwork.php auf
-RewriteRule ^artworks2/(.+)$ display-single-artwork-copy.php?id=$1 [L]
-
-# URL artworks/ wird auf artworks umgeleitet
-RewriteRule ^artworks/?$ artworks.php [L]
-
-# URL subjects/*** ruft display-single-subject.php auf
-RewriteRule ^genres/(.+)$ display-single-genre.php?id=$1 [L]
-
-# URL genres/ wird auf genres umgeleitet
-RewriteRule ^genres/?$ genres.php [L]
-
-# URL favorites/ wird auf favorites umgeleitet
-RewriteRule ^favorites/?$ favorites.php [L]
-
-# Entfernt .php in der URL
-RewriteRule ^([^\.]+)$ $1.php [NC,L]
+RewriteRule ^(.*)$ index.php [QSA,L]
 
 php_flag display_errors on
 php_value error_reporting 6143
