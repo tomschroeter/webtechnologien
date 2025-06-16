@@ -1,4 +1,10 @@
-<h2 class="flex-grow-1 mb-1 mt-3">Search Results</h2>
+<h2 class="flex-grow-1 mb-1 mt-3">
+    <?php if (isset($isAdvancedSearch) && $isAdvancedSearch): ?>
+        Advanced Search Results
+    <?php else: ?>
+        Search Results
+    <?php endif; ?>
+</h2>
 
 <?php 
 require_once dirname(dirname(__DIR__)) . "/components/find-image-ref.php";
@@ -158,7 +164,26 @@ require_once dirname(dirname(__DIR__)) . "/components/find-image-ref.php";
     <?php else: ?>
         <div class="alert alert-info mt-4">
             <h4>No Results Found</h4>
-            <p>No results were found for the search term <strong>"<?php echo htmlspecialchars($searchQuery) ?>"</strong>.</p>
+            <?php if (isset($isAdvancedSearch) && $isAdvancedSearch): ?>
+                <p>No results were found for your advanced search criteria.</p>
+                <?php if (!empty($filterBy)): ?>
+                    <p><strong>Filter:</strong> <?php echo ucfirst(htmlspecialchars($filterBy)) ?></p>
+                <?php endif; ?>
+                <?php if (!empty($artistName)): ?>
+                    <p><strong>Artist Name:</strong> <?php echo htmlspecialchars($artistName) ?></p>
+                <?php endif; ?>
+                <?php if (!empty($artworkTitle)): ?>
+                    <p><strong>Artwork Title:</strong> <?php echo htmlspecialchars($artworkTitle) ?></p>
+                <?php endif; ?>
+                <?php if (!empty($artistNationality)): ?>
+                    <p><strong>Artist Nationality:</strong> <?php echo htmlspecialchars($artistNationality) ?></p>
+                <?php endif; ?>
+                <?php if (!empty($artworkGenre)): ?>
+                    <p><strong>Artwork Genre:</strong> <?php echo htmlspecialchars($artworkGenre) ?></p>
+                <?php endif; ?>
+            <?php else: ?>
+                <p>No results were found for the search term <strong>"<?php echo htmlspecialchars($searchQuery) ?>"</strong>.</p>
+            <?php endif; ?>
             <div class="mt-3">
                 <a href="/artists" class="btn btn-primary mr-2">Browse All Artists</a>
                 <a href="/artworks" class="btn btn-primary">Browse All Artworks</a>

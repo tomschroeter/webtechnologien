@@ -45,7 +45,7 @@ class FrontController
                 '/edit-profile/{id}' => ['AuthController', 'editProfile'],
                 '/change-password' => ['AuthController', 'changePassword'],
                 '/search' => ['SearchController', 'search'],
-                '/search' => ['SearchController', 'search'],
+                '/advanced-search' => ['SearchController', 'advancedSearch'],
             ],
             'POST' => [
                 '/login' => ['AuthController', 'processLogin'],
