@@ -20,6 +20,7 @@ $artworksWithRating = $artworkRepository->getTopRatedArtworks();
         $artworkId = $combined->getArtwork()->getArtworkId();
         $artistId = $combined->getArtwork()->getArtistId();
         $artistName = $combined->getArtistName();
+        $reviewCount = $combined->getReviewCount();
 
         // Render rating as stars
         $rating = $combined->getRating();
@@ -46,7 +47,9 @@ $artworksWithRating = $artworkRepository->getTopRatedArtworks();
                 <a href="artists/<?php echo $artistId ?>"
                   style="color: black;"><?php echo htmlspecialchars($artistName) ?></a>
               </p>
-              <p class="card-text text-warning" style="font-size: 0.9rem;"><?php echo $stars ?></p>
+              <p class="card-text text-warning" style="font-size: 0.9rem;"><?php echo $stars?>
+                <span class="text-dark" style="font-size: 0.7rem; vertical-align: 1px;">(<?= $reviewCount ?>)</span>
+              </p>
             </div>
           </div>
         </div>
