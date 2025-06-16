@@ -1,4 +1,4 @@
-<h1 class="mt-3">Register</h1>
+<h1 class="mt-4">Register</h1>
 
 <?php if ($error === 'empty_field'): ?>
     <div class="alert alert-danger">Please fill out all required fields.</div>

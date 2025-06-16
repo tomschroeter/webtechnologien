@@ -1,4 +1,4 @@
-<h2 class="flex-grow-1 mb-1 mt-3">
+<h2 class="flex-grow-1 mb-1 mt-4">
     <?php if (isset($isAdvancedSearch) && $isAdvancedSearch): ?>
         Advanced Search Results
     <?php else: ?>
