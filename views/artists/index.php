@@ -27,7 +27,7 @@ require_once dirname(dirname(__DIR__)) . "/components/find-image-ref.php";
   $placeholderPath = "/assets/placeholder/artists/square-thumb/placeholder.svg";
   $correctImagePath = getImagePathOrPlaceholder($imagePath, $placeholderPath);
   ?>
-          <img src="<?php echo $correctImagePath?>" alt="Künsterbild" style="max-width: 100px; max-height: 100px; object-fit: cover;">
+          <img src="<?php echo $correctImagePath?>" alt="Picture of Artist" style="max-width: 100px; max-height: 100px; object-fit: cover;">
         </a>
       </li>
     <?php endforeach; ?>
