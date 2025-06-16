@@ -11,9 +11,10 @@ require_once dirname(__DIR__) . "/src/repositories/GenreRepository.php";
 require_once dirname(__DIR__) . "/src/repositories/SubjectRepository.php";
 require_once dirname(__DIR__) . "/src/repositories/GalleryRepository.php";
 require_once dirname(__DIR__) . "/src/repositories/ReviewRepository.php";
-require_once dirname(__DIR__) . "/src/dtos/ReviewStats.php";
+require_once dirname(__DIR__) . "/src/dtos/ReviewWithStats.php";
 require_once dirname(__DIR__) . "/src/router/router.php";
-require_once dirname(__DIR__) . "/src/components/find_image_ref.php";
+require_once dirname(__DIR__) . "/src/components/find-image-ref.php";
+require_once dirname(__DIR__) . "/src/components/render-stars.php";
 
 if (session_status() === PHP_SESSION_NONE) {
     session_start();
@@ -60,7 +61,7 @@ try {
     $genres = [];
     $subjects = [];
     $reviews = [];
-    $reviewStats = new ReviewStats(0.0, 0);
+    $reviewStats = new ReviewWithStats(0.0, 0);
     $gallery = null;
 }
 
@@ -84,31 +85,30 @@ $correctLargeImagePath = getImagePathOrPlaceholder($largeImagePath, $placeholder
         </div>
     <?php endif; ?>
     
-    <div class="container mt-3">
+    <div class="mt-3">
         <div class="row">
             <div class="col-md-6">
                 <a href="#" data-toggle="modal" data-target="#imageModal">
                     <img src="<?php echo $correctImagePath ?>" 
-                         alt="<?php echo htmlspecialchars($artwork->getTitle()) ?>" 
-                         class="img-fluid" 
-                         style="width: 100%; height: 400px; object-fit: contain; cursor: pointer; border: 1px solid #ddd; background-color: #f8f9fa;">
-                </a>
+                        alt="<?php echo htmlspecialchars($artwork->getTitle()) ?>" 
+                        class="img-fluid" 
+                        style="max-width: auto; max-height: auto; object-fit: contain; cursor: pointer; border: 1px solid #ddd; background-color: #f8f9fa;"></a>
                 
                 <!-- Modal for large image -->
                 <div class="modal fade" id="imageModal" tabindex="-1" role="dialog" aria-labelledby="imageModalLabel" aria-hidden="true">
                     <div class="modal-dialog modal-lg" role="document" style="height: 95vh; margin: 2.5vh auto;">
-                        <div class="modal-content" style="height: 100%;">
+                        <div class="modal-content" style="height: auto;">
                             <div class="modal-header">
-                                <h5 class="modal-title" id="imageModalLabel"><?php echo htmlspecialchars($artwork->getTitle()) ?></h5>
+                                <h3 class="modal-title" id="imageModalLabel"><?php echo htmlspecialchars($artwork->getTitle()) ?></h3>
                                 <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                                     <span aria-hidden="true">&times;</span>
                                 </button>
                             </div>
                             <div class="modal-body text-center d-flex align-items-center justify-content-center" style="flex: 1; padding: 20px;">
                                 <img src="<?php echo $correctLargeImagePath ?>" 
-                                     alt="<?php echo htmlspecialchars($artwork->getTitle()) ?>" 
-                                     class="img-fluid"
-                                     style="height: 100%; width: auto; object-fit: contain;">
+                                    alt="<?php echo htmlspecialchars($artwork->getTitle()) ?>" 
+                                    class="img-fluid"
+                                    style="height: 100%; width: auto; object-fit: contain;">
                             </div>
                         </div>
                     </div>
@@ -123,8 +123,8 @@ $correctLargeImagePath = getImagePathOrPlaceholder($largeImagePath, $placeholder
                 <div class="mb-3">
                     <?php if ($reviewStats->hasReviews()): ?>
                         <div class="d-flex align-items-center">
-                            <span class="h5 mb-0 mr-2">Rating: <?php echo $reviewStats->getFormattedAverageRatingOutOf5() ?></span>
-                            <small class="text-muted">(based on <?php echo $reviewStats->getReviewText() ?>)</small>
+                            <span class="h5 mb-0 mr-2">Rating: <?php echo $reviewStats->getFormattedAverageRatingOutOf5() . ' ' . renderStars($reviewStats->getFormattedAverageRating()) ?></span>
+                            <small class="text-muted" style="transform: translateY(1px);">(based on <?php echo $reviewStats->getReviewText() ?>)</small>
                         </div>
                     <?php else: ?>
                         <span class="text-muted">No reviews yet</span>
