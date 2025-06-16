@@ -80,3 +80,8 @@ h1, h2, h3, .headline {
 body, p, nav {
   font-family: 'Lato';
 }
+
+/* Spacing for fixed navbar */
+body {
+  padding-top: 70px; 
+}
