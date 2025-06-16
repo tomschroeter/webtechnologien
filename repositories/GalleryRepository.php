@@ -18,18 +18,18 @@ class GalleryRepository
         }
 
         $sql = "SELECT * FROM galleries WHERE GalleryID = :galleryId";
-        
+
         $stmt = $this->db->prepareStatement($sql);
         $stmt->bindValue("galleryId", $galleryId, PDO::PARAM_INT);
         $stmt->execute();
 
         $record = $stmt->fetch(PDO::FETCH_ASSOC);
         $this->db->disconnect();
-        
+
         if (!$record) {
             return null;
         }
-        
+
         return Gallery::createGalleryFromRecord($record);
     }
 }
