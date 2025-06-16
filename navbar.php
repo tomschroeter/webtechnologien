@@ -59,10 +59,17 @@ if (session_status() === PHP_SESSION_NONE) {
         </li>
       </ul>
 
-      <form class="form-inline my-2 my-lg-0" action="/search" method="GET">
-        <input class="form-control mr-sm-2" name="searchQuery" type="text" placeholder="Search">
-        <button class="btn btn-outline-success my-2 my-sm-0" type="submit">Search</button>
-      </form>
+      <div class="d-flex align-items-center" style="gap: 0.5rem;">
+        <form class="form-inline my-2 my-lg-0" action="/search" method="GET">
+          <input class="form-control mr-sm-2" name="searchQuery" type="text" placeholder="Search">
+          <button class="btn btn-outline-success my-2 my-sm-0" type="submit">Search</button>
+        </form>
+
+        <a href="/advanced-search">
+          <img src="/assets/svgs/search-advanced.svg" alt="Advanced Search" class="btn btn-outline-secondary"
+            style="height: 38px; width: 38px;" />
+        </a>
+      </div>
 
       <ul class="navbar-nav mt-2 mt-lg-0 mx-4">
         <li class="nav-item dropdown">
