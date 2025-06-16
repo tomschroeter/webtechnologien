@@ -19,21 +19,21 @@ $mostReviewedArtists = $artistRepository->findMostReviewed(3);
       ?>
       <!-- Display Artists -->
       <div class="col-md-4 mb-4">
-        <div class="card" style="width: 150px; min-height: 240px;">
-          <img class="card-img-top" style="height: 150px; width: 150px; object-fit: cover;" src="<?= $imagePath ?>"
-            alt="Artist Image">
-          <div class="card-body p-2">
-            <h4 class="card-title h6 mb-1">
-              <?= $position ?>.
-              <a href="artists/<?= $artistId ?>" style="color: black;">
-                <?= htmlspecialchars($artistName) ?>
-              </a>
-            </h4>
-            <p class="card-text small mb-0">
-              <?= $reviewCount ?> Reviews
-            </p>
+        <a href="artists/<?= $artistId ?>" style="color: black;">
+          <div class="card" style="width: 150px; min-height: 260px;">
+            <img class="card-img-top" style="height: 150px; width: 150px; object-fit: cover;" src="<?= $imagePath ?>"
+              alt="Artist Image">
+            <div class="card-body p-2">
+              <h4 class="card-title h6 mb-1">
+                <?php echo $position ?>.
+                <?php echo htmlspecialchars($artistName) ?>
+              </h4>
+              <p class="card-text small mb-0">
+                <?= $reviewCount ?> Reviews
+              </p>
+            </div>
           </div>
-        </div>
+        </a>
       </div>
     <?php endforeach; ?>
   </div>
