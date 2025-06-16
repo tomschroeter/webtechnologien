@@ -210,10 +210,10 @@ if (isset($_GET['filterBy'])) {
 						<a href="<?php echo route('artworks', ['id' => $combined->getArtwork()->getArtworkId()]) ?>"
 							class="d-flex align-items-center flex-grow-1 text-decoration-none text-dark" style="min-width:0;">
 							<!-- Display artwork title, artist name and year of publishment -->
-							<span class="text-truncate" style="max-width: 60%; white-space: normal;">
+							<span class="text-truncate" style="max-width: 80%; white-space: normal;">
 								<?php echo '&quot;' . $combined->getArtwork()->getTitle() . '&quot; ' .
 									'by ' . $combined->getArtistFirstName() . ' ' . $combined->getArtistLastName() . ',' .
-									' veröffentlicht ' . $combined->getArtwork()->getYearOfWork() ?>
+									' published ' . $combined->getArtwork()->getYearOfWork() ?>
 							</span>
 						</a>
 						<div class="d-flex align-items-center" style="gap: 0.5rem;">
