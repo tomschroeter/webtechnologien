@@ -16,6 +16,8 @@
 - `SubjectController.php` - Subjects listing and individual subject pages
 - `AuthController.php` - Authentication-related pages (login, register, account)
 - `AdminController.php` - Admin functionality (user management)
+- `ErrorController.php` - New controller for handling error pages
+- `SearchController.php` - Moved search functionality to MVC architecture
 
 ### 3. Views Created
 - `layouts/main.php` - Main layout template
@@ -29,6 +31,9 @@
 - `subjects/index.php` - Subjects listing view
 - `subjects/show.php` - Individual subject view
 - `auth/login.php` - Login page view (placeholder)
+- `errors/404.php` - Styled 404 error page
+- `errors/500.php` - Styled 500 error page
+- `search/index.php` - Search results view with improved styling
 
 ### 4. Routing System
 - `FrontController.php` - Main routing controller
@@ -66,6 +71,7 @@
 - `GET /account` → AuthController::showAccount()
 - `GET /favorites` → AuthController::showFavorites()
 - `GET /manage-users` → AdminController::manageUsers()
+- `GET /search` → SearchController::index()
 
 ## Files Modified
 - `index.php` - Added MVC bootstrap
@@ -75,6 +81,37 @@
 - `subjects.php` - Added MVC bootstrap
 - `display-single-artist.php` - Added MVC bootstrap
 - `display-single-artwork.php` - Added MVC bootstrap
+- `error.php` - Legacy error handling now redirects to MVC error system
+- `search.php` - Now redirects to MVC route for backward compatibility
+
+## Recent Updates
+
+### 404 Error Handling Implementation (June 2025)
+- **ErrorController.php** - New controller for handling error pages
+- **views/errors/404.php** - Styled 404 error page
+- **views/errors/500.php** - Styled 500 error page
+- **Updated FrontController** - Now properly handles non-existent routes with 404 pages
+- **Updated error.php** - Legacy error handling now redirects to MVC error system
+- **Static File Handling** - System properly distinguishes between missing pages and static assets
+
+### Search MVC Implementation
+- **SearchController.php** - Moved search functionality to MVC architecture
+- **views/search/index.php** - Search results view with improved styling
+- **Updated navbar** - Search form now uses `/search` route instead of `/search.php`
+- **search.php** - Now redirects to MVC route for backward compatibility
+
+### Testing 404 Functionality
+To test the 404 system:
+1. Visit any non-existent URL (e.g., `/non-existent-page`)
+2. Try accessing a non-existent artist ID (e.g., `/artists/999999`)
+3. Check that static assets still work (e.g., `/assets/style.css`)
+4. Verify specific error messages appear for different error types
+
+## Architecture Benefits
+- **Centralized Error Handling**: All 404s and errors go through consistent system
+- **Better UX**: Styled error pages instead of default browser 404s
+- **SEO Friendly**: Proper HTTP status codes (404, 500) are sent
+- **Maintainable**: Error handling logic is centralized and reusable
 
 ## Next Steps (Optional)
 1. Migrate remaining pages (login, register, account, etc.) to MVC
