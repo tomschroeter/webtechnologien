@@ -21,8 +21,10 @@ $artistRepository = new ArtistRepository($db);
 $artworkRepository = new ArtworkRepository($db);
 
 $filterBy = isset($_GET['filterBy']) ? $_GET['filterBy'] : '';
+
 // Checks if search query has been submitted
 if (isset($_GET['searchQuery'])) {
+	$searchQuery = $_GET['searchQuery'];
 	$noResultsMessage = 'No results were found for the search term' . ' "' . trim($_GET['searchQuery']) . '"' . '.';
 } else {
 	if ($filterBy !== '') {
@@ -34,9 +36,11 @@ if (isset($_GET['searchQuery'])) {
 }
 
 // Checks if search query has valid size (>= 3 characters)
-if (strlen($noResultsMessage) < 3 && $filterBy === '') {
-	header("Location: /error.php?error=tooShort");
-	exit();
+if ($filterBy === '') {
+	if (strlen($searchQuery) < 3) {
+		header("Location: /error.php?error=tooShort");
+		exit();
+	}
 }
 
 // Checks if sort parameter for displayed artworks is set
@@ -78,12 +82,16 @@ if (isset($_GET['filterBy'])) {
 			$artistSearchResults = [];
 			$artworkSearchResults = $artworkRepository->getArtworksByAdvancedSearch($artworkTitle, $artworkStartDate, $artworkEndDate, $artworkGenre, $sortParameter, $sortArtwork);
 			break;
+		default:
+			$artistSearchResults = [];
+    		$artworkSearchResults = [];
+   			break;
 	}
 } else {
 	// Get results for all artists that fit the search query
-	$artistSearchResults = $artistRepository->getArtistBySearchQuery($noResultsMessage, $sortArtist);
+	$artistSearchResults = $artistRepository->getArtistBySearchQuery($searchQuery, $sortArtist);
 	// Get results for all artworks that fit the search query
-	$artworkSearchResults = $artworkRepository->getArtworkBySearchQuery($noResultsMessage, $sortParameter, $sortArtwork);
+	$artworkSearchResults = $artworkRepository->getArtworkBySearchQuery($searchQuery, $sortParameter, $sortArtwork);
 }
 
 ?>
@@ -128,7 +136,7 @@ if (isset($_GET['filterBy'])) {
 							class="d-flex align-items-center flex-grow-1 text-decoration-none text-dark" style="min-width:0;">
 							<!-- Display artist name -->
 							<span class="text-truncate" style="max-width: 60%; white-space: normal;">
-								<?php echo $artist->getFirstName() ?> 			<?= $artist->getLastName() ?>
+								<?php echo $artist->getFirstName() . ' ' . $artist->getLastName() ?>
 							</span>
 						</a>
 						<div class="d-flex align-items-center" style="gap: 0.5rem;">
