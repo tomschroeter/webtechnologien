@@ -183,16 +183,11 @@ class ArtistRepository
 
         if (!empty($name)) {
             $nameParts = preg_split('/\s+/', trim($name));
-
-            if (count($nameParts) >= 2) {
-                // First and last name provided
-                $sql .= " AND FirstName LIKE :firstName AND LastName LIKE :lastName";
-                $params['firstName'] = '%' . $nameParts[0] . '%';
-                $params['lastName'] = '%' . $nameParts[1] . '%';
-            } else {
-                // Only last name (or ambiguous input)
-                $sql .= " AND LastName LIKE :name";
-                $params['name'] = '%' . $name . '%';
+            $i = 0;
+            foreach ($nameParts as $part) {
+                $sql .= " AND (FirstName LIKE :namePart{$i} OR LastName LIKE :namePart{$i})";
+                $params["namePart{$i}"] = '%' . $part . '%';
+                $i++;
             }
         }
 
