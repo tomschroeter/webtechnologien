@@ -14,6 +14,7 @@ require_once dirname(__DIR__) . "/src/repositories/ReviewRepository.php";
 require_once dirname(__DIR__) . "/src/dtos/ReviewWithStats.php";
 require_once dirname(__DIR__) . "/src/router/router.php";
 require_once dirname(__DIR__) . "/src/components/find-image-ref.php";
+require_once dirname(__DIR__) . "/src/components/render-stars.php";
 
 if (session_status() === PHP_SESSION_NONE) {
     session_start();
@@ -122,8 +123,8 @@ $correctLargeImagePath = getImagePathOrPlaceholder($largeImagePath, $placeholder
                 <div class="mb-3">
                     <?php if ($reviewStats->hasReviews()): ?>
                         <div class="d-flex align-items-center">
-                            <span class="h5 mb-0 mr-2">Rating: <?php echo $reviewStats->getFormattedAverageRatingOutOf5() ?></span>
-                            <small class="text-muted">(based on <?php echo $reviewStats->getReviewText() ?>)</small>
+                            <span class="h5 mb-0 mr-2">Rating: <?php echo $reviewStats->getFormattedAverageRatingOutOf5() . ' ' . renderStars($reviewStats->getFormattedAverageRating()) ?></span>
+                            <small class="text-muted" style="transform: translateY(1px);">(based on <?php echo $reviewStats->getReviewText() ?>)</small>
                         </div>
                     <?php else: ?>
                         <span class="text-muted">No reviews yet</span>
