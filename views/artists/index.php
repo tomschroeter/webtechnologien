@@ -2,7 +2,7 @@
 require_once dirname(dirname(__DIR__)) . "/components/find-image-ref.php";
 ?>
 <!-- Form providing the ability to sort the order of displayed artists -->
-<div class="d-flex align-items-center mt-3 mb-3">
+<div class="d-flex align-items-center mt-4 mb-3">
   <h1 class="flex-grow-1 mb-0">Artists</h1>
   <form method="get">
     <select name="sort" onchange="this.form.submit()" class="form-select">

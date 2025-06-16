@@ -15,7 +15,7 @@
 - `GenreController.php` - Genres listing and individual genre pages
 - `SubjectController.php` - Subjects listing and individual subject pages
 - `AuthController.php` - Authentication-related pages (login, register, account)
-- `AdminController.php` - Admin functionality (user management)
+- `AdminController.php` - Admin functionality (manage users)
 - `ErrorController.php` - New controller for handling error pages
 - `SearchController.php` - Moved search functionality to MVC architecture
 

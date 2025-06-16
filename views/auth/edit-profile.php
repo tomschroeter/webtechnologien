@@ -1,4 +1,4 @@
-<h1 class="mt-3"><?= $isAdminEdit ? 'Edit User Profile' : 'Edit My Profile' ?></h1>
+<h1 class="mt-4"><?= $isAdminEdit ? 'Edit User Profile' : 'Edit My Profile' ?></h1>
 
 <!-- Display validation errors -->
 <?php 

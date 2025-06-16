@@ -1,4 +1,4 @@
-<h1 class="mt-3">Change Password</h1>
+<h1 class="mt-4">Change Password</h1>
 
 <!-- Display validation errors -->
 <?php 
