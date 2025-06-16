@@ -8,6 +8,7 @@ require_once dirname(__DIR__) . "/controllers/SubjectController.php";
 require_once dirname(__DIR__) . "/controllers/AuthController.php";
 require_once dirname(__DIR__) . "/controllers/AdminController.php";
 require_once dirname(__DIR__) . "/controllers/SearchController.php";
+require_once dirname(__DIR__) . "/controllers/ReviewController.php";
 require_once dirname(__DIR__) . "/controllers/ErrorController.php";
 
 class FrontController
@@ -56,6 +57,8 @@ class FrontController
                 '/change-password' => ['AuthController', 'updatePassword'],
                 '/favorites/artists/{id}/toggle' => ['AuthController', 'toggleArtistFavoriteAjax'],
                 '/favorites/artworks/{id}/toggle' => ['AuthController', 'toggleArtworkFavoriteAjax'],
+                '/reviews/add' => ['ReviewController', 'addReview'],
+                '/reviews/{id}/delete' => ['ReviewController', 'deleteReview'],
             ]
         ];
     }

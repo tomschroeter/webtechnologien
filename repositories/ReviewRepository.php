@@ -18,7 +18,7 @@ class ReviewRepository
     /**
      * Fügt eine neue Bewertung hinzu.
      */
-    public function addReview(Review $review): void
+    public function addReview(Review $review): int
     {
         if (!$this->db->isConnected())
             $this->db->connect();
@@ -36,8 +36,13 @@ class ReviewRepository
         $stmt->bindValue("comment", $review->getComment());
 
         $stmt->execute();
+        
+        // Get the review ID before disconnecting
+        $reviewId = $this->db->lastInsertId();
 
         $this->db->disconnect();
+        
+        return (int)$reviewId;
     }
 
     /**
