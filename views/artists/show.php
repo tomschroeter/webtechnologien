@@ -13,7 +13,7 @@
 			<img src="<?php echo $correctImagePath ?>" alt="Image of <?php echo htmlspecialchars($artist->getFirstName() . ' ' . $artist->getLastName()) ?>">
 		</div>
 		<div class="col-md-8">
-			<p><?php echo htmlspecialchars($artist->getDetails()) ?></p>
+			<p><?php echo $artist->getDetails() ?></p>
 
 			<!-- Add/Remove Artist Favorites -->
             <?php 
