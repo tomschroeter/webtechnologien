@@ -398,8 +398,15 @@ $correctLargeImagePath = getImagePathOrPlaceholder($largeImagePath, $placeholder
                 if (!$alreadyReviewed): ?>
                     <form id="add-review-form" method="POST" action="/reviews/add" class="mb-3">
                         <input type="hidden" name="artworkId" value="<?= $artwork->getArtworkId() ?>">
-                        <label for="rating">Rating (1–5):</label>
-                        <input type="number" name="rating" min="1" max="5" required class="form-control mb-2">
+                        <label for="rating">Rating (1-5):</label>
+                        <select name="rating" id="rating" required class="form-control mb-2">
+                            <option value=""></option>
+                            <option value="1">1</option>
+                            <option value="2">2</option>
+                            <option value="3">3</option>
+                            <option value="4">4</option>
+                            <option value="5">5</option>
+                        </select>
                         <label for="comment">Comment:</label>
                         <textarea name="comment" required class="form-control mb-2"></textarea>
                         <button type="submit" class="btn btn-success">Submit Review</button>
@@ -721,15 +728,25 @@ $correctLargeImagePath = getImagePathOrPlaceholder($largeImagePath, $placeholder
                                 if (isLoggedIn) {
                                     // Create the review form
                                     const formHtml = `
-                                <form id="add-review-form" method="POST" action="/reviews/add" class="mb-3">
-                                    <input type="hidden" name="artworkId" value="<?= $artwork->getArtworkId() ?>">
-                                    <label for="rating">Rating (1–5):</label>
-                                    <input type="number" name="rating" min="1" max="5" required class="form-control mb-2">
-                                    <label for="comment">Comment:</label>
-                                    <textarea name="comment" required class="form-control mb-2"></textarea>
-                                    <button type="submit" class="btn btn-success">Submit Review</button>
-                                </form>
-                            `;
+                                    <form id="add-review-form" method="POST" action="/reviews/add" class="mb-3">
+                                        <input type="hidden" name="artworkId" value="<?= $artwork->getArtworkId() ?>">
+
+                                        <label for="rating">Rating (1-5):</label>
+                                        <select name="rating" id="rating" required class="form-control mb-2">
+                                            <option value=""></option>
+                                            <option value="1">1</option>
+                                            <option value="2">2</option>
+                                            <option value="3">3</option>
+                                            <option value="4">4</option>
+                                            <option value="5">5</option>
+                                        </select>
+
+                                        <label for="comment">Comment:</label>
+                                        <textarea name="comment" required class="form-control mb-2"></textarea>
+
+                                        <button type="submit" class="btn btn-success">Submit Review</button>
+                                    </form>
+                            `      ;
 
                                     // Find where to insert the form (before the reviews section)
                                     const reviewsContainer = document.getElementById('reviews-container');
