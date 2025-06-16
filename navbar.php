@@ -7,7 +7,7 @@ if (session_status() === PHP_SESSION_NONE) {
 ?>
 
 <div class="navbar-fullwidth">
-  <nav class="navbar sticky-top navbar-expand-sm navbar-light bg-light">
+  <nav class="navbar sticky-top navbar-expand-sm navbar-light" style="background-color:rgb(240, 243, 246)">
     <a class="navbar-brand" href="<?php echo route("home") ?>">
       <img src="/assets/svgs/logo.svg" alt="Logo" style="height: 40px; width: 40px;">
     </a>
