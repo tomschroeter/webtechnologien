@@ -1,4 +1,4 @@
-<h1 class="mt-4">User Management</h1>
+<h1 class="mt-4">Manage Users</h1>
 
 <?php if ($error === 'lastadmin'): ?>
     <div class="alert alert-danger">Cannot demote or deactivate the last administrator. There must be at least one active admin.</div>
