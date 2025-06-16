@@ -73,15 +73,53 @@
 }
 
 /* Font styles from main branch */
-h1, h2, h3, .headline {
+h1,
+h2,
+h3,
+.headline {
   font-family: 'Lobster';
 }
 
-body, p, nav {
+body,
+p,
+nav {
   font-family: 'Lato';
 }
 
 /* Spacing for fixed navbar */
 body {
-  padding-top: 70px; 
+  padding-top: 70px;
+}
+
+.star-rating {
+  display: flex;
+  justify-content: flex-end;
+  gap: 0.2rem;
+  font-size: 2rem;
+  flex-direction: row-reverse;
+}
+
+.star-rating input {
+  display: none;
+}
+
+.star-rating label {
+  cursor: pointer;
+  color: #ccc;
+  transition: color 0.2s;
+}
+
+.star-rating input:checked~label {
+  color: #ccc;
+}
+
+.star-rating input:checked+label,
+.star-rating input:checked+label~label {
+  color: gold;
+}
+
+/* Hover: Alle Labels ab dem aktuellen bis ganz links */
+.star-rating label:hover,
+.star-rating label:hover~label {
+  color: gold;
 }
