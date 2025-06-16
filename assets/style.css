@@ -118,7 +118,6 @@ body {
   color: gold;
 }
 
-/* Hover: Alle Labels ab dem aktuellen bis ganz links */
 .star-rating label:hover,
 .star-rating label:hover~label {
   color: gold;
