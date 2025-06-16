@@ -101,6 +101,28 @@ class CustomerLogonRepository
         return $returnValue;
     }
 
+    public function getUserByEmail(string $email): ?array
+    {
+        if (!$this->db->isConnected()) {
+            $this->db->connect();
+        }
+
+        $stmt = $this->db->prepareStatement("
+            SELECT c.CustomerID, c.FirstName, c.LastName, c.Email, cl.UserName, cl.Type, cl.isAdmin
+            FROM customers c
+            JOIN customerlogon cl ON c.CustomerId = cl.CustomerId
+            WHERE c.Email = :email
+        ");
+        $stmt->bindValue("email", $email);
+        $stmt->execute();
+        $user = $stmt->fetch();
+        $returnValue = $user ?: null;
+
+        $this->db->disconnect();
+
+        return $returnValue;
+    }
+
     public function updateCustomerBasicInfo(int $id, string $first, string $last, string $email): void
     {
         if (!$this->db->isConnected()) {
