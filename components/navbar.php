@@ -60,9 +60,13 @@ if (session_status() === PHP_SESSION_NONE) {
       </ul>
 
       <div class="d-flex align-items-center" style="gap: 0.5rem;">
-        <form class="form-inline my-2 my-lg-0" action="/search" method="GET">
-          <input class="form-control mr-sm-2" name="searchQuery" type="text" placeholder="Search">
-          <button class="btn btn-outline-success my-2 my-sm-0" type="submit">Search</button>
+        <form class="my-2 my-lg-0" action="/search" method="GET">
+            <div class="input-group">
+                <input class="form-control" name="searchQuery" type="text" placeholder="Search" aria-label="Search field">
+                <div class="input-group-append">
+                    <button class="btn btn-outline-success" type="submit">Search</button>
+                </div>
+            </div>
         </form>
 
         <a href="/advanced-search">
