@@ -4,7 +4,7 @@
 <?php require_once dirname(dirname(__DIR__)) . "/head.php"; ?>
 
 <body>
-    <?php require_once dirname(dirname(__DIR__)) . "/navbar.php"; ?>
+    <?php require_once dirname(dirname(__DIR__)) . "/components/navbar.php"; ?>
     
     <div class="container">
         <!-- Flash Messages -->
