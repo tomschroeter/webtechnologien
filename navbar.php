@@ -5,7 +5,7 @@ if (session_status() === PHP_SESSION_NONE) {
 ?>
 
 <div class="fullwidth">
-  <nav class="navbar sticky-top navbar-expand-sm navbar-light" style="background-color:rgb(240, 243, 246)">
+  <nav class="navbar fixed-top navbar-expand-sm navbar-light" style="background-color:rgb(240, 243, 246)">
     <a class="navbar-brand" href="/">
 </invoke>
       <img src="/assets/svgs/logo.svg" alt="Logo" style="height: 40px; width: 40px;">
