@@ -1,7 +1,7 @@
 <br>
 <h1><?php echo htmlspecialchars($artist->getFirstName() . ' ' . $artist->getLastName()) ?></h1>
 
-<div class="mt-3">
+<div class="mt-4">
 	<div class="row">
 		<div>		<!-- Artist image -->
 		<?php
