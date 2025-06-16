@@ -40,7 +40,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $_SESSION['username'] = $user['UserName'];
     $_SESSION['isAdmin'] = $user['isAdmin'] ?? false;
 
-    header("Location: index.php?login=success");
+    header("Location: index?login=success");
     exit;
 }
 ?>

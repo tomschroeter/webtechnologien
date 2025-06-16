@@ -1,61 +1,61 @@
 <?php
-require_once dirname(__DIR__) . "/components/find_image_ref.php";
+require_once dirname(__DIR__) . "/Database.php";
+require_once dirname(__DIR__) . "/repositories/ArtworkRepository.php";
+require_once dirname(__DIR__) . "/dtos/ArtworkWithRatingAndArtistName.php";
+require_once dirname(__DIR__) . "/components/fix-file-path.php";
+require_once dirname(__DIR__) . "/components/find-image-ref.php";
+require_once dirname(__DIR__) . "/components/render-stars.php";
+
+$db = new Database();
+$artworkRepository = new ArtworkRepository($db);
+$artworksWithRating = $artworkRepository->getTopRatedArtworks();
 ?>
 
-<div>
-  <div class="card-columns">
-    <?php
-    $worksDir = 'assets/images/works/medium';
+<div style="max-width: 500px; margin: auto;">
+  <div style="display: flex; gap: 10px; justify-content: center;">
+    <?php if ($artworksWithRating): ?>
+      <?php foreach ($artworksWithRating as $index => $combined):
+        // Get relevant data
+        $artworkTitle = $combined->getArtwork()->getTitle();
+        $artworkId = $combined->getArtwork()->getArtworkId();
+        $artistId = $combined->getArtwork()->getArtistId();
+        $artistName = $combined->getArtistName();
+        $reviewCount = $combined->getReviewCount();
 
-    $query = "
-    SELECT a.Title AS artwork_name, ar.FirstName AS artist_first, ar.LastName AS artist_last, AVG(r.Rating) AS avg_rating, a.ImageFileName AS imgFile
-    FROM reviews r
-    JOIN artworks a ON r.ArtWorkId = a.ArtWorkId
-    JOIN artists ar ON a.ArtistId = ar.ArtistId
-    GROUP BY a.ArtWorkId, a.Title, ar.FirstName
-    ORDER BY avg_rating DESC
-    LIMIT 3
-    ";
+        // Render rating as stars
+        $rating = $combined->getRating();
+        $stars = renderStars($rating);
 
-    $result = $conn->query($query);
-
-    if ($result->num_rows > 0) {
-        while ($row = $result->fetch_assoc()) {
-            $artworkName = $row["artwork_name"];
-            $artworkArtist = $row["artist_first"] . " " . $row["artist_last"];
-            $rating = round($row["avg_rating"], 0);
-
-            // Get the correct filename and check if it exists
-            // If file does not exist, use a placeholder image (001010.jpg for example)
-            $fileName = $row["imgFile"] . ".jpg";
-            $imgPath = "$worksDir/$fileName";
-            $placeholderImg = "$worksDir/001010.jpg";
-
-            $imgToUse = getImagePathOrPlaceholder($imgPath, $placeholderImg);
-
-            // Note: Wrong filenames: 12030; Balcony by Edouard Manet, 01290; The Dream by Pablo Picasso
-            // And many more
-            // echo $fileName;
-            echo "
-          <div class=\"card\">
-            <img class=\"card-img-top\" src=\"$imgToUse\" alt=\"\">
-            <div class=\"card-body\">
-              <h4 class=\"card-title\">$artworkName</h4>
-              <div class=\"w-100\">
-              <p class=\"card-text d-flex\">
-                $artworkArtist
-                <span class=\"ml-auto font-weight-bold\">$rating/10</span>
+        // Get correct image file path
+        $imagePath = "/assets/images/works/square-medium/" . $combined->getArtwork()->getImageFileName() . ".jpg";
+        $placeholderPath = "/assets/placeholder/works/square-medium/placeholder.svg";
+        $correctImagePath = getImagePathOrPlaceholder($imagePath, $placeholderPath);
+        ?>
+        <!-- Display Artworks -->
+        <div class="col-md-4 mb-4">
+          <div class="card" style="width: 150px; min-height: 260px;">
+            <a href="artworks/<?php echo $artworkId ?>">
+              <img class="card-img-top" style="height:150px; width:150px; object-fit:cover;"
+                src="<?php echo $correctImagePath ?>" alt="">
+            </a>
+            <div class="card-body p-2">
+              <h4 class="card-title h6 mb-1">
+                <a href="artworks/<?php echo $artworkId ?>"
+                  style="color: black;"><?php echo htmlspecialchars($artworkTitle) ?></a>
+              </h4>
+              <p class="card-text small mb-1">
+                <a href="artists/<?php echo $artistId ?>"
+                  style="color: black;"><?php echo htmlspecialchars($artistName) ?></a>
               </p>
-              </div>
+              <p class="card-text text-warning" style="font-size: 0.9rem;"><?php echo $stars ?>
+                <span class="text-muted" style="font-size: 0.7rem; vertical-align: 1px;">(<?= $reviewCount ?>)</span>
+              </p>
             </div>
           </div>
-          ";
-        }
-    } else {
-        echo "
-        <div>No results found</div>
-      ";
-    }
-    ?>
+        </div>
+      <?php endforeach; ?>
+    <?php else: ?>
+      <div>No results found</div>
+    <?php endif; ?>
   </div>
 </div>

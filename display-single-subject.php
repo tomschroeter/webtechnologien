@@ -2,10 +2,10 @@
 <html lang="en">
 
 <?php
-require_once dirname(__DIR__)."/src/head.php";
-require_once dirname(__DIR__)."/src/repositories/SubjectRepository.php";
-require_once dirname(__DIR__)."/src/repositories/ArtworkRepository.php";
-require_once dirname(__DIR__)."/src/navbar.php";
+require_once dirname(__DIR__) . "/src/head.php";
+require_once dirname(__DIR__) . "/src/repositories/SubjectRepository.php";
+require_once dirname(__DIR__) . "/src/repositories/ArtworkRepository.php";
+require_once dirname(__DIR__) . "/src/navbar.php";
 
 if (session_status() === PHP_SESSION_NONE) {
     session_start();
@@ -34,8 +34,8 @@ try {
 ?>
 
 <body class="container">
-	<br>
-	<h1> <?php echo $subject->getSubjectName()?></h1>
+    <br>
+    <h1> <?php echo $subject->getSubjectName() ?></h1>
     <?php if (isset($message)): ?>
         <div class="alert alert-<?php echo $messageType ?> alert-dismissible fade show" role="alert">
             <?php echo htmlspecialchars($message) ?>
@@ -44,25 +44,26 @@ try {
             </button>
         </div>
     <?php endif; ?>
-	<div class="container mt-3">
-		<div class="row">
+    <div class="container mt-3">
+        <div class="row">
             <!-- Displays subject image -->
-            <?php 
-require_once dirname(__DIR__) . "/src/components/find_image_ref.php";
-$imagePath =  "/assets/images/subjects/square-medium/".$subject->getSubjectId().".jpg";
-$placeholderPath = "/assets/placeholder/subjects/square-medium/placeholder.svg";
-$correctImagePath = getImagePathOrPlaceholder($imagePath, $placeholderPath);
-?>
-            <img src="<?php echo $correctImagePath?>" alt="Bild von <?php echo $subject->getSubjectName()?>">
-		</div>
-        <h2 class="mt-5">Artworks for <?php echo $subject->getSubjectName()?> </h2>
+            <?php
+            require_once dirname(__DIR__) . "/src/components/find-image-ref.php";
+            $imagePath = "/assets/images/subjects/square-medium/" . $subject->getSubjectId() . ".jpg";
+            $placeholderPath = "/assets/placeholder/subjects/square-medium/placeholder.svg";
+            $correctImagePath = getImagePathOrPlaceholder($imagePath, $placeholderPath);
+            ?>
+            <img src="<?php echo $correctImagePath ?>" alt="Bild von <?php echo $subject->getSubjectName() ?>">
+        </div>
+        <h2 class="mt-5">Artworks for <?php echo $subject->getSubjectName() ?> </h2>
         <div class="row mt-4">
-            <?php 
-                require_once dirname(__DIR__) . "/src/components/artwork-card-list.php";
-                renderArtworkCardList($artworks);
+            <?php
+            require_once dirname(__DIR__) . "/src/components/artwork-card-list.php";
+            renderArtworkCardList($artworks);
             ?>
         </div>
-	</div>
-	<?php require_once dirname(__DIR__) . "/src/bootstrap.php"; ?>
+    </div>
+    <?php require_once dirname(__DIR__) . "/src/bootstrap.php"; ?>
 </body>
+
 </html>
