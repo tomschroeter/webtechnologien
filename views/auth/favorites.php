@@ -1,4 +1,4 @@
-<h1 class="mt-3">My Favorites</h1>
+<h1 class="mt-4">My Favorites</h1>
 
 <?php 
 require_once dirname(dirname(__DIR__)) . "/components/find-image-ref.php";

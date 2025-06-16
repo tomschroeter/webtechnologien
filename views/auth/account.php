@@ -1,4 +1,4 @@
-<h1 class="mt-3">My Account</h1>
+<h1 class="mt-4">My Account</h1>
 
 <?php if ($success === 'info'): ?>
     <div class="alert alert-success">Profile updated successfully.</div>

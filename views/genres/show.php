@@ -1,7 +1,7 @@
 <br>
 <h1><?php echo htmlspecialchars($genre->getGenreName()) ?></h1>
 
-<div class="mt-3 ml-3">
+<div class="mt-4 ml-3">
   <div class="row">
     <div>
       <?php

@@ -1,4 +1,4 @@
-<h1 class="mt-3">Edit User</h1>
+<h1 class="mt-4">Edit User</h1>
 
 <?php if ($error === 'invalidInput'): ?>
     <div class="alert alert-danger">Please provide a valid last name and email address.</div>
