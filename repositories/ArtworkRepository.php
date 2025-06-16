@@ -8,6 +8,14 @@ require_once dirname(__DIR__) . "/repositories/SubjectRepository.php";
 require_once dirname(__DIR__) . "/repositories/GenreRepository.php";
 require_once dirname(__DIR__) . "/dtos/ArtworkWithArtistName.php";
 require_once dirname(__DIR__) . "/components/fix-file-path.php";
+require_once dirname(__DIR__) . "/Database.php";
+require_once dirname(__DIR__) . "/classes/Artwork.php";
+require_once dirname(__DIR__) . "/classes/Gallery.php";
+require_once dirname(__DIR__) . "/repositories/ArtistRepository.php";
+require_once dirname(__DIR__) . "/repositories/SubjectRepository.php";
+require_once dirname(__DIR__) . "/repositories/GenreRepository.php";
+require_once dirname(__DIR__) . "/dtos/ArtworkWithArtistName.php";
+require_once dirname(__DIR__) . "/components/fix-file-path.php";
 
 class ArtworkRepository
 {
@@ -46,7 +54,7 @@ class ArtworkRepository
         }
 
         // Add 0 in front of image file name if name is 5 characters long
-
+        $artwork['ImageFileName'] = fixFilePath(($artwork['ImageFileName']));
 
         $this->db->disconnect();
 
@@ -54,8 +62,8 @@ class ArtworkRepository
     }
 
     /**
-     * @return Artwork[]
-     */
+      * @return Artwork[]
+      */
     public function getArtworksByArtist(int $artistId): array
     {
         if (!$this->db->isConnected()) {
@@ -82,7 +90,7 @@ class ArtworkRepository
         foreach ($stmt as $row) {
 
             // Add 0 in front of image file name if name is 5 characters long
-            $row = fixFilePath(($row));
+            $row['ImageFileName'] = fixFilePath(($row['ImageFileName']));
 
             $artworks[] = Artwork::createArtworkFromRecord($row);
         }
@@ -93,6 +101,8 @@ class ArtworkRepository
     }
 
     /**
+     * @return Artwork[]
+     */
      * @return Artwork[]
      */
     public function getArtworksBySubject(int $subjectId): array
@@ -123,7 +133,7 @@ class ArtworkRepository
         foreach ($stmt as $row) {
 
             // Add 0 in front of image file name if name is 5 characters long
-            $row = fixFilePath(($row));
+            $row['ImageFileName'] = fixFilePath(($row['ImageFileName']));
 
             $artworks[] = Artwork::createArtworkFromRecord($row);
         }
@@ -134,6 +144,8 @@ class ArtworkRepository
     }
 
     /**
+     * @return Artwork[]
+     */
      * @return Artwork[]
      */
     public function getArtworksByGenre(int $genreId): array
@@ -163,7 +175,7 @@ class ArtworkRepository
 
         foreach ($stmt as $row) {
             // Add 0 in front of image file name if name is 5 characters long
-            $row = fixFilePath(($row));
+            $row['ImageFileName'] = fixFilePath(($row['ImageFileName']));
 
             $artworks[] = Artwork::createArtworkFromRecord($row);
         }
@@ -210,7 +222,7 @@ class ArtworkRepository
 
         foreach ($stmt as $row) {
             // Add 0 in front of image file name if name is 5 characters long
-            $row = fixFilePath(($row));
+            $row['ImageFileName'] = fixFilePath(($row['ImageFileName']));
 
             $artwork = Artwork::createArtworkFromRecord($row);
             $artistFirstName = $row['FirstName'];
@@ -261,13 +273,70 @@ class ArtworkRepository
 
         foreach ($stmt as $row) {
             // Add 0 in front of image file name if name is 5 characters long
-            $row = fixFilePath(($row));
+            $row['ImageFileName'] = fixFilePath(($row['ImageFileName']));
 
             $artworks[] = Artwork::createArtworkFromRecord($row);
         }
 
         $this->db->disconnect();
 
+        return $artworks;
+    }
+
+    public function getTopRatedArtworks()
+    {
+        if (!$this->db->isConnected()) {
+            $this->db->connect();
+        }
+
+        $sql = "SELECT a.*, ar.FirstName, ar.LastName, AVG(r.Rating) AS avgRating, COUNT(r.ReviewId) as reviewCount
+        FROM reviews r
+        JOIN artworks a ON r.ArtWorkId = a.ArtWorkId
+        JOIN artists ar ON a.ArtistId = ar.ArtistId
+        GROUP BY a.ArtWorkId, a.Title, ar.FirstName, ar.LastName
+        HAVING COUNT(r.ReviewId) >= 3
+        ORDER BY avgRating DESC
+        LIMIT 3
+       ";
+
+        $stmt = $this->db->prepareStatement($sql);
+
+        $stmt->execute();
+
+        $artworksWithRating = [];
+
+        foreach ($stmt as $row) {
+            // Add 0 in front of image file name if name is 5 characters long
+            $row['ImageFileName'] = fixFilePath(($row['ImageFileName']));
+            $rating = $row['avgRating'];
+            $reviewCount = $row['reviewCount'];
+            $artistFirstName = $row['FirstName'];
+            $artistLastName = $row['LastName'];
+            $artwork = Artwork::createArtworkFromRecord($row);
+            $artworksWithRating[] = new ArtworkWithRatingAndArtistName($artwork, $artistFirstName, $artistLastName, $rating, $reviewCount);
+        }
+
+        $this->db->disconnect();
+
+        return $artworksWithRating;
+    }
+
+    public function getRandomArtworks(): array
+    {
+        if (!$this->db->isConnected())
+            $this->db->connect();
+
+        $sql = "SELECT * FROM artworks ORDER BY RAND() LIMIT 4";
+        $stmt = $this->db->prepareStatement($sql);
+        $stmt->execute();
+
+        $artworks = [];
+        foreach ($stmt as $row) {
+            $row['ImageFileName'] = fixFilePath($row['ImageFileName']);
+            $artworks[] = Artwork::createArtworkFromRecord($row);
+        }
+
+        $this->db->disconnect();
         return $artworks;
     }
 
