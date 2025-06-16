@@ -71,7 +71,7 @@
 </form>
 
 <h4 class="mt-4">Quick Links</h4>
-<div class="list-group">
+<div class="list-group mb-5">
     <a href="/favorites" class="list-group-item list-group-item-action">
         <strong>My Favorites</strong>
         <br>
