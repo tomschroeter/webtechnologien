@@ -398,7 +398,7 @@ $correctLargeImagePath = getImagePathOrPlaceholder($largeImagePath, $placeholder
                 $alreadyReviewed = $reviewRepo->hasUserReviewed($_SESSION['customerId'], $artwork->getArtworkId());
                 
                 if (!$alreadyReviewed): ?>
-                    <form method="POST" action="add-review.php" class="mb-3">
+                    <form id="add-review-form" method="POST" action="/reviews/add" class="mb-3">
                         <input type="hidden" name="artworkId" value="<?= $artwork->getArtworkId() ?>">
                         <label for="rating">Rating (1–5):</label>
                         <input type="number" name="rating" min="1" max="5" required class="form-control mb-2">
@@ -415,7 +415,7 @@ $correctLargeImagePath = getImagePathOrPlaceholder($largeImagePath, $placeholder
 
             
             <?php if (!empty($reviews)): ?>
-                <div class="mt-3">
+                <div id="reviews-container" class="mt-3">
                     <?php foreach ($reviews as $reviewWithCustomerInfo): ?>
                         <div class="card mb-3">
                             <div class="card-body">
@@ -443,7 +443,7 @@ $correctLargeImagePath = getImagePathOrPlaceholder($largeImagePath, $placeholder
                                         <!-- Show delete option for admins in top right corner -->
                                         <?php if ($_SESSION['isAdmin'] ?? false): ?>
                                             <div>
-                                                <form method="POST" action="delete-review.php" onsubmit="return confirm('Delete this review?')">
+                                                <form class="delete-review-form" method="POST" action="/reviews/<?php echo $reviewWithCustomerInfo->getReview()->getReviewId() ?>/delete">
                                                     <input type="hidden" name="reviewId" value="<?php echo $reviewWithCustomerInfo->getReview()->getReviewId() ?>">
                                                     <input type="hidden" name="artworkId" value="<?php echo $reviewWithCustomerInfo->getReview()->getArtworkId() ?>">
                                                     <button type="submit" class="btn btn-sm btn-danger">Delete</button>
@@ -456,28 +456,330 @@ $correctLargeImagePath = getImagePathOrPlaceholder($largeImagePath, $placeholder
                     <?php endforeach; ?>
                 </div>
             <?php else: ?>
-                <p class="text-muted">No reviews yet. Be the first to review this artwork!</p>
+                <div id="reviews-container" class="mt-3">
+                    <p class="text-muted">No reviews yet. Be the first to review this artwork!</p>
+                </div>
             <?php endif; ?>
         </div>
     </div>
 </div>
 
 <script>
-// Handle accordion arrow rotation for general museum information
-$('#generalCollapse').on('show.bs.collapse', function () {
-    $('#generalArrow').text('▲');
-});
+// Notification function
+function showNotification(message, type = 'info') {
+    // Create or get notification container
+    let container = document.getElementById('notification-container');
+    if (!container) {
+        container = document.createElement('div');
+        container.id = 'notification-container';
+        container.style.cssText = 'position: fixed; top: 20px; right: 20px; width: 350px; z-index: 9999;';
+        document.body.appendChild(container);
+    }
+    
+    const alert = document.createElement('div');
+    alert.className = `alert alert-${type} alert-dismissible fade show`;
+    alert.style.cssText = 'margin-bottom: 10px; box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);';
+    alert.innerHTML = `
+        ${message}
+        <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+        </button>
+    `;
+    container.appendChild(alert);
+    
+    // Auto-dismiss after 4 seconds
+    setTimeout(() => {
+        if (alert.parentNode) {
+            alert.remove();
+        }
+    }, 4000);
+}
 
-$('#generalCollapse').on('hide.bs.collapse', function () {
-    $('#generalArrow').text('▼');
-});
+// Wait for DOM to be ready
+document.addEventListener('DOMContentLoaded', function() {
+    console.log('Document ready, setting up review handlers');
+    
+    // Function to handle add review form submission
+    function handleAddReviewSubmit(e) {
+        console.log('Add review form submitted');
+        e.preventDefault();
+        
+        const form = e.target;
+        const submitBtn = form.querySelector('button[type="submit"]');
+        const originalBtnText = submitBtn.textContent;
+        
+        console.log('Form action:', form.action);
+        console.log('Form data:', new FormData(form));
+        
+        // Disable button during request
+        submitBtn.disabled = true;
+        submitBtn.textContent = 'Submitting...';
+        
+        // Prepare form data
+        const formData = new FormData(form);
+        
+        fetch(form.action, {
+            method: 'POST',
+            body: formData,
+            headers: {
+                'X-Requested-With': 'XMLHttpRequest'
+            }
+        })
+        .then(response => {
+            console.log('Response status:', response.status);
+            console.log('Response headers:', response.headers.get('content-type'));
+            
+            // Check if response is JSON
+            const contentType = response.headers.get('content-type');
+            if (contentType && contentType.includes('application/json')) {
+                return response.json();
+            } else {
+                // If not JSON, get text to see what's wrong
+                return response.text().then(text => {
+                    console.log('Non-JSON response:', text);
+                    throw new Error('Server returned non-JSON response: ' + text.substring(0, 200));
+                });
+            }
+        })
+        .then(data => {
+            console.log('Success response:', data);
+            
+            showNotification(data.message, 'success');
+            
+            // Clear form and hide it on success
+            form.reset();
+            form.style.display = 'none';
+            
+            // Show message that they already reviewed
+            const alreadyReviewedMsg = document.createElement('p');
+            alreadyReviewedMsg.className = 'text-muted';
+            alreadyReviewedMsg.textContent = 'You have already reviewed this artwork.';
+            form.parentNode.appendChild(alreadyReviewedMsg);
+            
+            // Add the new review to the DOM
+            if (data.review) {
+                console.log('Adding new review to DOM');
+                
+                // Create delete button HTML for admin users
+                let deleteButtonHtml = '';
+                if (data.isAdmin) {
+                    deleteButtonHtml = `
+                        <div>
+                            <form class="delete-review-form" method="POST" action="/reviews/${data.review.reviewId}/delete">
+                                <input type="hidden" name="reviewId" value="${data.review.reviewId}">
+                                <input type="hidden" name="artworkId" value="${data.review.artworkId}">
+                                <button type="submit" class="btn btn-sm btn-danger">Delete</button>
+                            </form>
+                        </div>
+                    `;
+                }
+                
+                const reviewHtml = `
+                    <div class="card mb-3">
+                        <div class="card-body">
+                            <div class="d-flex justify-content-between align-items-start">
+                                <div>
+                                    <h6 class="card-subtitle mb-2 text-muted">
+                                        ${data.review.customerName} - ${data.review.customerLocation}
+                                    </h6>
+                                    <div class="mb-2">
+                                        <strong>Rating: ${data.review.rating}/5</strong>
+                                    </div>
+                                    <p class="card-text">${data.review.comment.replace(/\n/g, '<br>')}</p>
+                                    <small class="text-muted">
+                                        ${new Date(data.review.reviewDate).toLocaleDateString('en-US', { 
+                                            year: 'numeric', 
+                                            month: 'long', 
+                                            day: 'numeric' 
+                                        })}
+                                    </small>
+                                </div>
+                                ${deleteButtonHtml}
+                            </div>
+                        </div>
+                    </div>
+                `;
+                
+                // Check if there are existing reviews
+                const reviewsContainer = document.getElementById('reviews-container');
+                const noReviewsMsg = reviewsContainer.querySelector('p.text-muted');
+                
+                if (noReviewsMsg && noReviewsMsg.textContent.includes('No reviews yet')) {
+                    // Replace "no reviews" message with the new review
+                    noReviewsMsg.remove();
+                    reviewsContainer.insertAdjacentHTML('afterbegin', reviewHtml);
+                } else {
+                    // Add to the beginning of existing reviews
+                    reviewsContainer.insertAdjacentHTML('afterbegin', reviewHtml);
+                }
+            }
+        })
+        .catch(error => {
+            console.log('Error:', error);
+            showNotification('An error occurred while adding your review.', 'danger');
+        })
+        .finally(() => {
+            submitBtn.disabled = false;
+            submitBtn.textContent = originalBtnText;
+        });
+    }
+    
+    // AJAX handling for add review form
+    const addReviewForm = document.getElementById('add-review-form');
+    if (addReviewForm) {
+        addReviewForm.addEventListener('submit', handleAddReviewSubmit);
+    }
 
-// Handle accordion arrow rotation for location museum information
-$('#locationCollapse').on('show.bs.collapse', function () {
-    $('#locationArrow').text('▲');
-});
+    // AJAX handling for delete review forms
+    document.addEventListener('submit', function(e) {
+        if (e.target.classList.contains('delete-review-form')) {
+            if (!confirm('Are you sure you want to delete this review?')) {
+                e.preventDefault();
+                return;
+            }
+            
+            console.log('Delete review form submitted');
+            e.preventDefault();
+            
+            const form = e.target;
+            const reviewCard = form.closest('.card');
+            const deleteBtn = form.querySelector('button[type="submit"]');
+            const originalBtnText = deleteBtn.textContent;
+            
+            console.log('Delete form action:', form.action);
+            
+            // Disable button during request
+            deleteBtn.disabled = true;
+            deleteBtn.textContent = 'Deleting...';
+            
+            // Prepare form data
+            const formData = new FormData(form);
+            
+            fetch(form.action, {
+                method: 'POST',
+                body: formData,
+                headers: {
+                    'X-Requested-With': 'XMLHttpRequest'
+                }
+            })
+            .then(response => {
+                console.log('Delete response status:', response.status);
+                
+                // Check if response is JSON
+                const contentType = response.headers.get('content-type');
+                if (contentType && contentType.includes('application/json')) {
+                    return response.json();
+                } else {
+                    // If not JSON, get text to see what's wrong
+                    return response.text().then(text => {
+                        console.log('Delete non-JSON response:', text);
+                        throw new Error('Server returned non-JSON response: ' + text.substring(0, 200));
+                    });
+                }
+            })
+            .then(data => {
+                console.log('Delete success response:', data);
+                
+                showNotification(data.message, 'success');
+                
+                // Fade out and remove the review card
+                reviewCard.style.transition = 'opacity 0.3s';
+                reviewCard.style.opacity = '0';
+                
+                setTimeout(() => {
+                    reviewCard.remove();
+                    
+                    // Check if there are no more reviews
+                    const remainingCards = document.querySelectorAll('#reviews-container .card');
+                    const reviewsContainer = document.getElementById('reviews-container');
+                    if (remainingCards.length === 0) {
+                        reviewsContainer.innerHTML = '<p class="text-muted">No reviews yet. Be the first to review this artwork!</p>';
+                    }
+                    
+                    // Show the add review form again (if user is logged in and deleted their own review)
+                    const textElements = document.querySelectorAll('p.text-muted');
+                    textElements.forEach(element => {
+                        if (element.textContent.includes('You have already reviewed this artwork')) {
+                            element.remove();
+                        }
+                    });
+                    
+                    // Show the add review form if it was hidden
+                    const addReviewForm = document.getElementById('add-review-form');
+                    if (addReviewForm && addReviewForm.style.display === 'none') {
+                        addReviewForm.style.display = 'block';
+                    }
+                    
+                    // If there's no form (because user had already reviewed), create one
+                    if (!addReviewForm) {
+                        // Check if user is logged in (we can tell by looking for login message)
+                        const loginMessage = document.querySelector('p.text-muted');
+                        const isLoggedIn = !loginMessage || !loginMessage.textContent.includes('Please log in to leave a review');
+                        
+                        if (isLoggedIn) {
+                            // Create the review form
+                            const formHtml = `
+                                <form id="add-review-form" method="POST" action="/reviews/add" class="mb-3">
+                                    <input type="hidden" name="artworkId" value="<?= $artwork->getArtworkId() ?>">
+                                    <label for="rating">Rating (1–5):</label>
+                                    <input type="number" name="rating" min="1" max="5" required class="form-control mb-2">
+                                    <label for="comment">Comment:</label>
+                                    <textarea name="comment" required class="form-control mb-2"></textarea>
+                                    <button type="submit" class="btn btn-success">Submit Review</button>
+                                </form>
+                            `;
+                            
+                            // Find where to insert the form (before the reviews section)
+                            const reviewsContainer = document.getElementById('reviews-container');
+                            if (reviewsContainer) {
+                                reviewsContainer.insertAdjacentHTML('beforebegin', formHtml);
+                                
+                                // Re-attach event listener to the new form
+                                const newForm = document.getElementById('add-review-form');
+                                if (newForm) {
+                                    newForm.addEventListener('submit', handleAddReviewSubmit);
+                                }
+                            }
+                        }
+                    }
+                }, 300);
+            })
+            .catch(error => {
+                console.log('Delete error:', error);
+                showNotification('An error occurred while deleting the review.', 'danger');
+            })
+            .finally(() => {
+                deleteBtn.disabled = false;
+                deleteBtn.textContent = originalBtnText;
+            });
+        }
+    });
+    
+    // Handle accordion arrow rotation for general museum information
+    const generalCollapse = document.getElementById('generalCollapse');
+    const generalArrow = document.getElementById('generalArrow');
+    if (generalCollapse && generalArrow) {
+        generalCollapse.addEventListener('show.bs.collapse', function () {
+            generalArrow.textContent = '▲';
+        });
+        
+        generalCollapse.addEventListener('hide.bs.collapse', function () {
+            generalArrow.textContent = '▼';
+        });
+    }
 
-$('#locationCollapse').on('hide.bs.collapse', function () {
-    $('#locationArrow').text('▼');
+    // Handle accordion arrow rotation for location museum information
+    const locationCollapse = document.getElementById('locationCollapse');
+    const locationArrow = document.getElementById('locationArrow');
+    if (locationCollapse && locationArrow) {
+        locationCollapse.addEventListener('show.bs.collapse', function () {
+            locationArrow.textContent = '▲';
+        });
+        
+        locationCollapse.addEventListener('hide.bs.collapse', function () {
+            locationArrow.textContent = '▼';
+        });
+    }
 });
+</script>
 </script>
