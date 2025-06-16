@@ -6,12 +6,14 @@ class ArtworkWithRatingAndArtistName
     private $artwork;
     private $artistName;
     private $rating;
+    private $reviewCount;
 
-    public function __construct(Artwork $artwork, string $artistFirstName, string $artistLastName, float $rating)
+    public function __construct(Artwork $artwork, string $artistFirstName, string $artistLastName, float $rating, int $reviewCount)
     {
         $this->artwork = $artwork;
         $this->artistName = $artistFirstName . ' ' . $artistLastName;
         $this->rating = $rating;
+        $this->reviewCount = $reviewCount;
     }
 
     public function getArtwork(): Artwork
@@ -27,6 +29,11 @@ class ArtworkWithRatingAndArtistName
     public function getRating(): float
     {
         return $this->rating;
+    }
+
+    public function getReviewCount(): int
+    {
+        return $this->reviewCount;
     }
 }
 

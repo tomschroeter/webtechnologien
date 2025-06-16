@@ -277,13 +277,13 @@ class ArtworkRepository
             $this->db->connect();
         }
 
-        $sql = "SELECT a.*, ar.FirstName, ar.LastName, AVG(r.Rating) AS avg_rating, COUNT(r.ReviewId) as review_count
+        $sql = "SELECT a.*, ar.FirstName, ar.LastName, AVG(r.Rating) AS avgRating, COUNT(r.ReviewId) as reviewCount
         FROM reviews r
         JOIN artworks a ON r.ArtWorkId = a.ArtWorkId
         JOIN artists ar ON a.ArtistId = ar.ArtistId
         GROUP BY a.ArtWorkId, a.Title, ar.FirstName, ar.LastName
         HAVING COUNT(r.ReviewId) >= 3
-        ORDER BY avg_rating DESC
+        ORDER BY avgRating DESC
         LIMIT 3
        ";
 
@@ -296,11 +296,12 @@ class ArtworkRepository
         foreach ($stmt as $row) {
             // Add 0 in front of image file name if name is 5 characters long
             $row['ImageFileName'] = fixFilePath(($row['ImageFileName']));
-            $rating = $row['avg_rating'];
+            $rating = $row['avgRating'];
+            $reviewCount = $row['reviewCount'];
             $artistFirstName = $row['FirstName'];
             $artistLastName = $row['LastName'];
             $artwork = Artwork::createArtworkFromRecord($row);
-            $artworksWithRating[] = new ArtworkWithRatingAndArtistName($artwork, $artistFirstName, $artistLastName, $rating);
+            $artworksWithRating[] = new ArtworkWithRatingAndArtistName($artwork, $artistFirstName, $artistLastName, $rating, $reviewCount);
         }
 
         $this->db->disconnect();
