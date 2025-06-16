@@ -8,14 +8,6 @@ require_once dirname(__DIR__) . "/repositories/SubjectRepository.php";
 require_once dirname(__DIR__) . "/repositories/GenreRepository.php";
 require_once dirname(__DIR__) . "/dtos/ArtworkWithArtistName.php";
 require_once dirname(__DIR__) . "/components/fix-file-path.php";
-require_once dirname(__DIR__) . "/Database.php";
-require_once dirname(__DIR__) . "/classes/Artwork.php";
-require_once dirname(__DIR__) . "/classes/Gallery.php";
-require_once dirname(__DIR__) . "/repositories/ArtistRepository.php";
-require_once dirname(__DIR__) . "/repositories/SubjectRepository.php";
-require_once dirname(__DIR__) . "/repositories/GenreRepository.php";
-require_once dirname(__DIR__) . "/dtos/ArtworkWithArtistName.php";
-require_once dirname(__DIR__) . "/components/fix-file-path.php";
 
 class ArtworkRepository
 {
@@ -103,8 +95,6 @@ class ArtworkRepository
     /**
      * @return Artwork[]
      */
-     * @return Artwork[]
-     */
     public function getArtworksBySubject(int $subjectId): array
     {
         if (!$this->db->isConnected()) {
@@ -144,8 +134,6 @@ class ArtworkRepository
     }
 
     /**
-     * @return Artwork[]
-     */
      * @return Artwork[]
      */
     public function getArtworksByGenre(int $genreId): array
