@@ -6,7 +6,7 @@ class CustomerLogon
     private $userName;
     private $pass;
     private $salt;
-    private $state;      // Activ (1) / Inactiv (0)
+    private $state;      // Active (1) / Inactive (0)
     private $type;       // 0 = User, 1 = Admin
     private $dateJoined;
     private $dateLastModified;
