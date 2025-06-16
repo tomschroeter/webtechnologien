@@ -47,8 +47,8 @@ $artworksWithRating = $artworkRepository->getTopRatedArtworks();
                 <a href="artists/<?php echo $artistId ?>"
                   style="color: black;"><?php echo htmlspecialchars($artistName) ?></a>
               </p>
-              <p class="card-text text-warning" style="font-size: 0.9rem;"><?php echo $stars?>
-                <span class="text-dark" style="font-size: 0.7rem; vertical-align: 1px;">(<?= $reviewCount ?>)</span>
+              <p class="card-text text-warning" style="font-size: 0.9rem;"><?php echo $stars ?>
+                <span class="text-muted" style="font-size: 0.7rem; vertical-align: 1px;">(<?= $reviewCount ?>)</span>
               </p>
             </div>
           </div>
