@@ -1,7 +1,7 @@
 <h2 class="flex-grow-1 mb-1 mt-3">Search Results</h2>
 
 <?php 
-require_once dirname(dirname(__DIR__)) . "/components/find_image_ref.php";
+require_once dirname(dirname(__DIR__)) . "/components/find-image-ref.php";
 ?>
 
 <?php if (sizeof($artistSearchResults) > 0 || sizeof($artworkSearchResults) > 0): ?>

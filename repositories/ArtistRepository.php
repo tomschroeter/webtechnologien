@@ -1,7 +1,7 @@
 <?php
 
-require_once dirname(__DIR__)."/Database.php";
-require_once dirname(__DIR__)."/classes/Artist.php";
+require_once dirname(__DIR__) . "/Database.php";
+require_once dirname(__DIR__) . "/classes/Artist.php";
 
 class ArtistRepository
 {
@@ -14,7 +14,7 @@ class ArtistRepository
 
     /**
      * @return Artist[]
-    */
+     */
     public function getAllArtists(bool $sortDesc): array
     {
         if (!$this->db->isConnected()) {
@@ -77,8 +77,8 @@ class ArtistRepository
 
 
     /**
-    * @throws Exception if artist couldn't be found
-    */
+     * @throws Exception if artist couldn't be found
+     */
     public function getArtistById(int $artistId): Artist
     {
         if (!$this->db->isConnected()) {

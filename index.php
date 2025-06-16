@@ -6,3 +6,4 @@ $mvcHandled = require_once __DIR__ . "/mvc_bootstrap.php";
 if ($mvcHandled) {
     exit(); // Use exit() instead of return to stop execution
 }
+?>

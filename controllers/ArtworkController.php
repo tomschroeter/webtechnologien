@@ -5,7 +5,7 @@ require_once dirname(__DIR__) . "/repositories/ArtworkRepository.php";
 require_once dirname(__DIR__) . "/repositories/ArtistRepository.php";
 require_once dirname(__DIR__) . "/repositories/ReviewRepository.php";
 require_once dirname(__DIR__) . "/Database.php";
-require_once dirname(__DIR__) . "/components/find_image_ref.php";
+require_once dirname(__DIR__) . "/components/find-image-ref.php";
 
 class ArtworkController extends BaseController
 {
