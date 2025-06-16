@@ -121,7 +121,7 @@ require_once dirname(dirname(__DIR__)) . "/components/find-image-ref.php";
         </div>
 
         <!-- List to display all artworks that fit the search query -->
-        <ul class="list-group">
+        <ul class="list-group mb-5">
             <?php foreach ($artworkSearchResults as $index => $combined): ?>
                 <li class="list-group-item d-flex align-items-center justify-content-between">
                     <!-- Ref link to display single artwork -->
