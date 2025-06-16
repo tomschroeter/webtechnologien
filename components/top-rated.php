@@ -2,9 +2,9 @@
 require_once dirname(__DIR__) . "/Database.php";
 require_once dirname(__DIR__) . "/repositories/ArtworkRepository.php";
 require_once dirname(__DIR__) . "/dtos/ArtworkWithRatingAndArtistName.php";
-require_once dirname(__DIR__) . "/components/fix-file-path.php";
-require_once dirname(__DIR__) . "/components/find-image-ref.php";
-require_once dirname(__DIR__) . "/components/render-stars.php";
+require_once __DIR__ . "/fix-file-path.php";
+require_once __DIR__ . "/find-image-ref.php";
+require_once __DIR__ . "/render-stars.php";
 
 $db = new Database();
 $artworkRepository = new ArtworkRepository($db);

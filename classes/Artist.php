@@ -1,8 +1,5 @@
 <?php
 
-require_once dirname(__DIR__)."/Database.php";
-require_once dirname(__DIR__)."/dtos/ArtistWithStats.php";
-
 class Artist
 {
     private $artistId;
