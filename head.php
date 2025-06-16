@@ -4,15 +4,15 @@
   <title>
     <?php
     $uri = $_SERVER['REQUEST_URI'];
-    $segments = explode('/', trim($uri, '/'));
-    $lastSegment = $segments[0] ?? '';
+    $lastSegment = explode('/', trim($uri, '/'))[0];
+    $lastSegmentWithoutParams = explode('?', $lastSegment)[0];
 
     // Fallback for root
-    if (empty($lastSegment) or $lastSegment === 'index') {
+    if (empty($lastSegmentWithoutParams)) {
       echo 'Home';
     } else {
       // Replace dashes with spaces, then capitalize
-      $title = str_replace('-', ' ', $lastSegment);
+      $title = str_replace('-', ' ', $lastSegmentWithoutParams);
       echo ucwords($title);
     }
     ?>
