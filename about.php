@@ -9,7 +9,7 @@ require_once dirname(__DIR__) . "/src/navbar.php";
 <body class="container">
     <div class="mt-4 mb-5">
         <h1>About Us</h1>
-        <hr>
+        <br>
         <div class="card shadow-sm mb-4">
             <div class="card-body">
                 <h2 class="h4 card-title">Our Manifesto</h2>
@@ -37,21 +37,23 @@ require_once dirname(__DIR__) . "/src/navbar.php";
                     Slaiwa, Tom Schröter</p>
             </div>
         </div>
-        <div class="card shadow-sm">
+        <div>
             <div class="card-body">
-                <h2 class="h4 card-title">Contributors</h2>
                 <?php
                 require_once dirname(__DIR__) . "/src/components/contributor-card.php";
                 require_once dirname(__DIR__) . "/src/components/contributor-list.php";
-
-                foreach ($contributors as $contributor):
-                    $name = $contributor[0];
-                    $githubUsername = $contributor[1];
-                    $githubUrl = $contributor[2];
-                    $tickets = $contributor[3];
-                    renderContributorCard($name, $githubUsername, $githubUrl, $tickets);
-                endforeach;
                 ?>
+                <div class="d-flex flex-wrap justify-content-center">
+                    <?php
+                    foreach ($contributors as $contributor):
+                        $name = $contributor[0];
+                        $githubUsername = $contributor[1];
+                        $githubUrl = $contributor[2];
+                        $profilePicture = $contributor[3];
+                        renderContributorCard($name, $githubUsername, $githubUrl, $profilePicture);
+                    endforeach;
+                    ?>
+                </div>
             </div>
         </div>
     </div>
