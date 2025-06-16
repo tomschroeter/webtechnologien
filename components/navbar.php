@@ -79,7 +79,7 @@ if (session_status() === PHP_SESSION_NONE) {
           </a>
           <div class="dropdown-menu dropdown-menu-right" aria-labelledby="dropdownProfile">
             <?php if (isset($_SESSION['username'])): ?>
-              <span class="dropdown-item-text font-weight-bold text-dark">
+              <span class="dropdown-item-text font-weight-bold" style="font-size: 1.1rem;">
                 <?= htmlspecialchars($_SESSION['username']) ?>
               </span>
               <a class="dropdown-item" href="/account">My Account</a>
