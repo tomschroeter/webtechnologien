@@ -399,14 +399,18 @@ $correctLargeImagePath = getImagePathOrPlaceholder($largeImagePath, $placeholder
                     <form id="add-review-form" method="POST" action="/reviews/add" class="mb-3">
                         <input type="hidden" name="artworkId" value="<?= $artwork->getArtworkId() ?>">
                         <label for="rating">Rating (1-5):</label>
-                        <select name="rating" id="rating" required class="form-control mb-2">
-                            <option value=""></option>
-                            <option value="1">1</option>
-                            <option value="2">2</option>
-                            <option value="3">3</option>
-                            <option value="4">4</option>
-                            <option value="5">5</option>
-                        </select>
+                        <div class="star-rating text-start">
+                            <input type="radio" name="rating" id="star5" value="5" required>
+                            <label for="star5" title="5 stars">★</label>
+                            <input type="radio" name="rating" id="star4" value="4">
+                            <label for="star4" title="4 stars">★</label>
+                            <input type="radio" name="rating" id="star3" value="3">
+                            <label for="star3" title="3 stars">★</label>
+                            <input type="radio" name="rating" id="star2" value="2">
+                            <label for="star2" title="2 stars">★</label>
+                            <input type="radio" name="rating" id="star1" value="1">
+                            <label for="star1" title="1 star">★</label>
+                        </div>
                         <label for="comment">Comment:</label>
                         <textarea name="comment" required class="form-control mb-2"></textarea>
                         <button type="submit" class="btn btn-success">Submit Review</button>
@@ -732,15 +736,18 @@ $correctLargeImagePath = getImagePathOrPlaceholder($largeImagePath, $placeholder
                                         <input type="hidden" name="artworkId" value="<?= $artwork->getArtworkId() ?>">
 
                                         <label for="rating">Rating (1-5):</label>
-                                        <select name="rating" id="rating" required class="form-control mb-2">
-                                            <option value=""></option>
-                                            <option value="1">1</option>
-                                            <option value="2">2</option>
-                                            <option value="3">3</option>
-                                            <option value="4">4</option>
-                                            <option value="5">5</option>
-                                        </select>
-
+                                        <div class="star-rating text-start">
+                                            <input type="radio" name="rating" id="star5" value="5" required>
+                                            <label for="star5" title="5 stars">★</label>
+                                            <input type="radio" name="rating" id="star4" value="4">
+                                            <label for="star4" title="4 stars">★</label>
+                                            <input type="radio" name="rating" id="star3" value="3">
+                                            <label for="star3" title="3 stars">★</label>
+                                            <input type="radio" name="rating" id="star2" value="2">
+                                            <label for="star2" title="2 stars">★</label>
+                                            <input type="radio" name="rating" id="star1" value="1">
+                                            <label for="star1" title="1 star">★</label>
+                                        </div>
                                         <label for="comment">Comment:</label>
                                         <textarea name="comment" required class="form-control mb-2"></textarea>
 
