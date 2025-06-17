@@ -28,23 +28,21 @@
                 Slaiwa, Tom Schröter</p>
         </div>
     </div>
-    <div class="card shadow-sm">
-        <div class="card-body">
+    <div class="card-body">
+        <?php
+        require_once dirname(dirname(__DIR__)) . "/components/contributor-card.php";
+        require_once dirname(dirname(__DIR__)) . "/components/contributor-list.php";
+        ?>
+        <div class="d-flex flex-wrap justify-content-center">
             <?php
-            require_once dirname(dirname(__DIR__)) . "/components/contributor-card.php";
-            require_once dirname(dirname(__DIR__)) . "/components/contributor-list.php";
+            foreach ($contributors as $contributor):
+                $name = $contributor[0];
+                $githubUsername = $contributor[1];
+                $githubUrl = $contributor[2];
+                $profilePicture = $contributor[3];
+                renderContributorCard($name, $githubUsername, $githubUrl, $profilePicture);
+            endforeach;
             ?>
-            <div class="d-flex flex-wrap justify-content-center">
-                <?php
-                foreach ($contributors as $contributor):
-                    $name = $contributor[0];
-                    $githubUsername = $contributor[1];
-                    $githubUrl = $contributor[2];
-                    $profilePicture = $contributor[3];
-                    renderContributorCard($name, $githubUsername, $githubUrl, $profilePicture);
-                endforeach;
-                ?>
-            </div>
         </div>
     </div>
 </div>
