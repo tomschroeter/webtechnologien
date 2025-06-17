@@ -80,6 +80,20 @@
 </div>
 
 <script>
+  document.addEventListener("DOMContentLoaded", function () {
+    const form = document.querySelector('form.ml-2');
+    if (form) {
+      form.addEventListener("submit", function (e) {
+        const elements = form.querySelectorAll("input, select");
+        elements.forEach(el => {
+          if (!el.value.trim()) {
+            el.removeAttribute("name");
+          }
+        });
+      });
+    }
+  });
+
   function toggleFilterSections() {
     const filterBy = document.getElementById('filterBy').value;
     const artistFilters = document.getElementById('artistFilters');
