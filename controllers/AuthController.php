@@ -143,9 +143,30 @@ class AuthController extends BaseController
             $this->redirect('/register?error=exists');
         } else {
             try {
-                $customer = new Customer($firstName, $lastName, $address, $city, $country, $postal, $email, $region, $phone);
+                $customer = new Customer(
+                    null,
+                    $firstName,
+                    $lastName,
+                    $address,
+                    $city,
+                    $region,
+                    $country,
+                    $postal,
+                    $phone,
+                    $email
+                );
                 $hashed = password_hash($password, PASSWORD_DEFAULT);
-                $logon = new CustomerLogon($username, $hashed, 1, 0, date("Y-m-d H:i:s"), date("Y-m-d H:i:s"));
+                $logon = new CustomerLogon(
+                    null,
+                    $username,
+                    $hashed,
+                    1,
+                    0,
+                    0,
+                    date("Y-m-d H:i:s"),
+                    date("Y-m-d H:i:s"),
+                    0
+                );
                 
                 // Use atomic registration method to prevent race conditions
                 $customerId = $this->customerRepository->registerCustomer($customer, $logon);

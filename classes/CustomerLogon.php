@@ -2,7 +2,7 @@
 
 class CustomerLogon
 {
-    private int $customerId;
+    private ?int $customerId;
     private string $userName;
     private string $pass;
     private ?string $salt;
@@ -12,8 +12,8 @@ class CustomerLogon
     private string $dateLastModified;
     private ?int $isAdmin;
 
-    private function __construct(
-        int $customerId,
+    public function __construct(
+        ?int $customerId,
         string $userName,
         string $pass,
         ?string $salt,
@@ -45,16 +45,16 @@ class CustomerLogon
             (int) $record['Type'],
             (string) $record['DateJoined'],
             (string) $record['DateLastModified'],
-            isset($record['isAdmin']) ? (int) $record['isAdmin'] : null
+            isset($record['isAdmin']) ?? null
         );
     }
 
-    public function getCustomerId(): int
+    public function getCustomerId(): ?int
     {
         return $this->customerId;
     }
 
-    public function setCustomerId(int $customerId): void
+    public function setCustomerId(?int $customerId): void
     {
         $this->customerId = $customerId;
     }

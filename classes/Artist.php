@@ -37,11 +37,11 @@ class Artist
             (int) $record['ArtistID'],
             (string) $record['FirstName'],
             (string) $record['LastName'],
-            $record['Nationality'] !== null ? (string) $record['Nationality'] : null,
-            isset($record['YearOfBirth']) ? (int) $record['YearOfBirth'] : null,
-            isset($record['YearOfDeath']) ? (int) $record['YearOfDeath'] : null,
-            $record['Details'] !== null ? (string) $record['Details'] : null,
-            $record['ArtistLink'] !== null ? (string) $record['ArtistLink'] : null
+            $record['Nationality'] ?? null,
+            isset($record['YearOfBirth']) ?? null,
+            isset($record['YearOfDeath']) ?? null,
+            $record['Details'] ?? null,
+            $record['ArtistLink'] ?? null
         );
     }
 

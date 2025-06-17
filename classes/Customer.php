@@ -2,7 +2,7 @@
 
 class Customer
 {
-    private int $customerId;
+    private ?int $customerId;
     private string $firstName;
     private string $lastName;
     private ?string $address;
@@ -13,8 +13,8 @@ class Customer
     private ?string $phone;
     private ?string $email;
 
-    private function __construct(
-        int $customerId,
+    public function __construct(
+        ?int $customerId,
         string $firstName,
         string $lastName,
         ?string $address,
@@ -43,13 +43,13 @@ class Customer
             (int) ($record['CustomerID']),
             (string) $record['FirstName'],
             (string) $record['LastName'],
-            $record['Address'] !== null ? (string) $record['Address'] : null,
-            $record['City'] !== null ? (string) $record['City'] : null,
-            $record['Region'] !== null ? (string) $record['Region'] : null,
-            $record['Country'] !== null ? (string) $record['Country'] : null,
-            $record['Postal'] !== null ? (string) $record['Postal'] : null,
-            $record['Phone'] !== null ? (string) $record['Phone'] : null,
-            $record['Email'] !== null ? (string) $record['Email'] : null
+            $record['Address'] ?? null,
+            $record['City'] ?? null,
+            $record['Region'] ?? null,
+            $record['Country'] ?? null,
+            $record['Postal'] ?? null,
+            $record['Phone'] ?? null,
+            $record['Email'] ?? null
         );
     }
 
