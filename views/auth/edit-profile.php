@@ -39,24 +39,24 @@ if (!empty($validationErrors)) {
   <div class="form-row">
     <div class="form-group col-md-6">
       <label>First Name</label>
-      <input name="firstName" class="form-control" value="<?= htmlspecialchars($user['FirstName']) ?>" required>
+      <input name="firstName" class="form-control" value="<?= htmlspecialchars($user->getFirstName()) ?>" required>
     </div>
     <div class="form-group col-md-6">
       <label>Last Name</label>
-      <input name="lastName" class="form-control" value="<?= htmlspecialchars($user['LastName']) ?>" required>
+      <input name="lastName" class="form-control" value="<?= htmlspecialchars($user->getLastName()) ?>" required>
     </div>
   </div>
   <div class="form-row">
     <div class="form-group col-md-6">
       <label>Email</label>
-      <input name="email" type="email" class="form-control" value="<?= htmlspecialchars($user['Email']) ?>" required>
+      <input name="email" type="email" class="form-control" value="<?= htmlspecialchars($user->getEmail()) ?>" required>
     </div>
     <?php if ($isAdminEdit): ?>
     <div class="form-group col-md-6">
       <label>Role</label>
       <select name="isAdmin" class="form-control" required>
-        <option value="0" <?= !$user['isAdmin'] ? 'selected' : '' ?>>User</option>
-        <option value="1" <?= $user['isAdmin'] ? 'selected' : '' ?>>Administrator</option>
+        <option value="0" <?= !$user->getIsAdmin() ? 'selected' : '' ?>>User</option>
+        <option value="1" <?= $user->getIsAdmin() ? 'selected' : '' ?>>Administrator</option>
       </select>
       <?php if (isset($_SESSION['customerId']) && (int)$_SESSION['customerId'] === (int)$userId): ?>
         <small class="form-text text-muted">
@@ -75,7 +75,7 @@ if (!empty($validationErrors)) {
   <div class="form-row">
     <div class="form-group col-md-6">
       <label>Username</label>
-      <input class="form-control" value="<?= htmlspecialchars($user['UserName']) ?>" disabled>
+      <input class="form-control" value="<?= htmlspecialchars($user->getUserName()) ?>" disabled>
       <small class="form-text text-muted">Username cannot be changed</small>
     </div>
     <div class="form-group col-md-6">

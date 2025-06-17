@@ -66,13 +66,13 @@ class AuthController extends BaseController
 
         $user = $this->customerRepository->getActiveUserByUsername($username);
 
-        if (!$user || !password_verify($password, $user['Pass'])) {
+        if (!$user || !password_verify($password, $user->getPass())) {
             $this->redirect('/login?error=invalid');
         }
 
-        $_SESSION['customerId'] = $user['CustomerID'];
-        $_SESSION['username'] = $user['UserName'];
-        $_SESSION['isAdmin'] = $user['isAdmin'] ?? false;
+        $_SESSION['customerId'] = $user->getCustomerId();
+        $_SESSION['username'] = $user->getUserName();
+        $_SESSION['isAdmin'] = $user->getIsAdmin();
 
         $this->redirect('/?login=success');
     }
@@ -497,8 +497,8 @@ class AuthController extends BaseController
         }
 
         // Check if email is already taken by another user
-        $existingUser = $this->customerRepository->getUserByEmail($email);
-        if ($existingUser && $existingUser['CustomerID'] != $userId) {
+        $existingUser = $this->customerRepository->getUserDetailsByEmail($email);
+        if ($existingUser && $existingUser->getCustomerId() != $userId) {
             $errors[] = "This email address is already in use by another user.";
         }
 
@@ -609,7 +609,7 @@ class AuthController extends BaseController
         $errors = [];
         
         // Get current user logon data
-        $userLogon = $this->customerRepository->getActiveUserByUsername($user['UserName']);
+        $userLogon = $this->customerRepository->getActiveUserByUsername($user->getUserName());
         
         // Validate old password
         if (!$userLogon || !password_verify($oldPassword, $userLogon['Pass'])) {

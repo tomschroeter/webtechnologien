@@ -14,18 +14,19 @@ class Customer
     private $email;
 
 
-    public function __construct(
+    private function __construct(
+        $customerId = null,
         $firstName,
         $lastName,
         $address,
         $city,
+        $region = null,
         $country,
         $postal,
-        $email,
-        $region = null,
         $phone = null,
-        $customerId = null
+        $email
     ) {
+        $this->setCustomerId($customerId);
         $this->setFirstName($firstName);
         $this->setLastName($lastName);
         $this->setAddress($address);
@@ -35,9 +36,23 @@ class Customer
         $this->setPostal($postal);
         $this->setPhone($phone);
         $this->setEmail($email);
-        $this->setCustomerId($customerId);
     }
 
+    public static function createCustomerFromRecord(array $record): Customer
+    {
+        return new self(
+            $record['CustomerID'],
+            $record['FirstName'],
+            $record['LastName'],
+            $record['Address'],
+            $record['City'],
+            $record['Region'],
+            $record['Country'],
+            $record['Postal'],
+            $record['Phone'],
+            $record['Email']
+        );
+    }
 
     public function getCustomerId()
     {
