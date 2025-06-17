@@ -612,7 +612,7 @@ class AuthController extends BaseController
         $userLogon = $this->customerRepository->getActiveUserByUsername($user->getUserName());
         
         // Validate old password
-        if (!$userLogon || !password_verify($oldPassword, $userLogon['Pass'])) {
+        if (!$userLogon || !password_verify($oldPassword, $userLogon->getPass())) {
             $errors[] = 'Current password is incorrect.';
         }
         
@@ -627,7 +627,7 @@ class AuthController extends BaseController
         }
         
         // Check if new password is same as old
-        if (empty($errors) && password_verify($newPassword1, $userLogon['Pass'])) {
+        if (empty($errors) && password_verify($newPassword1, $userLogon->getPass())) {
             $errors[] = 'New password must be different from your current password.';
         }
         
