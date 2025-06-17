@@ -9,7 +9,7 @@ class Review
     private ?string $comment;
     private ?string $reviewDate;
 
-    private function __construct(
+    public function __construct(
         ?int $reviewId,
         int $artworkId,
         int $customerId,
