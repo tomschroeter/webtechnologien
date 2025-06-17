@@ -59,17 +59,17 @@ class Artwork
             (int) $record['ArtistID'],
             (string) $record['ImageFileName'],
             (string) $record['Title'],
-            $record['Description'] !== null ? (string) $record['Description'] : null,
-            $record['Excerpt'] !== null ? (string) $record['Excerpt'] : null,
-            isset($record['ArtWorkType']) ? (int) $record['ArtWorkType'] : null,
-            isset($record['YearOfWork']) ? (int) $record['YearOfWork'] : null,
-            isset($record['Width']) ? (int) $record['Width'] : null,
-            isset($record['Height']) ? (int) $record['Height'] : null,
-            $record['Medium'] !== null ? (string) $record['Medium'] : null,
-            $record['OriginalHome'] !== null ? (string) $record['OriginalHome'] : null,
-            isset($record['GalleryID']) ? (int) $record['GalleryID'] : null,
-            $record['ArtWorkLink'] !== null ? (string) $record['ArtWorkLink'] : null,
-            $record['GoogleLink'] !== null ? (string) $record['GoogleLink'] : null
+            $record['Description'] ?? null,
+            $record['Excerpt'] ?? null,
+            isset($record['ArtWorkType']) ?? null,
+            isset($record['YearOfWork']) ?? null,
+            isset($record['Width']) ?? null,
+            isset($record['Height']) ?? null,
+            $record['Medium'] ?? null,
+            $record['OriginalHome'] ?? null,
+            isset($record['GalleryID']) ?? null,
+            $record['ArtWorkLink'] ?? null,
+            $record['GoogleLink'] ?? null
         );
     }
 
