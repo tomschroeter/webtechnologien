@@ -40,8 +40,12 @@ class CustomerLogonRepository
         $stmt->bindValue("username", $username);
         $stmt->execute();
         $result = $stmt->fetch();
-
-        $user = CustomerLogon::createCustomerLogonFromRecord($result);
+        
+        if ($result !== false) {
+            $user = CustomerLogon::createCustomerLogonFromRecord($result);
+        } else {
+            throw new Exception("User with user name {$username} couldn't be found");
+        }
 
         $this->db->disconnect();
 
