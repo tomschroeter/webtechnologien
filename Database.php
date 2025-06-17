@@ -1,6 +1,6 @@
 <?php
 
-require_once dirname(__DIR__)."/src/env.php";
+require_once __DIR__ . "/env.php";
 
 // https://elearning.th-wildau.de/mod/resource/view.php?id=490348
 class Database

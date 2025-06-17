@@ -1,5 +1,5 @@
 <?php
-require_once dirname(__DIR__) . "/components/find-image-ref.php";
+require_once __DIR__ . "/find-image-ref.php";
 
 function renderArtworkCardList($artworks)
 {

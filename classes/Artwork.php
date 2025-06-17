@@ -1,7 +1,5 @@
 <?php
 
-require_once dirname(__DIR__)."/Database.php";
-
 class Artwork
 {
     private $artworkId;
