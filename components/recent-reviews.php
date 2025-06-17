@@ -1,4 +1,9 @@
 <?php
+/**
+ * @component-type smart
+ * Fetches its own data and renders recent reviews
+ */
+
 require_once dirname(__DIR__) . "/Database.php";
 require_once dirname(__DIR__) . "/repositories/ReviewRepository.php";
 require_once dirname(__DIR__) . "/dtos/ReviewWithCustomerInfoAndArtwork.php";

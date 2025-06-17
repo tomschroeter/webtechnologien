@@ -1,4 +1,9 @@
 <?php
+/**
+ * @component-type smart
+ * Fetches its own data and renders top rated artworks
+ */
+
 require_once dirname(__DIR__) . "/Database.php";
 require_once dirname(__DIR__) . "/repositories/ArtworkRepository.php";
 require_once dirname(__DIR__) . "/dtos/ArtworkWithRatingAndArtistName.php";
