@@ -21,7 +21,7 @@ class CustomerLogon
         $type = 0,
         $dateJoined = null,
         $dateLastModified = null,
-        $isAdmin = false
+        $isAdmin = 0
     ) {
         $this->setCustomerId($customerId);
         $this->setUserName($userName);
