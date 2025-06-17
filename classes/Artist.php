@@ -124,4 +124,9 @@ class Artist
     {
         $this->artistLink = $artistLink;
     }
+
+    public function getFullName()
+    {
+        return $this->getFirstName() . ' ' . $this->getLastName();
+    }
 }

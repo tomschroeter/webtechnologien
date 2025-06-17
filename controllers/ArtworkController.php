@@ -52,7 +52,7 @@ class ArtworkController extends BaseController
             foreach ($artworks as $artwork) {
                 try {
                     $artist = $this->artistRepository->getArtistById($artwork->getArtistID());
-                    $artwork->artistName = $artist->getFirstName() . ' ' . $artist->getLastName();
+                    $artwork->artistName = $artist->getFullName();
                 } catch (Exception $e) {
                     $artwork->artistName = 'Unknown Artist';
                 }
@@ -64,7 +64,7 @@ class ArtworkController extends BaseController
             foreach ($artworks as $artwork) {
                 try {
                     $artist = $this->artistRepository->getArtistById($artwork->getArtistID());
-                    $artwork->artistName = $artist->getFirstName() . ' ' . $artist->getLastName();
+                    $artwork->artistName = $artist->getFullName();
                 } catch (Exception $e) {
                     $artwork->artistName = 'Unknown Artist';
                 }

@@ -1,5 +1,5 @@
 <br>
-<h1><?php echo htmlspecialchars($artist->getFirstName() . ' ' . $artist->getLastName()) ?></h1>
+<h1><?php echo htmlspecialchars($artist->getFullName()) ?></h1>
 
 <div class="mt-4">
 	<div class="row">
@@ -10,7 +10,7 @@
 		$placeholderPath = "/assets/placeholder/artists/medium/placeholder.svg";
 		$correctImagePath = getImagePathOrPlaceholder($imagePath, $placeholderPath);
 		?>
-			<img src="<?php echo $correctImagePath ?>" alt="Image of <?php echo htmlspecialchars($artist->getFirstName() . ' ' . $artist->getLastName()) ?>">
+			<img src="<?php echo $correctImagePath ?>" alt="Image of <?php echo htmlspecialchars($artist->getFullName()) ?>">
 		</div>
 		<div class="col-md-8">
 			<p><?php echo $artist->getDetails() ?></p>
@@ -71,7 +71,7 @@
 		</div>
 	</div>
 
-	<h2 class="mt-5">Artworks by <?php echo htmlspecialchars($artist->getFirstName() . ' ' . $artist->getLastName()) ?></h2>
+	<h2 class="mt-5">Artworks by <?php echo htmlspecialchars($artist->getFullName()) ?></h2>
 	<div class="row mt-4">
         <?php 
         require_once dirname(dirname(__DIR__)) . "/components/artwork-card-list.php";

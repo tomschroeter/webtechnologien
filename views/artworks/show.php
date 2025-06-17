@@ -86,7 +86,7 @@ $correctLargeImagePath = getImagePathOrPlaceholder($largeImagePath, $placeholder
 
         <div class="col-md-6">
             <h3>by <a href="/artists/<?php echo $artist->getArtistId() ?>" class="text-decoration-none">
-                    <?php echo htmlspecialchars($artist->getFirstName() . ' ' . $artist->getLastName()) ?>
+                    <?php echo htmlspecialchars($artist->getFullName()) ?>
                 </a></h3>
 
             <div class="mb-3">

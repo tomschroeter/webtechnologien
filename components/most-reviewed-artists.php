@@ -11,7 +11,7 @@ $mostReviewedArtists = $artistRepository->findMostReviewed(3);
     <?php foreach ($mostReviewedArtists as $index => $combined):
       // Get relevant data
       $artist = $combined->getArtist();
-      $artistName = $artist->getFirstName() . ' ' . $artist->getLastName();
+      $artistName = $artist->getFullName();
       $reviewCount = $combined->getReviewCount();
       $artistId = $artist->getArtistId();
       $position = $index + 1;

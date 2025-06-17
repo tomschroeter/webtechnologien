@@ -27,7 +27,7 @@
     <tbody>
         <?php foreach ($users as $user): ?>
             <tr data-user-id="<?= $user->getCustomerId() ?>">
-                <td><?= htmlspecialchars($user->getFirstName() . ' ' . $user->getLastName()) ?></td>
+                <td><?= htmlspecialchars($user->getFullName()) ?></td>
                 <td><?= htmlspecialchars($user->getEmail()) ?></td>
                 <td><?= htmlspecialchars($user->getUserName()) ?></td>
                 <td class="role-cell"><?= $user->getIsAdmin() ? 'Admin' : 'User' ?></td>

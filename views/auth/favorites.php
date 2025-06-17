@@ -96,7 +96,7 @@ require_once dirname(dirname(__DIR__)) . "/components/find-image-ref.php";
                             <?php if ($artist): ?>
                                 <p class="card-text text-center text-muted">
                                     by <a href="/artists/<?= $artist->getArtistId() ?>" class="text-decoration-none">
-                                        <?= htmlspecialchars($artist->getFirstName() . ' ' . $artist->getLastName()) ?>
+                                        <?= htmlspecialchars($artist->getFullName()) ?>
                                     </a>
                                 </p>
                             <?php endif; ?>
