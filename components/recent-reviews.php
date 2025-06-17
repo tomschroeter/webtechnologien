@@ -20,7 +20,7 @@ if ($reviews):
       // Get relevant data
       $title = htmlspecialchars($review->getArtwork()->getTitle());
       $artworkId = $review->getArtwork()->getArtworkId();
-      $name = htmlspecialchars($review->getCustomerFirstName() . ' ' . $review->getCustomerLastName());
+      $name = htmlspecialchars($review->getCustomerFullName());
       $location = htmlspecialchars($review->getCustomerCity() . ', ' . $review->getCustomerCountry());
       $comment = $review->getReview()->getComment();
 
