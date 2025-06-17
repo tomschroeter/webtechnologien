@@ -152,4 +152,9 @@ class Customer
     {
         $this->email = $email;
     }
+
+    public function getFullName(): string
+    {
+        return $this->getFirstName() . ' ' . $this->getLastName();
+    }
 }
