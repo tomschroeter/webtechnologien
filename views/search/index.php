@@ -123,25 +123,26 @@ require_once dirname(dirname(__DIR__)) . "/components/find-image-ref.php";
         <!-- List to display all artworks that fit the search query -->
         <ul class="list-group">
             <?php foreach ($artworkSearchResults as $index => $combined): ?>
+                <?php $artwork = $combined->getArtwork() ?>
                 <li class="list-group-item d-flex align-items-center justify-content-between">
                     <!-- Ref link to display single artwork -->
-                    <a href="/artworks/<?php echo $combined->getArtwork()->getArtworkId() ?>"
+                    <a href="/artworks/<?php echo $artwork->getArtworkId() ?>"
                         class="d-flex align-items-center flex-grow-1 text-decoration-none text-dark" style="min-width:0;">
                         <!-- Display artwork title, artist name and year of publishment -->
                         <span class="text-truncate" style="max-width: 60%; white-space: normal;">
-                            <?php echo '&quot;' . htmlspecialchars($combined->getArtwork()->getTitle()) . '&quot; ' .
+                            <?php echo '&quot;' . htmlspecialchars($artwork->getTitle()) . '&quot; ' .
                                 'by ' . htmlspecialchars($combined->getArtistFirstName()) . ' ' . htmlspecialchars($combined->getArtistLastName()) . ',' .
-                                ' published ' . htmlspecialchars($combined->getArtwork()->getYearOfWork()) ?>
+                                ' published ' . htmlspecialchars($artwork->getYearOfWork()) ?>
                         </span>
                     </a>
                     <div class="d-flex align-items-center" style="gap: 0.5rem;">
                         <!-- Display add to favorites button -->
                         <?php
-                        $isInFavorites = isset($_SESSION['favoriteArtworks']) && in_array($combined->getArtwork()->getArtworkId(), $_SESSION['favoriteArtworks']);
+                        $isInFavorites = isset($_SESSION['favoriteArtworks']) && in_array($artwork->getArtworkId(), $_SESSION['favoriteArtworks']);
                         ?>
                         <button type="button"
                             class="btn favorite-btn <?php echo $isInFavorites ? 'btn-outline-danger' : 'btn-primary' ?>"
-                            data-type="artwork" data-id="<?php echo $combined->getArtwork()->getArtworkId() ?>"
+                            data-type="artwork" data-id="<?php echo $artwork->getArtworkId() ?>"
                             data-is-favorite="<?php echo $isInFavorites ? 'true' : 'false' ?>"
                             title="<?php echo $isInFavorites ? 'Remove from Favorites' : 'Add to Favorites' ?>">
                             <?php echo $isInFavorites ? '♥' : '♡' ?>
@@ -149,7 +150,7 @@ require_once dirname(dirname(__DIR__)) . "/components/find-image-ref.php";
 
                         <!-- Fallback form for non-JS users -->
                         <form method="post"
-                            action="/favorites/artworks/<?php echo $combined->getArtwork()->getArtworkId() ?>/toggle"
+                            action="/favorites/artworks/<?php echo $artwork->getArtworkId() ?>/toggle"
                             class="mr-2 mb-0 d-none fallback-form">
                             <?php if ($isInFavorites): ?>
                                 <input type="hidden" name="_method" value="DELETE">
@@ -163,7 +164,7 @@ require_once dirname(dirname(__DIR__)) . "/components/find-image-ref.php";
                             <?php endif; ?>
                         </form>
                         <!-- Artwork image -->
-                        <?php $imagePath = "/assets/images/works/square-small/" . $combined->getArtwork()->getImageFileName() . ".jpg";
+                        <?php $imagePath = "/assets/images/works/square-small/" . $artwork->getImageFileName() . ".jpg";
                         $placeholderPath = "/assets/placeholder/works/square-small/placeholder.svg";
                         $correctImagePath = getImagePathOrPlaceholder($imagePath, $placeholderPath);
                         ?>
