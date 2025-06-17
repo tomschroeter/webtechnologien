@@ -6,30 +6,48 @@ class CustomerLogon
     private $userName;
     private $pass;
     private $salt;
-    private $state;      // Active (1) / Inactive (0)
-    private $type;       // 0 = User, 1 = Admin
+    private $state;
+    private $type;
     private $dateJoined;
     private $dateLastModified;
+    private $isAdmin;
 
-    public function __construct(
+    private function __construct(
+        $customerId = null,
         $userName,
         $pass,
+        $salt,
         $state = 1,
         $type = 0,
         $dateJoined = null,
         $dateLastModified = null,
-        $customerId = null
+        $isAdmin = false
     ) {
+        $this->setCustomerId($customerId);
         $this->setUserName($userName);
         $this->setPass($pass);
+        $this->setSalt($salt);
         $this->setState($state);
         $this->setType($type);
         $this->setDateJoined($dateJoined);
         $this->setDateLastModified($dateLastModified);
-        $this->setCustomerId($customerId);
+        $this->setIsAdmin($isAdmin);
     }
 
-
+    public static function createCustomerLogonFromRecord(array $record): CustomerLogon 
+    {
+        return new self(
+            $record['CustomerID'],
+            $record['UserName'],
+            $record['Pass'],
+            $record['Salt'],
+            $record['State'],
+            $record['Type'],
+            $record['DateJoined'],
+            $record['DateLastModified'],
+            $record['isAdmin']
+        );
+    }
     public function getCustomerId()
     {
         return $this->customerId;
@@ -62,6 +80,15 @@ class CustomerLogon
         $this->pass = $pass;
     }
 
+    public function getSalt()
+    {
+        return $this->salt;
+    }
+
+    public function setSalt($salt)
+    {
+        $this->salt = $salt;
+    }
 
     public function getState()
     {
@@ -105,4 +132,15 @@ class CustomerLogon
     {
         $this->dateLastModified = $dateLastModified;
     }
+
+    public function getIsAdmin()
+    {
+        return $this->isAdmin;
+    }
+
+    public function setIsAdmin($isAdmin)
+    {
+        $this->isAdmin = $isAdmin;
+    }
+
 }

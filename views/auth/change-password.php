@@ -63,12 +63,12 @@ if (!empty($validationErrors)) {
   <div class="form-row">
     <div class="form-group col-md-6">
       <label>Username</label>
-      <input class="form-control" value="<?= htmlspecialchars($user['UserName']) ?>" disabled>
+      <input class="form-control" value="<?= htmlspecialchars($user->getUserName()) ?>" disabled>
       <small class="form-text text-muted">Your username cannot be changed</small>
     </div>
     <div class="form-group col-md-6">
       <label>Email</label>
-      <input class="form-control" value="<?= htmlspecialchars($user['Email']) ?>" disabled>
+      <input class="form-control" value="<?= htmlspecialchars($user->getEmail()) ?>" disabled>
       <small class="form-text text-muted">To change your email, <a href="/edit-profile">edit your profile</a></small>
     </div>
   </div>

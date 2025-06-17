@@ -11,45 +11,45 @@
     <div class="form-row">
         <div class="form-group col-md-6">
             <label>First Name</label>
-            <input name="firstName" class="form-control" value="<?= htmlspecialchars($customer['FirstName']) ?>" disabled>
+            <input name="firstName" class="form-control" value="<?= htmlspecialchars($customer->getFirstName()) ?>" disabled>
         </div>
         <div class="form-group col-md-6">
             <label>Last Name</label>
-            <input name="lastName" class="form-control" value="<?= htmlspecialchars($customer['LastName']) ?>" disabled>
+            <input name="lastName" class="form-control" value="<?= htmlspecialchars($customer->getLastName()) ?>" disabled>
         </div>
     </div>
     <div class="form-row">
         <div class="form-group col-md-6">
             <label>Address</label>
-            <input name="address" class="form-control" value="<?= htmlspecialchars($customer['Address']) ?>" disabled>
+            <input name="address" class="form-control" value="<?= htmlspecialchars($customer->getAddress()) ?>" disabled>
         </div>
         <div class="form-group col-md-6">
             <label>City</label>
-            <input name="city" class="form-control" value="<?= htmlspecialchars($customer['City']) ?>" disabled>
+            <input name="city" class="form-control" value="<?= htmlspecialchars($customer->getCity()) ?>" disabled>
         </div>
     </div>
     <div class="form-row">
         <div class="form-group col-md-4">
             <label>Region</label>
-            <input name="region" class="form-control" value="<?= htmlspecialchars($customer['Region']) ?>" disabled>
+            <input name="region" class="form-control" value="<?= htmlspecialchars($customer->getRegion()) ?>" disabled>
         </div>
         <div class="form-group col-md-4">
             <label>Country</label>
-            <input name="country" class="form-control" value="<?= htmlspecialchars($customer['Country']) ?>" disabled>
+            <input name="country" class="form-control" value="<?= htmlspecialchars($customer->getCountry()) ?>" disabled>
         </div>
         <div class="form-group col-md-4">
             <label>Postal</label>
-            <input name="postal" class="form-control" value="<?= htmlspecialchars($customer['Postal']) ?>" disabled>
+            <input name="postal" class="form-control" value="<?= htmlspecialchars($customer->getPostal()) ?>" disabled>
         </div>
     </div>
     <div class="form-row">
         <div class="form-group col-md-6">
             <label>Phone</label>
-            <input name="phone" class="form-control" value="<?= htmlspecialchars($customer['Phone']) ?>" disabled>
+            <input name="phone" class="form-control" value="<?= htmlspecialchars($customer->getPhone()) ?>" disabled>
         </div>
         <div class="form-group col-md-6">
             <label>Email</label>
-            <input name="email" class="form-control" value="<?= htmlspecialchars($customer['Email']) ?>" disabled>
+            <input name="email" class="form-control" value="<?= htmlspecialchars($customer->getEmail()) ?>" disabled>
         </div>
     </div>
     <a href="/edit-profile" class="btn btn-primary">Edit Profile</a>
@@ -60,7 +60,7 @@
     <div class="form-row">
         <div class="form-group col-md-6">
             <label>Username</label>
-            <input class="form-control" value="<?= htmlspecialchars($user['UserName']) ?>" disabled>
+            <input class="form-control" value="<?= htmlspecialchars($user->getUserName()) ?>" disabled>
         </div>
         <div class="form-group col-md-6">
             <label>Password</label>
