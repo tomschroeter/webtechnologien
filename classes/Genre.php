@@ -27,11 +27,11 @@ class Genre
     public static function createGenreFromRecord(array $record): Genre
     {
         return new self(
-            genreName: (string)$record['GenreName'],
+            genreName: (string) $record['GenreName'],
             era: $record['Era'] ?? null,
             description: $record['Description'] ?? null,
             link: $record['Link'] ?? null,
-            genreId: isset($record['GenreID']) ? (int)$record['GenreID'] : null
+            genreId: isset($record['GenreID']) ? (int) $record['GenreID'] : null
         );
     }
 
