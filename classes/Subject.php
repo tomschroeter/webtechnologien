@@ -6,7 +6,7 @@ class Subject
     private $subjectName;
 
 
-    public function __construct($subjectName, $subjectId = null)
+    private function __construct($subjectName, $subjectId = null)
     {
         $this->setSubjectName($subjectName);
         $this->setSubjectId($subjectId);
