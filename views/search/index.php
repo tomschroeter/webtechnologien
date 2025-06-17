@@ -187,15 +187,40 @@ require_once dirname(dirname(__DIR__)) . "/components/find-image-ref.php";
             <?php if (!empty($artistName)): ?>
                 <p><strong>Artist Name:</strong> <?php echo htmlspecialchars($artistName) ?></p>
             <?php endif; ?>
+
+            <!-- Artist Year Range -->
+            <?php
+            $today = date("Y");
+            if (!empty($artistStartDate) && empty($artistEndDate)) {
+                echo "<p><strong>Artist Year Range:</strong> " . htmlspecialchars($artistStartDate) . " - $today</p>";
+            } elseif (empty($artistStartDate) && !empty($artistEndDate)) {
+                echo "<p><strong>Artist Year Range:</strong> 0 - " . htmlspecialchars($artistEndDate) . "</p>";
+            } elseif (!empty($artistStartDate) && !empty($artistEndDate)) {
+                echo "<p><strong>Artist Year Range:</strong> " . htmlspecialchars($artistStartDate) . " - " . htmlspecialchars($artistEndDate) . "</p>";
+            }
+            ?>
+
             <?php if (!empty($artworkTitle)): ?>
                 <p><strong>Artwork Title:</strong> <?php echo htmlspecialchars($artworkTitle) ?></p>
             <?php endif; ?>
+
             <?php if (!empty($artistNationality)): ?>
                 <p><strong>Artist Nationality:</strong> <?php echo htmlspecialchars($artistNationality) ?></p>
             <?php endif; ?>
             <?php if (!empty($artworkGenre)): ?>
                 <p><strong>Artwork Genre:</strong> <?php echo htmlspecialchars($artworkGenre) ?></p>
             <?php endif; ?>
+
+            <!-- Artwork Year Range -->
+            <?php
+            if (!empty($artworkStartDate) && empty($artworkEndDate)) {
+                echo "<p><strong>Artwork Year Range:</strong> " . htmlspecialchars($artworkStartDate) . " - $today</p>";
+            } elseif (empty($artworkStartDate) && !empty($artworkEndDate)) {
+                echo "<p><strong>Artwork Year Range:</strong> 0 - " . htmlspecialchars($artworkEndDate) . "</p>";
+            } elseif (!empty($artworkStartDate) && !empty($artworkEndDate)) {
+                echo "<p><strong>Artwork Year Range:</strong> " . htmlspecialchars($artworkStartDate) . " - " . htmlspecialchars($artworkEndDate) . "</p>";
+            }
+            ?>
         <?php else: ?>
             <p>No results were found for the search term <strong>"<?php echo htmlspecialchars($searchQuery) ?>"</strong>.</p>
         <?php endif; ?>
