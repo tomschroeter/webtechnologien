@@ -2,45 +2,45 @@
 
 class ArtworkSubject
 {
-    private $artworkSubjectId;
-    private $artworkId;
-    private $subjectId;
+    private int $artworkSubjectId;
+    private int $artworkId;
+    private int $subjectId;
 
-    public function __construct($artworkId, $subjectId, $artworkSubjectId = null)
+    public function __construct($artworkId, $subjectId, $artworkSubjectId)
     {
         $this->setArtworkId($artworkId);
         $this->setSubjectId($subjectId);
         $this->setArtworkSubjectId($artworkSubjectId);
     }
 
-    public function getArtworkSubjectId()
+    public function getArtworkSubjectId(): int
     {
         return $this->artworkSubjectId;
     }
 
-    public function setArtworkSubjectId($artworkSubjectId)
+    public function setArtworkSubjectId(int $artworkSubjectId): void
     {
         $this->artworkSubjectId = $artworkSubjectId;
     }
 
 
-    public function getArtworkId()
+    public function getArtworkId(): int
     {
         return $this->artworkId;
     }
 
-    public function setArtworkId($artworkId)
+    public function setArtworkId(int $artworkId): void
     {
         $this->artworkId = $artworkId;
     }
 
 
-    public function getSubjectId()
+    public function getSubjectId(): int
     {
         return $this->subjectId;
     }
 
-    public function setSubjectId($subjectId)
+    public function setSubjectId(int $subjectId): void
     {
         $this->subjectId = $subjectId;
     }

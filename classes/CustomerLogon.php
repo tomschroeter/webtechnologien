@@ -2,26 +2,26 @@
 
 class CustomerLogon
 {
-    private $customerId;
-    private $userName;
-    private $pass;
-    private $salt;
-    private $state;
-    private $type;
-    private $dateJoined;
-    private $dateLastModified;
-    private $isAdmin;
+    private int $customerId;
+    private string $userName;
+    private string $pass;
+    private ?string $salt;
+    private int $state;
+    private int $type;
+    private string $dateJoined;
+    private string $dateLastModified;
+    private ?int $isAdmin;
 
     private function __construct(
-        $customerId = null,
-        $userName,
-        $pass,
-        $salt,
-        $state = 1,
-        $type = 0,
-        $dateJoined = null,
-        $dateLastModified = null,
-        $isAdmin = 0
+        int $customerId,
+        string $userName,
+        string $pass,
+        ?string $salt,
+        int $state,
+        int $type,
+        string $dateJoined,
+        string $dateLastModified,
+        ?int $isAdmin
     ) {
         $this->setCustomerId($customerId);
         $this->setUserName($userName);
@@ -37,110 +37,105 @@ class CustomerLogon
     public static function createCustomerLogonFromRecord(array $record): CustomerLogon 
     {
         return new self(
-            $record['CustomerID'],
-            $record['UserName'],
-            $record['Pass'],
-            $record['Salt'],
-            $record['State'],
-            $record['Type'],
-            $record['DateJoined'],
-            $record['DateLastModified'],
-            $record['isAdmin']
+            (int) $record['CustomerID'],
+            (string) $record['UserName'],
+            (string) $record['Pass'],
+            $record['Salt'] ?? null,
+            (int) $record['State'],
+            (int) $record['Type'],
+            (string) $record['DateJoined'],
+            (string) $record['DateLastModified'],
+            isset($record['isAdmin']) ? (int)$record['isAdmin'] : null
         );
     }
-    public function getCustomerId()
+
+    public function getCustomerId(): int
     {
         return $this->customerId;
     }
 
-    public function setCustomerId($customerId)
+    public function setCustomerId(int $customerId): void
     {
         $this->customerId = $customerId;
     }
 
-
-    public function getUserName()
+    public function getUserName(): string
     {
         return $this->userName;
     }
 
-    public function setUserName($userName)
+    public function setUserName(string $userName): void
     {
         $this->userName = $userName;
     }
 
-
-    public function getPass()
+    public function getPass(): string
     {
         return $this->pass;
     }
 
-    public function setPass($pass)
+    public function setPass(string $pass): void
     {
         $this->pass = $pass;
     }
 
-    public function getSalt()
+    public function getSalt(): ?string
     {
         return $this->salt;
     }
 
-    public function setSalt($salt)
+    public function setSalt(?string $salt): void
     {
         $this->salt = $salt;
     }
 
-    public function getState()
+    public function getState(): int
     {
         return $this->state;
     }
 
-    public function setState($state)
+    public function setState(int $state): void
     {
         $this->state = $state;
     }
 
-
-    public function getType()
+    public function getType(): int
     {
         return $this->type;
     }
 
-    public function setType($type)
+    public function setType(int $type): void
     {
         $this->type = $type;
     }
 
-
-    public function getDateJoined()
+    public function getDateJoined(): string
     {
         return $this->dateJoined;
     }
 
-    public function setDateJoined($dateJoined)
+    public function setDateJoined(string $dateJoined): void
     {
         $this->dateJoined = $dateJoined;
     }
 
-
-    public function getDateLastModified()
+    public function getDateLastModified(): string
     {
         return $this->dateLastModified;
     }
 
-    public function setDateLastModified($dateLastModified)
+    public function setDateLastModified(string $dateLastModified): void
     {
         $this->dateLastModified = $dateLastModified;
     }
 
-    public function getIsAdmin()
+    public function getIsAdmin(): ?int
     {
         return $this->isAdmin;
     }
 
-    public function setIsAdmin($isAdmin)
+    public function setIsAdmin(?int $isAdmin): void
     {
         $this->isAdmin = $isAdmin;
     }
-
 }

@@ -2,93 +2,85 @@
 
 class Genre
 {
-    private $genreId;
-    private $genreName;
-    private $era;
-    private $description;
-    private $link;
-
+    private int $genreId;
+    private string $genreName;
+    private ?string $era;
+    private ?string $description;
+    private ?string $link;
 
     private function __construct(
-        $genreName,
-        $era,
-        $description = null,
-        $link = null,
-        $genreId = null
+        string $genreName,
+        ?string $era,
+        ?string $description = null,
+        ?string $link = null,
+        ?int $genreId = null
     ) {
         $this->setGenreName($genreName);
         $this->setEra($era);
         $this->setDescription($description);
         $this->setLink($link);
-        $this->setGenreId($genreId);
+        if ($genreId !== null) {
+            $this->setGenreId($genreId);
+        }
     }
 
     public static function createGenreFromRecord(array $record): Genre
     {
         return new self(
-            genreName: $record['GenreName'],
-            era: $record['Era'],
-            description: $record['Description'],
-            link: $record['Link'],
-            genreId: $record['GenreID'],
+            genreName: (string)$record['GenreName'],
+            era: $record['Era'] ?? null,
+            description: $record['Description'] ?? null,
+            link: $record['Link'] ?? null,
+            genreId: isset($record['GenreID']) ? (int)$record['GenreID'] : null
         );
     }
 
-    public function getGenreId()
+    public function getGenreId(): int
     {
         return $this->genreId;
     }
 
-
-    public function setGenreId($genreId)
+    public function setGenreId(int $genreId): void
     {
         $this->genreId = $genreId;
     }
 
-
-    public function getGenreName()
+    public function getGenreName(): string
     {
         return $this->genreName;
     }
 
-
-    public function setGenreName($genreName)
+    public function setGenreName(string $genreName): void
     {
         $this->genreName = $genreName;
     }
 
-
-    public function getEra()
+    public function getEra(): ?string
     {
         return $this->era;
     }
 
-
-    public function setEra($era)
+    public function setEra(?string $era): void
     {
         $this->era = $era;
     }
 
-
-    public function getDescription()
+    public function getDescription(): ?string
     {
         return $this->description;
     }
 
-
-    public function setDescription($description)
+    public function setDescription(?string $description): void
     {
         $this->description = $description;
     }
 
-
-    public function getLink()
+    public function getLink(): ?string
     {
         return $this->link;
     }
 
-
-    public function setLink($link)
+    public function setLink(?string $link): void
     {
         $this->link = $link;
     }
