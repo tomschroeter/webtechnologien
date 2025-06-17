@@ -1,4 +1,9 @@
 <?php
+/**
+ * @component-type smart
+ * Fetches its own data and renders artist cards
+ */
+
 require_once dirname(__DIR__) . "/classes/Artist.php";
 require_once dirname(__DIR__) . "/repositories/ArtistRepository.php";
 

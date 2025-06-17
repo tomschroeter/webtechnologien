@@ -1,4 +1,10 @@
 <?php
+/**
+ * @component-type smart
+ * Fetches artworks on it's own
+ */
+
+
 // Load all images
 $mediumArtworkDirectory = 'assets/images/works/square-medium';
 $largeArtworkDirectory = 'assets/images/works/large';
