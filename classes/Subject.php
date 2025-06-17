@@ -2,11 +2,10 @@
 
 class Subject
 {
-    private $subjectId;
-    private $subjectName;
+    private int $subjectId;
+    private string $subjectName;
 
-
-    private function __construct($subjectName, $subjectId = null)
+    private function __construct(string $subjectName, int $subjectId)
     {
         $this->setSubjectName($subjectName);
         $this->setSubjectId($subjectId);
@@ -15,30 +14,27 @@ class Subject
     public static function createSubjectFromRecord(array $record): Subject
     {
         return new self(
-            subjectName: $record['SubjectName'],
-            subjectId: $record['SubjectId'],
+            $record['SubjectName'],
+            (int)$record['SubjectId']
         );
     }
 
-    public function getSubjectId()
+    public function getSubjectId(): int
     {
         return $this->subjectId;
     }
 
-
-    public function setSubjectId($subjectId)
+    public function setSubjectId(int $subjectId): void
     {
         $this->subjectId = $subjectId;
     }
 
-
-    public function getSubjectName()
+    public function getSubjectName(): string
     {
         return $this->subjectName;
     }
 
-
-    public function setSubjectName($subjectName)
+    public function setSubjectName(string $subjectName): void
     {
         $this->subjectName = $subjectName;
     }
