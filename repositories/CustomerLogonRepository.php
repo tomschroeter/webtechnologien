@@ -29,7 +29,7 @@ class CustomerLogonRepository
         return $userExists;
     }
 
-    public function getActiveUserByUsername(string $username): CustomerLogon
+    public function getActiveUserByUsername(string $username): CustomerLogon | null
     {
         if (!$this->db->isConnected()) {
             $this->db->connect();
@@ -40,16 +40,14 @@ class CustomerLogonRepository
         $stmt->bindValue("username", $username);
         $stmt->execute();
         $result = $stmt->fetch();
-        
-        if ($result !== false) {
-            $user = CustomerLogon::createCustomerLogonFromRecord($result);
-        } else {
-            throw new Exception("User with user name {$username} couldn't be found");
-        }
-
         $this->db->disconnect();
 
-        return $user;
+        if ($result !== false) {
+            return CustomerLogon::createCustomerLogonFromRecord($result);
+        } else {
+            return null;
+        }
+
     }
 
     public function updateUserState(int $customerId, int $state): void
