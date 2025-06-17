@@ -39,8 +39,8 @@ class Gallery
             $record['GalleryNativeName'] ?? null,
             $record['GalleryCity'] ?? null,
             $record['GalleryCountry'] ?? null,
-            isset($record['Latitude']) ? (float)$record['Latitude'] : null,
-            isset($record['Longitude']) ? (float)$record['Longitude'] : null,
+            isset($record['Latitude']) ? (float) $record['Latitude'] : null,
+            isset($record['Longitude']) ? (float) $record['Longitude'] : null,
             $record['GalleryWebSite'] ?? null
         );
     }

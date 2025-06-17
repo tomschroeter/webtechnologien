@@ -28,11 +28,11 @@ class Review
     public static function createReviewFromRecord(array $record): Review
     {
         return new self(
-            isset($record['ReviewId']) ? (int)$record['ReviewId'] : null,
-            (int)$record['ArtWorkId'],
-            (int)$record['CustomerId'],
+            isset($record['ReviewId']) ? (int) $record['ReviewId'] : null,
+            (int) $record['ArtWorkId'],
+            (int) $record['CustomerId'],
             $record['ReviewDate'] ?? null,
-            (int)$record['Rating'],
+            (int) $record['Rating'],
             $record['Comment'] ?? null
         );
     }

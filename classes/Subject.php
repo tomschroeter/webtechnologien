@@ -15,7 +15,7 @@ class Subject
     {
         return new self(
             $record['SubjectName'],
-            (int)$record['SubjectId']
+            (int) $record['SubjectId']
         );
     }
 

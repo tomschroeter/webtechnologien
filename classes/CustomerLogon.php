@@ -34,7 +34,7 @@ class CustomerLogon
         $this->setIsAdmin($isAdmin);
     }
 
-    public static function createCustomerLogonFromRecord(array $record): CustomerLogon 
+    public static function createCustomerLogonFromRecord(array $record): CustomerLogon
     {
         return new self(
             (int) $record['CustomerID'],
@@ -45,7 +45,7 @@ class CustomerLogon
             (int) $record['Type'],
             (string) $record['DateJoined'],
             (string) $record['DateLastModified'],
-            isset($record['isAdmin']) ? (int)$record['isAdmin'] : null
+            isset($record['isAdmin']) ? (int) $record['isAdmin'] : null
         );
     }
 
