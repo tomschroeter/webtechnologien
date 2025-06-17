@@ -64,7 +64,7 @@ class ArtistController extends BaseController
             $data = [
                 'artist' => $artist,
                 'artworks' => $artworks,
-                'title' => $artist->getFirstName() . ' ' . $artist->getLastName() . ' - Artists'
+                'title' => $artist->getFullName() . ' - Artists'
             ];
             
             $this->renderWithLayout('artists/show', $data);
