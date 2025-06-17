@@ -1,6 +1,6 @@
 <?php
 
-require_once dirname(__DIR__) . "/controllers/BaseController.php";
+require_once __DIR__ . "/BaseController.php";
 require_once dirname(__DIR__) . "/repositories/ReviewRepository.php";
 require_once dirname(__DIR__) . "/classes/Review.php";
 require_once dirname(__DIR__) . "/Database.php";
