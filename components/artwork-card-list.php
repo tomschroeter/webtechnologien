@@ -24,17 +24,11 @@ function renderArtworkCardList($artworks)
                         <a href="<?php echo $artworkLink ?>" class="btn btn-primary flex-fill mr-2">View</a>
                         <?php if (isset($_SESSION['customerId'])): ?>
                             <?php
-                            $isInFavorites = isset($_SESSION['favoriteArtworks']) && in_array($artwork->getArtworkId(), $_SESSION['favoriteArtworks']);
-                            ?>
-                            <button type="button" 
-                                    class="btn favorite-btn <?php echo $isInFavorites ? 'btn-outline-danger' : 'btn-primary' ?>"
-                                    data-type="artwork"
-                                    data-id="<?php echo $artwork->getArtworkId() ?>"
-                                    data-is-favorite="<?php echo $isInFavorites ? 'true' : 'false' ?>"
-                                    title="<?php echo $isInFavorites ? 'Remove from Favorites' : 'Add to Favorites' ?>">
-                                    <?php echo $isInFavorites ? '<span class="heart">♥</span>' : '<span class="heart">♡</span>' ?>
-                            </button>
-                            
+                            $type = "artwork";
+                            $item = $artwork;
+                            require __DIR__ . "/add-to-favorites-button.php"
+                                ?>
+
                             <!-- Fallback form for non-JS users -->
                             <form method="post" action="/favorites-handler.php" class="d-none fallback-form">
                                 <?php if ($isInFavorites): ?>

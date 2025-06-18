@@ -1,13 +1,14 @@
 <h1 class="mt-4">My Favorites</h1>
 
-<?php 
+<?php
 require_once dirname(dirname(__DIR__)) . "/components/find-image-ref.php";
 ?>
 
 <?php if (empty($favoriteArtists) && empty($favoriteArtworks)): ?>
     <div class="alert alert-info">
         <h4>No Favorites Yet</h4>
-        <p>You haven't added any artists or artworks to your favorites yet. Browse our collection and click the heart (♡) button to add items to your favorites!</p>
+        <p>You haven't added any artists or artworks to your favorites yet. Browse our collection and click the heart (♡)
+            button to add items to your favorites!</p>
         <div class="mt-3">
             <a href="/artists" class="btn btn-primary mr-2">Browse Artists</a>
             <a href="/artworks" class="btn btn-primary">Browse Artworks</a>
@@ -24,7 +25,7 @@ require_once dirname(dirname(__DIR__)) . "/components/find-image-ref.php";
                 $imagePath = "/assets/images/artists/square-medium/" . $artist->getArtistId() . ".jpg";
                 $placeholderPath = "/assets/placeholder/artists/square-medium/placeholder.svg";
                 $correctImagePath = getImagePathOrPlaceholder($imagePath, $placeholderPath);
-                
+
                 $artistName = $artist->getFirstName() . " " . $artist->getLastName();
                 $isInFavorites = isset($_SESSION['favoriteArtists']) && in_array($artist->getArtistId(), $_SESSION['favoriteArtists']);
                 ?>
@@ -54,14 +55,11 @@ require_once dirname(dirname(__DIR__)) . "/components/find-image-ref.php";
                             <?php endif; ?>
                             <div class="d-flex align-items-center mt-auto">
                                 <a href="<?= $artistLink ?>" class="btn btn-primary flex-fill mr-2">View Profile</a>
-                                <button type="button" 
-                                        class="btn favorite-btn <?= $isInFavorites ? 'btn-outline-danger' : 'btn-primary' ?>"
-                                        data-type="artist"
-                                        data-id="<?= $artist->getArtistId() ?>"
-                                        data-is-favorite="<?= $isInFavorites ? 'true' : 'false' ?>"
-                                        title="<?= $isInFavorites ? 'Remove from Favorites' : 'Add to Favorites' ?>">
-                                        <?php echo $isInFavorites ? '<span class="heart">♥</span>' : '<span class="heart">♡</span>' ?>
-                                </button>
+                                <?php
+                                $type = "artist";
+                                $item = $artist;
+                                require dirname(dirname(__DIR__)) . "/components/add-to-favorites-button.php"
+                                    ?>
                             </div>
                         </div>
                     </div>
@@ -81,13 +79,14 @@ require_once dirname(dirname(__DIR__)) . "/components/find-image-ref.php";
                 $imagePath = "/assets/images/works/square-medium/" . $artwork->getImageFileName() . ".jpg";
                 $placeholderPath = "/assets/placeholder/works/square-medium/placeholder.svg";
                 $correctImagePath = getImagePathOrPlaceholder($imagePath, $placeholderPath);
-                
+
                 $isInFavorites = isset($_SESSION['favoriteArtworks']) && in_array($artwork->getArtworkId(), $_SESSION['favoriteArtworks']);
                 ?>
                 <div class="col-md-4 col-lg-3 mb-5">
                     <div class="card h-100">
                         <a href="<?= $artworkLink ?>">
-                            <img src="<?= $correctImagePath ?>" class="card-img-top" alt="<?= htmlspecialchars($artwork->getTitle()) ?>">
+                            <img src="<?= $correctImagePath ?>" class="card-img-top"
+                                alt="<?= htmlspecialchars($artwork->getTitle()) ?>">
                         </a>
                         <div class="card-body d-flex flex-column">
                             <h5 class="card-title text-center">
@@ -107,13 +106,11 @@ require_once dirname(dirname(__DIR__)) . "/components/find-image-ref.php";
                             <?php endif; ?>
                             <div class="d-flex align-items-center mt-auto">
                                 <a href="<?= $artworkLink ?>" class="btn btn-primary flex-fill mr-2">View Artwork</a>
-                                <button type="button" 
-                                        class="btn favorite-btn <?= $isInFavorites ? 'btn-outline-danger' : 'btn-primary' ?>"
-                                        data-type="artwork"
-                                        data-id="<?= $artwork->getArtworkId() ?>"
-                                        data-is-favorite="<?= $isInFavorites ? 'true' : 'false' ?>"
-                                        title="<?= $isInFavorites ? 'Remove from Favorites' : 'Add to Favorites' ?>">
-                                        <?php echo $isInFavorites ? '<span class="heart">♥</span>' : '<span class="heart">♡</span>' ?>                                </button>
+                                <?php
+                                $type = "artwork";
+                                $item = $artwork;
+                                require dirname(dirname(__DIR__)) . "/components/add-to-favorites-button.php"
+                                    ?>
                             </div>
                         </div>
                     </div>
