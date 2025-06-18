@@ -111,7 +111,10 @@ class CustomerWithLogonData
         $this->isAdmin = $isAdmin;
     }
 
-
+    public function getFullName(): string
+    {
+        return $this->getFirstName() . ' ' . $this->getLastName();
+    }
 }
 
 /**
