@@ -28,7 +28,7 @@ class Gallery
         $this->setGalleryCountry($galleryCountry);
         $this->setLatitude($latitude);
         $this->setLongitude($longitude);
-        $this->setGalleryWebSite($galleryWebsite);
+        $this->setWebsite($galleryWebsite);
     }
 
     public static function createGalleryFromRecord(array $record): Gallery
@@ -115,12 +115,12 @@ class Gallery
         $this->longitude = $longitude;
     }
 
-    public function getGalleryWebSite(): ?string
+    public function getWebsite(): ?string
     {
         return $this->galleryWebsite;
     }
 
-    public function setGalleryWebSite(?string $galleryWebsite): void
+    public function setWebsite(?string $galleryWebsite): void
     {
         $this->galleryWebsite = $galleryWebsite;
     }
