@@ -26,36 +26,36 @@
     </thead>
     <tbody>
         <?php foreach ($users as $user): ?>
-            <tr data-user-id="<?= $user['CustomerID'] ?>">
-                <td><?= htmlspecialchars($user['FirstName'] . ' ' . $user['LastName']) ?></td>
-                <td><?= htmlspecialchars($user['Email']) ?></td>
-                <td><?= htmlspecialchars($user['UserName']) ?></td>
-                <td class="role-cell"><?= $user['isAdmin'] ? 'Admin' : 'User' ?></td>
-                <td class="status-cell"><?= $user['State'] == 1 ? 'Active' : 'Inactive' ?></td>
+            <tr data-user-id="<?= $user->getCustomerId() ?>">
+                <td><?= htmlspecialchars($user->getFullName()) ?></td>
+                <td><?= htmlspecialchars($user->getEmail()) ?></td>
+                <td><?= htmlspecialchars($user->getUserName()) ?></td>
+                <td class="role-cell"><?= $user->getIsAdmin() ? 'Admin' : 'User' ?></td>
+                <td class="status-cell"><?= $user->getState() == 1 ? 'Active' : 'Inactive' ?></td>
                 <td class="actions-cell">
-                    <a class="btn btn-sm btn-primary" href="/edit-profile/<?= $user['CustomerID'] ?>">Edit</a>
+                    <a class="btn btn-sm btn-primary" href="/edit-profile/<?= $user->getCustomerId() ?>">Edit</a>
 
-                    <?php if (!$user['isAdmin']): ?>
+                    <?php if (!$user->getIsAdmin()): ?>
                         <!-- Form for promoting user -->
                         <form method="POST" action="/manage-users" class="d-inline" onsubmit="return confirm('Are you sure you want to promote this user?')">
-                            <input type="hidden" name="customerId" value="<?= $user['CustomerID'] ?>">
+                            <input type="hidden" name="customerId" value="<?= $user->getCustomerId() ?>">
                             <button name="action" value="promote" class="btn btn-sm btn-success">Promote</button>
                         </form>
-                    <?php elseif ($user['isAdmin'] && !($user['isAdmin'] && $adminCount <= 1)): ?>
+                    <?php elseif ($user->getIsAdmin() && !($user->getIsAdmin() && $adminCount <= 1)): ?>
                         <!-- Form for demoting user -->
                         <form method="POST" action="/manage-users" class="d-inline" onsubmit="return confirm('Are you sure you want to demote this user?')">
-                            <input type="hidden" name="customerId" value="<?= $user['CustomerID'] ?>">
+                            <input type="hidden" name="customerId" value="<?= $user->getCustomerId() ?>">
                             <button name="action" value="demote" class="btn btn-sm btn-warning">Demote</button>
                         </form>
                     <?php endif; ?>
 
-                    <?php if (!($user['isAdmin'] && $adminCount <= 1)): ?>
+                    <?php if (!($user->getIsAdmin() && $adminCount <= 1)): ?>
                         <!-- Form for changing user status -->
                         <form method="POST" action="/manage-users" class="d-inline" onsubmit="return confirm('Are you sure you want to change this user\'s status?')">
-                            <input type="hidden" name="customerId" value="<?= $user['CustomerID'] ?>">
-                            <button name="action" value="<?= $user['State'] == 1 ? 'deactivate' : 'activate' ?>"
-                                class="btn btn-sm btn-<?= $user['State'] == 1 ? 'secondary' : 'primary' ?>">
-                                <?= $user['State'] == 1 ? 'Deactivate' : 'Activate' ?>
+                            <input type="hidden" name="customerId" value="<?= $user->getCustomerId() ?>">
+                            <button name="action" value="<?= $user->getState() == 1 ? 'deactivate' : 'activate' ?>"
+                                class="btn btn-sm btn-<?= $user->getState() == 1 ? 'secondary' : 'primary' ?>">
+                                <?= $user->getState() == 1 ? 'Deactivate' : 'Activate' ?>
                             </button>
                         </form>
                     <?php endif; ?>

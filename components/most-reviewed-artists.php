@@ -1,4 +1,9 @@
 <?php
+/**
+ * @component-type smart
+ * Fetches its own data and renders artist cards
+ */
+
 require_once dirname(__DIR__) . "/classes/Artist.php";
 require_once dirname(__DIR__) . "/repositories/ArtistRepository.php";
 
@@ -11,7 +16,7 @@ $mostReviewedArtists = $artistRepository->findMostReviewed(3);
     <?php foreach ($mostReviewedArtists as $index => $combined):
       // Get relevant data
       $artist = $combined->getArtist();
-      $artistName = $artist->getFirstName() . ' ' . $artist->getLastName();
+      $artistName = $artist->getFullName();
       $reviewCount = $combined->getReviewCount();
       $artistId = $artist->getArtistId();
       $position = $index + 1;

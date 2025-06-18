@@ -1,5 +1,8 @@
 <?php
 
+require_once dirname(__DIR__) . "/classes/Artist.php";
+require_once dirname(__DIR__) . "/dtos/CustomerWithLogonData.php";
+
 class CustomerLogonRepository
 {
     private $db;
@@ -26,7 +29,7 @@ class CustomerLogonRepository
         return $userExists;
     }
 
-    public function getActiveUserByUsername(string $username): ?array
+    public function getActiveUserByUsername(string $username): CustomerLogon | null
     {
         if (!$this->db->isConnected()) {
             $this->db->connect();
@@ -37,12 +40,14 @@ class CustomerLogonRepository
         $stmt->bindValue("username", $username);
         $stmt->execute();
         $result = $stmt->fetch();
-
-        $returnValue = $result ?: null;
-
         $this->db->disconnect();
 
-        return $returnValue;
+        if ($result !== false) {
+            return CustomerLogon::createCustomerLogonFromRecord($result);
+        } else {
+            return null;
+        }
+
     }
 
     public function updateUserState(int $customerId, int $state): void
@@ -59,68 +64,104 @@ class CustomerLogonRepository
         $this->db->disconnect();
     }
 
-    public function getAllUsersWithLogonData(): array
+    /**
+     * @return CustomerWithLogonData[]
+     */
+    public function getAllUsersWithLogonData()
     {
         if (!$this->db->isConnected()) {
             $this->db->connect();
         }
 
         $stmt = $this->db->prepareStatement("
-        SELECT c.CustomerID, FirstName, LastName, Email, UserName, Type, State, isAdmin
+        SELECT c.CustomerID, c.FirstName, c.LastName, c.Email, cl.UserName, cl.Type, cl.State, cl.isAdmin
         FROM customers c
         JOIN customerlogon cl ON c.CustomerID = cl.CustomerID
         ORDER BY LastName, FirstName
     ");
         $stmt->execute();
-        $result = $stmt->fetchAll();
+
+        $users = [];
+
+        foreach ($stmt as $row) {
+            $users[] = new CustomerWithLogonData(
+                $row['CustomerID'],
+                $row['FirstName'],
+                $row['LastName'],
+                $row['Email'],
+                $row['UserName'],
+                $row['Type'],
+                $row['State'],
+                $row['isAdmin']
+            );
+        }
 
         $this->db->disconnect();
 
-        return $result;
+        return $users;
     }
 
-    public function getUserDetailsById(int $id): ?array
+    public function getUserDetailsById(int $id): CustomerWithLogonData
     {
         if (!$this->db->isConnected()) {
             $this->db->connect();
         }
 
         $stmt = $this->db->prepareStatement("
-        SELECT c.FirstName, c.LastName, c.Email, cl.UserName, cl.Type, cl.isAdmin
+        SELECT c.CustomerID, c.FirstName, c.LastName, c.Email, cl.UserName, cl.Type, cl.State, cl.isAdmin
         FROM customers c
         JOIN customerlogon cl ON c.CustomerId = cl.CustomerId
         WHERE c.CustomerId = :id
     ");
         $stmt->bindValue("id", $id, PDO::PARAM_INT);
         $stmt->execute();
-        $user = $stmt->fetch();
-        $returnValue = $user ?: null;
+        $result = $stmt->fetch();
+
+        $user = new CustomerWithLogonData(
+            $result['CustomerID'],
+            $result['FirstName'],
+            $result['LastName'],
+            $result['Email'],
+            $result['UserName'],
+            $result['Type'],
+            $result['State'],
+            $result['isAdmin']
+        );
 
         $this->db->disconnect();
 
-        return $returnValue;
+        return $user;
     }
 
-    public function getUserByEmail(string $email): ?array
+    public function getUserDetailsByEmail(string $email): CustomerWithLogonData
     {
         if (!$this->db->isConnected()) {
             $this->db->connect();
         }
 
         $stmt = $this->db->prepareStatement("
-            SELECT c.CustomerID, c.FirstName, c.LastName, c.Email, cl.UserName, cl.Type, cl.isAdmin
+            SELECT c.CustomerID, c.FirstName, c.LastName, c.Email, cl.UserName, cl.Type, cl.State, cl.isAdmin
             FROM customers c
             JOIN customerlogon cl ON c.CustomerId = cl.CustomerId
             WHERE c.Email = :email
         ");
         $stmt->bindValue("email", $email);
         $stmt->execute();
-        $user = $stmt->fetch();
-        $returnValue = $user ?: null;
+        $result = $stmt->fetch();
+        $user = new CustomerWithLogonData(
+            $result['CustomerID'],
+            $result['FirstName'],
+            $result['LastName'],
+            $result['Email'],
+            $result['UserName'],
+            $result['Type'],
+            $result['State'],
+            $result['isAdmin']
+        );
 
         $this->db->disconnect();
 
-        return $returnValue;
+        return $user;
     }
 
     public function updateCustomerBasicInfo(int $id, string $first, string $last, string $email): void
@@ -271,7 +312,7 @@ class CustomerLogonRepository
         throw new Exception("Unknown hash type in db");
     }
 
-    public function getCustomerById(int $id): ?array
+    public function getCustomerById(int $id): Customer
     {
         if (!$this->db->isConnected()) {
             $this->db->connect();
@@ -279,9 +320,13 @@ class CustomerLogonRepository
         $stmt = $this->db->prepareStatement("SELECT * FROM customers WHERE CustomerId = :id");
         $stmt->bindValue("id", $id, PDO::PARAM_INT);
         $stmt->execute();
-        $customer = $stmt->fetch();
+        $result = $stmt->fetch();
+
+        $customer = Customer::createCustomerFromRecord($result);
+
         $this->db->disconnect();
-        return $customer ?: null;
+
+        return $customer;
     }
 
     public function updateCustomerFullInfo(

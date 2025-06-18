@@ -2,20 +2,20 @@
 
 class Review
 {
-    private $reviewId;
-    private $customerId;
-    private $artworkId;
-    private $rating;
-    private $comment;
-    private $reviewDate;
+    private ?int $reviewId;
+    private int $customerId;
+    private int $artworkId;
+    private int $rating;
+    private ?string $comment;
+    private ?string $reviewDate;
 
     public function __construct(
-        $reviewId = null,
-        $artworkId,
-        $customerId,
-        $reviewDate = null,
-        $rating,
-        $comment
+        ?int $reviewId,
+        int $artworkId,
+        int $customerId,
+        ?string $reviewDate,
+        int $rating,
+        ?string $comment
     ) {
         $this->setReviewId($reviewId);
         $this->setArtworkId($artworkId);
@@ -28,76 +28,71 @@ class Review
     public static function createReviewFromRecord(array $record): Review
     {
         return new self(
-            $record['ReviewId'],
-            $record['ArtWorkId'],
-            $record['CustomerId'],
-            $record['ReviewDate'],
-            $record['Rating'],
-            $record['Comment']
+            isset($record['ReviewId']) ? (int) $record['ReviewId'] : null,
+            (int) $record['ArtWorkId'],
+            (int) $record['CustomerId'],
+            $record['ReviewDate'] ?? null,
+            (int) $record['Rating'],
+            $record['Comment'] ?? null
         );
     }
 
-    public function getReviewId()
+    public function getReviewId(): ?int
     {
         return $this->reviewId;
     }
 
-    public function setReviewId($reviewId)
+    public function setReviewId(?int $reviewId): void
     {
         $this->reviewId = $reviewId;
     }
 
-
-    public function getCustomerId()
+    public function getCustomerId(): int
     {
         return $this->customerId;
     }
 
-    public function setCustomerId($customerId)
+    public function setCustomerId(int $customerId): void
     {
         $this->customerId = $customerId;
     }
 
-
-    public function getArtworkId()
+    public function getArtworkId(): int
     {
         return $this->artworkId;
     }
 
-    public function setArtworkId($artworkId)
+    public function setArtworkId(int $artworkId): void
     {
         $this->artworkId = $artworkId;
     }
 
-
-    public function getRating()
+    public function getRating(): int
     {
         return $this->rating;
     }
 
-    public function setRating($rating)
+    public function setRating(int $rating): void
     {
         $this->rating = $rating;
     }
 
-
-    public function getComment()
+    public function getComment(): ?string
     {
         return $this->comment;
     }
 
-    public function setComment($comment)
+    public function setComment(?string $comment): void
     {
         $this->comment = $comment;
     }
 
-
-    public function getReviewDate()
+    public function getReviewDate(): ?string
     {
         return $this->reviewDate;
     }
 
-    public function setReviewDate($reviewDate)
+    public function setReviewDate(?string $reviewDate): void
     {
         $this->reviewDate = $reviewDate;
     }

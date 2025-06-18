@@ -1,4 +1,9 @@
 <?php
+/**
+ * @component-type smart
+ * Fetches its own data and renders top rated artworks
+ */
+
 require_once dirname(__DIR__) . "/Database.php";
 require_once dirname(__DIR__) . "/repositories/ArtworkRepository.php";
 require_once dirname(__DIR__) . "/dtos/ArtworkWithRatingAndArtistName.php";
@@ -16,9 +21,10 @@ $artworksWithRating = $artworkRepository->getTopRatedArtworks();
     <?php if ($artworksWithRating): ?>
       <?php foreach ($artworksWithRating as $index => $combined):
         // Get relevant data
-        $artworkTitle = $combined->getArtwork()->getTitle();
-        $artworkId = $combined->getArtwork()->getArtworkId();
-        $artistId = $combined->getArtwork()->getArtistId();
+        $artwork = $combined->getArtwork();
+        $artworkTitle = $artwork->getTitle();
+        $artworkId = $artwork->getArtworkId();
+        $artistId = $artwork->getArtistId();
         $artistName = $combined->getArtistName();
         $reviewCount = $combined->getReviewCount();
 

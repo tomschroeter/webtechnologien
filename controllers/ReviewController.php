@@ -94,8 +94,8 @@ class ReviewController extends BaseController
                         'rating' => $rating,
                         'comment' => $comment,
                         'reviewDate' => date('Y-m-d H:i:s'),
-                        'customerName' => $customer ? ($customer['FirstName'] . ' ' . $customer['LastName']) : 'Anonymous',
-                        'customerLocation' => $customer ? $customer['City'] . ', ' . $customer['Country'] : 'Unknown',
+                        'customerName' => $customer ? ($customer->getFullName()) : 'Anonymous',
+                        'customerLocation' => $customer ? $customer->getCity() . ', ' . $customer->getCountry() : 'Unknown',
                         'artworkId' => $artworkId
                     ],
                     'isAdmin' => $_SESSION['isAdmin'] ?? false
