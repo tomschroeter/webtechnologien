@@ -71,7 +71,7 @@ class AdminController extends BaseController
         // Check if trying to deactivate the last active admin
         if ($action === 'deactivate') {
             $user = $this->customerRepository->getUserDetailsById($customerID);
-            if ($user && $user['isAdmin']) {
+            if ($user && $user->getIsAdmin()) {
                 $adminCount = $this->customerRepository->countActiveAdmins();
                 if ($adminCount <= 1) {
                     $this->redirect('/manage-users?error=lastadmin');

@@ -2,43 +2,43 @@
 
 class ArtworkGenre
 {
-    private $artworkGenreId;
-    private $artworkId;
-    private $genreId;
+    private int $artworkGenreId;
+    private int $artworkId;
+    private int $genreId;
 
-    public function __construct($artworkId, $genreId, $artworkGenreId = null)
+    public function __construct(int $artworkId, int $genreId, int $artworkGenreId)
     {
         $this->setArtworkId($artworkId);
         $this->setGenreId($genreId);
         $this->setArtworkGenreId($artworkGenreId);
     }
 
-    public function getArtworkGenreId()
+    public function getArtworkGenreId(): int
     {
         return $this->artworkGenreId;
     }
 
-    public function setArtworkGenreId($artworkGenreId)
+    public function setArtworkGenreId(int $artworkGenreId): void
     {
         $this->artworkGenreId = $artworkGenreId;
     }
 
-    public function getArtworkId()
+    public function getArtworkId(): int
     {
         return $this->artworkId;
     }
 
-    public function setArtworkId($artworkId)
+    public function setArtworkId(int $artworkId): void
     {
         $this->artworkId = $artworkId;
     }
 
-    public function getGenreId()
+    public function getGenreId(): int
     {
         return $this->genreId;
     }
 
-    public function setGenreId($genreId)
+    public function setGenreId(int $genreId): void
     {
         $this->genreId = $genreId;
     }

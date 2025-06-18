@@ -66,13 +66,13 @@ class AuthController extends BaseController
 
         $user = $this->customerRepository->getActiveUserByUsername($username);
 
-        if (!$user || !password_verify($password, $user['Pass'])) {
+        if (!$user || !password_verify($password, $user->getPass())) {
             $this->redirect('/login?error=invalid');
         }
 
-        $_SESSION['customerId'] = $user['CustomerID'];
-        $_SESSION['username'] = $user['UserName'];
-        $_SESSION['isAdmin'] = $user['isAdmin'] ?? false;
+        $_SESSION['customerId'] = $user->getCustomerId();
+        $_SESSION['username'] = $user->getUserName();
+        $_SESSION['isAdmin'] = $user->getIsAdmin();
 
         $this->redirect('/?login=success');
     }
@@ -143,9 +143,30 @@ class AuthController extends BaseController
             $this->redirect('/register?error=exists');
         } else {
             try {
-                $customer = new Customer($firstName, $lastName, $address, $city, $country, $postal, $email, $region, $phone);
+                $customer = new Customer(
+                    null,
+                    $firstName,
+                    $lastName,
+                    $address,
+                    $city,
+                    $region,
+                    $country,
+                    $postal,
+                    $phone,
+                    $email
+                );
                 $hashed = password_hash($password, PASSWORD_DEFAULT);
-                $logon = new CustomerLogon($username, $hashed, 1, 0, date("Y-m-d H:i:s"), date("Y-m-d H:i:s"));
+                $logon = new CustomerLogon(
+                    null,
+                    $username,
+                    $hashed,
+                    1,
+                    0,
+                    0,
+                    date("Y-m-d H:i:s"),
+                    date("Y-m-d H:i:s"),
+                    0
+                );
                 
                 // Use atomic registration method to prevent race conditions
                 $customerId = $this->customerRepository->registerCustomer($customer, $logon);
@@ -497,8 +518,8 @@ class AuthController extends BaseController
         }
 
         // Check if email is already taken by another user
-        $existingUser = $this->customerRepository->getUserByEmail($email);
-        if ($existingUser && $existingUser['CustomerID'] != $userId) {
+        $existingUser = $this->customerRepository->getUserDetailsByEmail($email);
+        if ($existingUser && $existingUser->getCustomerId() != $userId) {
             $errors[] = "This email address is already in use by another user.";
         }
 
@@ -609,10 +630,10 @@ class AuthController extends BaseController
         $errors = [];
         
         // Get current user logon data
-        $userLogon = $this->customerRepository->getActiveUserByUsername($user['UserName']);
+        $userLogon = $this->customerRepository->getActiveUserByUsername($user->getUserName());
         
         // Validate old password
-        if (!$userLogon || !password_verify($oldPassword, $userLogon['Pass'])) {
+        if (!$userLogon || !password_verify($oldPassword, $userLogon->getPass())) {
             $errors[] = 'Current password is incorrect.';
         }
         
@@ -627,7 +648,7 @@ class AuthController extends BaseController
         }
         
         // Check if new password is same as old
-        if (empty($errors) && password_verify($newPassword1, $userLogon['Pass'])) {
+        if (empty($errors) && password_verify($newPassword1, $userLogon->getPass())) {
             $errors[] = 'New password must be different from your current password.';
         }
         

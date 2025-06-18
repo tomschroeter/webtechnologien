@@ -86,7 +86,7 @@ $correctLargeImagePath = getImagePathOrPlaceholder($largeImagePath, $placeholder
 
         <div class="col-md-6">
             <h3>by <a href="/artists/<?php echo $artist->getArtistId() ?>" class="text-decoration-none">
-                    <?php echo htmlspecialchars($artist->getFirstName() . ' ' . $artist->getLastName()) ?>
+                    <?php echo htmlspecialchars($artist->getFullName()) ?>
                 </a></h3>
 
             <div class="mb-3">
@@ -270,12 +270,12 @@ $correctLargeImagePath = getImagePathOrPlaceholder($largeImagePath, $placeholder
                                         </tr>
                                     <?php endif; ?>
 
-                                    <?php if ($gallery->getGalleryWebSite()): ?>
+                                    <?php if ($gallery->getWebsite()): ?>
                                         <tr>
                                             <th>Website:</th>
-                                            <td><a href="<?php echo htmlspecialchars($gallery->getGalleryWebSite()) ?>"
+                                            <td><a href="<?php echo htmlspecialchars($gallery->getWebsite()) ?>"
                                                     target="_blank" class="text-decoration-none">
-                                                    <?php echo htmlspecialchars($gallery->getGalleryWebSite()) ?>
+                                                    <?php echo htmlspecialchars($gallery->getWebsite()) ?>
                                                 </a></td>
                                         </tr>
                                     <?php endif; ?>

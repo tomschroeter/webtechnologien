@@ -2,39 +2,38 @@
 
 class Artwork
 {
-    private $artworkId;
-    private $artistId;
-    private $imageFileName;
-    private $title;
-    private $description;
-    private $excerpt;
-    private $artworkType;
-    private $yearOfWork;
-    private $width;
-    private $height;
-    private $medium;
-    private $originalHome;
-    private $galleryId;
-    private $artworkLink;
-    private $googleLink;
+    private int $artworkId;
+    private int $artistId;
+    private string $imageFileName;
+    private string $title;
+    private ?string $description;
+    private ?string $excerpt;
+    private ?int $artworkType;
+    private ?int $yearOfWork;
+    private ?int $width;
+    private ?int $height;
+    private ?string $medium;
+    private ?string $originalHome;
+    private ?int $galleryId;
+    private ?string $artworkLink;
+    private ?string $googleLink;
 
-    // constructor is only used when fetching from database
     private function __construct(
-        $artworkId,
-        $artistId,
-        $imageFileName,
-        $title,
-        $description,
-        $excerpt,
-        $artworkType,
-        $yearOfWork,
-        $width,
-        $height,
-        $medium,
-        $originalHome,
-        $galleryId,
-        $artworkLink,
-        $googleLink
+        int $artworkId,
+        int $artistId,
+        string $imageFileName,
+        string $title,
+        ?string $description,
+        ?string $excerpt,
+        ?int $artworkType,
+        ?int $yearOfWork,
+        ?int $width,
+        ?int $height,
+        ?string $medium,
+        ?string $originalHome,
+        ?int $galleryId,
+        ?string $artworkLink,
+        ?string $googleLink
     ) {
         $this->setArtworkId($artworkId);
         $this->setArtistId($artistId);
@@ -56,170 +55,170 @@ class Artwork
     public static function createArtworkFromRecord(array $record): Artwork
     {
         return new self(
-            $record['ArtWorkID'],
-            $record['ArtistID'],
-            $record['ImageFileName'],
-            $record['Title'],
-            $record['Description'],
-            $record['Excerpt'],
+            (int) $record['ArtWorkID'],
+            (int) $record['ArtistID'],
+            (string) $record['ImageFileName'],
+            (string) $record['Title'],
+            $record['Description'] ?? null,
+            $record['Excerpt'] ?? null,
             $record['ArtWorkType'],
             $record['YearOfWork'],
             $record['Width'],
             $record['Height'],
-            $record['Medium'],
-            $record['OriginalHome'],
+            $record['Medium'] ?? null,
+            $record['OriginalHome'] ?? null,
             $record['GalleryID'],
-            $record['ArtWorkLink'],
-            $record['GoogleLink']
+            $record['ArtWorkLink'] ?? null,
+            $record['GoogleLink'] ?? null
         );
     }
 
-    public function getArtworkId()
+    public function getArtworkId(): int
     {
         return $this->artworkId;
     }
 
-    public function setArtworkId($artworkId)
+    public function setArtworkId(int $artworkId): void
     {
         $this->artworkId = $artworkId;
     }
 
-    public function getArtistId()
+    public function getArtistId(): int
     {
         return $this->artistId;
     }
 
-    public function setArtistId($artistId)
+    public function setArtistId(int $artistId): void
     {
         $this->artistId = $artistId;
     }
 
-    public function getImageFileName()
+    public function getImageFileName(): string
     {
         return $this->imageFileName;
     }
 
-    public function setImageFileName($imageFileName)
+    public function setImageFileName(string $imageFileName): void
     {
         $this->imageFileName = $imageFileName;
     }
 
-    public function getTitle()
+    public function getTitle(): string
     {
         return $this->title;
     }
 
-    public function setTitle($title)
+    public function setTitle(string $title): void
     {
         $this->title = $title;
     }
 
-    public function getDescription()
+    public function getDescription(): ?string
     {
         return $this->description;
     }
 
-    public function setDescription($description)
+    public function setDescription(?string $description): void
     {
         $this->description = $description;
     }
 
-    public function getExcerpt()
+    public function getExcerpt(): ?string
     {
         return $this->excerpt;
     }
 
-    public function setExcerpt($excerpt)
+    public function setExcerpt(?string $excerpt): void
     {
         $this->excerpt = $excerpt;
     }
 
-    public function getArtworkType()
+    public function getArtworkType(): ?int
     {
         return $this->artworkType;
     }
 
-    public function setArtworkType($artworkType)
+    public function setArtworkType(?int $artworkType): void
     {
         $this->artworkType = $artworkType;
     }
 
-    public function getYearOfWork()
+    public function getYearOfWork(): ?int
     {
         return $this->yearOfWork;
     }
 
-    public function setYearOfWork($yearOfWork)
+    public function setYearOfWork(?int $yearOfWork): void
     {
         $this->yearOfWork = $yearOfWork;
     }
 
-    public function getWidth()
+    public function getWidth(): ?int
     {
         return $this->width;
     }
 
-    public function setWidth($width)
+    public function setWidth(?int $width): void
     {
         $this->width = $width;
     }
 
-    public function getHeight()
+    public function getHeight(): ?int
     {
         return $this->height;
     }
 
-    public function setHeight($height)
+    public function setHeight(?int $height): void
     {
         $this->height = $height;
     }
 
-    public function getMedium()
+    public function getMedium(): ?string
     {
         return $this->medium;
     }
 
-    public function setMedium($medium)
+    public function setMedium(?string $medium): void
     {
         $this->medium = $medium;
     }
 
-    public function getOriginalHome()
+    public function getOriginalHome(): ?string
     {
         return $this->originalHome;
     }
 
-    public function setOriginalHome($originalHome)
+    public function setOriginalHome(?string $originalHome): void
     {
         $this->originalHome = $originalHome;
     }
 
-    public function getGalleryId()
+    public function getGalleryId(): ?int
     {
         return $this->galleryId;
     }
 
-    public function setGalleryId($galleryId)
+    public function setGalleryId(?int $galleryId): void
     {
         $this->galleryId = $galleryId;
     }
 
-    public function getArtworkLink()
+    public function getArtworkLink(): ?string
     {
         return $this->artworkLink;
     }
 
-    public function setArtworkLink($artworkLink)
+    public function setArtworkLink(?string $artworkLink): void
     {
         $this->artworkLink = $artworkLink;
     }
 
-    public function getGoogleLink()
+    public function getGoogleLink(): ?string
     {
         return $this->googleLink;
     }
 
-    public function setGoogleLink($googleLink)
+    public function setGoogleLink(?string $googleLink): void
     {
         $this->googleLink = $googleLink;
     }

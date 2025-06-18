@@ -2,25 +2,24 @@
 
 class Gallery
 {
-    private $galleryId;
-    private $galleryName;
-    private $galleryNativeName;
-    private $galleryCity;
-    private $galleryCountry;
-    private $latitude;
-    private $longitude;
-    private $galleryWebsite;
-
+    private int $galleryId;
+    private string $galleryName;
+    private ?string $galleryNativeName;
+    private ?string $galleryCity;
+    private ?string $galleryCountry;
+    private ?float $latitude;
+    private ?float $longitude;
+    private ?string $galleryWebsite;
 
     private function __construct(
-        $galleryId,
-        $galleryName,
-        $galleryNativeName,
-        $galleryCity,
-        $galleryCountry,
-        $latitude,
-        $longitude,
-        $galleryWebsite
+        int $galleryId,
+        string $galleryName,
+        ?string $galleryNativeName,
+        ?string $galleryCity,
+        ?string $galleryCountry,
+        ?float $latitude,
+        ?float $longitude,
+        ?string $galleryWebsite
     ) {
         $this->setGalleryId($galleryId);
         $this->setGalleryName($galleryName);
@@ -29,114 +28,100 @@ class Gallery
         $this->setGalleryCountry($galleryCountry);
         $this->setLatitude($latitude);
         $this->setLongitude($longitude);
-        $this->setGalleryWebsite($galleryWebsite);
+        $this->setWebsite($galleryWebsite);
     }
 
     public static function createGalleryFromRecord(array $record): Gallery
     {
         return new self(
-            $record['GalleryID'],
-            $record['GalleryName'],
-            $record['GalleryNativeName'],
-            $record['GalleryCity'],
-            $record['GalleryCountry'],
-            $record['Latitude'],
-            $record['Longitude'],
-            $record['GalleryWebSite']
+            (int) $record['GalleryID'],
+            (string) $record['GalleryName'],
+            $record['GalleryNativeName'] ?? null,
+            $record['GalleryCity'] ?? null,
+            $record['GalleryCountry'] ?? null,
+            isset($record['Latitude']) ? (float) $record['Latitude'] : null,
+            isset($record['Longitude']) ? (float) $record['Longitude'] : null,
+            $record['GalleryWebSite'] ?? null
         );
     }
 
-
-
-    public function getGalleryId()
+    public function getGalleryId(): int
     {
         return $this->galleryId;
     }
 
-
-    public function setGalleryId($galleryId)
+    public function setGalleryId(int $galleryId): void
     {
         $this->galleryId = $galleryId;
     }
 
-
-    public function getGalleryName()
+    public function getGalleryName(): string
     {
         return $this->galleryName;
     }
 
-
-    public function setGalleryName($galleryName)
+    public function setGalleryName(string $galleryName): void
     {
         $this->galleryName = $galleryName;
     }
 
-
-    public function getGalleryNativeName()
+    public function getGalleryNativeName(): ?string
     {
         return $this->galleryNativeName;
     }
 
-
-    public function setGalleryNativeName($galleryNativeName)
+    public function setGalleryNativeName(?string $galleryNativeName): void
     {
         $this->galleryNativeName = $galleryNativeName;
     }
 
-
-    public function getGalleryCity()
+    public function getGalleryCity(): ?string
     {
         return $this->galleryCity;
     }
 
-
-    public function setGalleryCity($galleryCity)
+    public function setGalleryCity(?string $galleryCity): void
     {
         $this->galleryCity = $galleryCity;
     }
 
-    public function getGalleryWebSite()
-    {
-        return $this->galleryWebsite;
-    }
-
-    public function setGalleryWebSite($galleryWebsite)
-    {
-        $this->galleryWebsite = $galleryWebsite;
-    }
-
-    public function getGalleryCountry()
+    public function getGalleryCountry(): ?string
     {
         return $this->galleryCountry;
     }
 
-
-    public function setGalleryCountry($galleryCountry)
+    public function setGalleryCountry(?string $galleryCountry): void
     {
         $this->galleryCountry = $galleryCountry;
     }
 
-
-    public function getLatitude()
+    public function getLatitude(): ?float
     {
         return $this->latitude;
     }
 
-
-    public function setLatitude($latitude)
+    public function setLatitude(?float $latitude): void
     {
         $this->latitude = $latitude;
     }
 
-
-    public function getLongitude()
+    public function getLongitude(): ?float
     {
         return $this->longitude;
     }
 
-
-    public function setLongitude($longitude)
+    public function setLongitude(?float $longitude): void
     {
         $this->longitude = $longitude;
+    }
+
+    public function getWebsite(): ?string
+    {
+        return $this->galleryWebsite;
+    }
+
+    public function setWebsite(?string $galleryWebsite): void
+    {
+        $this->galleryWebsite = $galleryWebsite;
     }
 }
