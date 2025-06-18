@@ -68,7 +68,8 @@ $correctLargeImagePath = getImagePathOrPlaceholder($largeImagePath, $placeholder
                     <div class="modal-content" style="height: auto;">
                         <div class="modal-header">
                             <h3 class="modal-title" id="imageModalLabel">
-                                <?php echo htmlspecialchars($artwork->getTitle()) ?></h3>
+                                <?php echo htmlspecialchars($artwork->getTitle()) ?>
+                            </h3>
                             <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                                 <span aria-hidden="true">&times;</span>
                             </button>
@@ -103,36 +104,28 @@ $correctLargeImagePath = getImagePathOrPlaceholder($largeImagePath, $placeholder
             </div>
 
             <!-- Add/Remove Favorites -->
-            <?php
-            $isInFavorites = isset($_SESSION['favoriteArtworks']) && in_array($artwork->getArtworkId(), $_SESSION['favoriteArtworks']);
-            ?>
             <?php if (isset($_SESSION['customerId'])): ?>
-            <div class="favorites-container mb-3">
-                <button type="button"
-                    class="btn favorite-btn <?php echo $isInFavorites ? 'btn-outline-danger' : 'btn-primary' ?>"
-                    data-type="artwork"
-                    data-id="<?php echo $artwork->getArtworkId() ?>"
-                    data-is-favorite="<?php echo $isInFavorites ? 'true' : 'false' ?>">
-                    <?php if ($isInFavorites): ?>
-                        <span class="heart">♥</span> Remove from Favorites
-                    <?php else: ?>
-                        <span class="heart">♡</span> Add to Favorites
-                    <?php endif; ?>
-                </button>
+                <div class="favorites-container mb-3">
+                    <?php
+                    $type = "artwork";
+                    $item = $artwork;
+                    $showLabel = true;
+                    require dirname(dirname(__DIR__)) . "/components/add-to-favorites-button.php"
+                        ?>
 
-                <!-- Fallback form for non-JS users -->
-                <form method="post" action="/favorites/artworks/<?php echo $artwork->getArtworkId() ?>/toggle"
-                    class="d-none fallback-form">
-                    <button type="submit"
-                        class="btn <?php echo $isInFavorites ? 'btn-outline-danger' : 'btn-primary' ?>">
-                        <?php if ($isInFavorites): ?>
-                            <span class="heart">♥</span> Remove from Favorites
-                        <?php else: ?>
-                            <span class="heart">♡</span> Add to Favorites
-                        <?php endif; ?>
-                    </button>
-                </form>
-            </div>
+                    <!-- Fallback form for non-JS users -->
+                    <form method="post" action="/favorites/artworks/<?php echo $artwork->getArtworkId() ?>/toggle"
+                        class="d-none fallback-form">
+                        <button type="submit"
+                            class="btn <?php echo $isInFavorites ? 'btn-outline-danger' : 'btn-primary' ?>">
+                            <?php if ($isInFavorites): ?>
+                                <span class="heart">♥</span> Remove from Favorites
+                            <?php else: ?>
+                                <span class="heart">♡</span> Add to Favorites
+                            <?php endif; ?>
+                        </button>
+                    </form>
+                </div>
 
             <?php endif; ?>
 
@@ -275,8 +268,8 @@ $correctLargeImagePath = getImagePathOrPlaceholder($largeImagePath, $placeholder
                                     <?php if ($gallery->getWebsite()): ?>
                                         <tr>
                                             <th>Website:</th>
-                                            <td><a href="<?php echo htmlspecialchars($gallery->getWebsite()) ?>"
-                                                    target="_blank" class="text-decoration-none">
+                                            <td><a href="<?php echo htmlspecialchars($gallery->getWebsite()) ?>" target="_blank"
+                                                    class="text-decoration-none">
                                                     <?php echo htmlspecialchars($gallery->getWebsite()) ?>
                                                 </a></td>
                                         </tr>
@@ -391,7 +384,7 @@ $correctLargeImagePath = getImagePathOrPlaceholder($largeImagePath, $placeholder
         <div class="col-12">
             <h3>Reviews</h3>
 
-            <?php        
+            <?php
             if (isset($_SESSION['customerId'])):
 
                 $alreadyReviewed = $reviewRepo->hasUserReviewed($_SESSION['customerId'], $artwork->getArtworkId());
