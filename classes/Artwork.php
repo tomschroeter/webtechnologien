@@ -61,13 +61,13 @@ class Artwork
             (string) $record['Title'],
             $record['Description'] ?? null,
             $record['Excerpt'] ?? null,
-            isset($record['ArtWorkType']) ?? null,
-            isset($record['YearOfWork']) ?? null,
-            isset($record['Width']) ?? null,
-            isset($record['Height']) ?? null,
+            $record['ArtWorkType'],
+            $record['YearOfWork'],
+            $record['Width'],
+            $record['Height'],
             $record['Medium'] ?? null,
             $record['OriginalHome'] ?? null,
-            isset($record['GalleryID']) ?? null,
+            $record['GalleryID'],
             $record['ArtWorkLink'] ?? null,
             $record['GoogleLink'] ?? null
         );

@@ -38,8 +38,8 @@ class Artist
             (string) $record['FirstName'],
             (string) $record['LastName'],
             $record['Nationality'] ?? null,
-            isset($record['YearOfBirth']) ?? null,
-            isset($record['YearOfDeath']) ?? null,
+            $record['YearOfBirth'], 
+            $record['YearOfDeath'],
             $record['Details'] ?? null,
             $record['ArtistLink'] ?? null
         );
