@@ -57,7 +57,7 @@ require_once dirname(dirname(__DIR__)) . "/components/find-image-ref.php";
                             data-type="artist" data-id="<?php echo $artist->getArtistId() ?>"
                             data-is-favorite="<?php echo $isInFavorites ? 'true' : 'false' ?>"
                             title="<?php echo $isInFavorites ? 'Remove from Favorites' : 'Add to Favorites' ?>">
-                            <?php echo $isInFavorites ? '♥' : '♡' ?>
+                            <?php echo $isInFavorites ? '<span class="heart">♥</span>' : '<span class="heart">♡</span>' ?>
                         </button>
 
                         <!-- Fallback form for non-JS users -->
@@ -145,7 +145,7 @@ require_once dirname(dirname(__DIR__)) . "/components/find-image-ref.php";
                             data-type="artwork" data-id="<?php echo $artwork->getArtworkId() ?>"
                             data-is-favorite="<?php echo $isInFavorites ? 'true' : 'false' ?>"
                             title="<?php echo $isInFavorites ? 'Remove from Favorites' : 'Add to Favorites' ?>">
-                            <?php echo $isInFavorites ? '♥' : '♡' ?>
+                            <?php echo $isInFavorites ? '<span class="heart">♥</span>' : '<span class="heart">♡</span>' ?>
                         </button>
 
                         <!-- Fallback form for non-JS users -->

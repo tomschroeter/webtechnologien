@@ -107,31 +107,33 @@ $correctLargeImagePath = getImagePathOrPlaceholder($largeImagePath, $placeholder
             $isInFavorites = isset($_SESSION['favoriteArtworks']) && in_array($artwork->getArtworkId(), $_SESSION['favoriteArtworks']);
             ?>
             <?php if (isset($_SESSION['customerId'])): ?>
-                <div class="favorites-container mb-3">
-                    <button type="button"
-                        class="btn favorite-btn <?php echo $isInFavorites ? 'btn-outline-danger' : 'btn-primary' ?>"
-                        data-type="artwork" data-id="<?php echo $artwork->getArtworkId() ?>"
-                        data-is-favorite="<?php echo $isInFavorites ? 'true' : 'false' ?>">
+            <div class="favorites-container mb-3">
+                <button type="button"
+                    class="btn favorite-btn <?php echo $isInFavorites ? 'btn-outline-danger' : 'btn-primary' ?>"
+                    data-type="artwork"
+                    data-id="<?php echo $artwork->getArtworkId() ?>"
+                    data-is-favorite="<?php echo $isInFavorites ? 'true' : 'false' ?>">
+                    <?php if ($isInFavorites): ?>
+                        <span class="heart">♥</span> Remove from Favorites
+                    <?php else: ?>
+                        <span class="heart">♡</span> Add to Favorites
+                    <?php endif; ?>
+                </button>
+
+                <!-- Fallback form for non-JS users -->
+                <form method="post" action="/favorites/artworks/<?php echo $artwork->getArtworkId() ?>/toggle"
+                    class="d-none fallback-form">
+                    <button type="submit"
+                        class="btn <?php echo $isInFavorites ? 'btn-outline-danger' : 'btn-primary' ?>">
                         <?php if ($isInFavorites): ?>
-                            ♥ Remove from Favorites
+                            <span class="heart">♥</span> Remove from Favorites
                         <?php else: ?>
-                            ♡ Add to Favorites
+                            <span class="heart">♡</span> Add to Favorites
                         <?php endif; ?>
                     </button>
+                </form>
+            </div>
 
-                    <!-- Fallback form for non-JS users -->
-                    <form method="post" action="/favorites/artworks/<?php echo $artwork->getArtworkId() ?>/toggle"
-                        class="d-none fallback-form">
-                        <button type="submit"
-                            class="btn <?php echo $isInFavorites ? 'btn-outline-danger' : 'btn-primary' ?>">
-                            <?php if ($isInFavorites): ?>
-                                ♥ Remove from Favorites
-                            <?php else: ?>
-                                ♡ Add to Favorites
-                            <?php endif; ?>
-                        </button>
-                    </form>
-                </div>
             <?php endif; ?>
 
             <table class="table table-bordered">
@@ -315,9 +317,11 @@ $correctLargeImagePath = getImagePathOrPlaceholder($largeImagePath, $placeholder
                                 <div id="map"
                                     style="height: 300px; width: 100%; border: 1px solid #ccc; border-radius: 8px;"></div>
 
+                                <!-- Include Leaflet CSS and JS, allowed for this project -->
                                 <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
                                 <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
 
+                                <!-- JavaScript to display map, allowed for this project -->
                                 <script>
                                     document.addEventListener("DOMContentLoaded", function () {
                                         var lat = <?php echo json_encode($latitude); ?>;
