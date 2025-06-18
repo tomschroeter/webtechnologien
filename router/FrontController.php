@@ -51,7 +51,7 @@ class FrontController
             'POST' => [
                 '/login' => ['AuthController', 'processLogin'],
                 '/register' => ['AuthController', 'processRegister'],
-                '/manage-users' => ['AdminController', 'manageUsers'],
+                '/manage-users' => ['AdminController', 'handleUserAction'],
                 '/edit-profile' => ['AuthController', 'updateProfile'],
                 '/edit-profile/{id}' => ['AuthController', 'updateProfile'],
                 '/change-password' => ['AuthController', 'updatePassword'],
