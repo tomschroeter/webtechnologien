@@ -28,7 +28,7 @@ require_once dirname(dirname(__DIR__)) . "/components/find-image-ref.php";
                 $artistName = $artist->getFirstName() . " " . $artist->getLastName();
                 $isInFavorites = isset($_SESSION['favoriteArtists']) && in_array($artist->getArtistId(), $_SESSION['favoriteArtists']);
                 ?>
-                <div class="col-md-4 col-lg-3 mb-4">
+                <div class="col-md-4 col-lg-3 mb-5">
                     <div class="card h-100">
                         <a href="<?= $artistLink ?>">
                             <img src="<?= $correctImagePath ?>" class="card-img-top" alt="<?= htmlspecialchars($artistName) ?>">
@@ -84,7 +84,7 @@ require_once dirname(dirname(__DIR__)) . "/components/find-image-ref.php";
                 
                 $isInFavorites = isset($_SESSION['favoriteArtworks']) && in_array($artwork->getArtworkId(), $_SESSION['favoriteArtworks']);
                 ?>
-                <div class="col-md-4 col-lg-3 mb-4">
+                <div class="col-md-4 col-lg-3 mb-5">
                     <div class="card h-100">
                         <a href="<?= $artworkLink ?>">
                             <img src="<?= $correctImagePath ?>" class="card-img-top" alt="<?= htmlspecialchars($artwork->getTitle()) ?>">
