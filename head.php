@@ -3,17 +3,11 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>
     <?php
-    $uri = $_SERVER['REQUEST_URI'];
-    $lastSegment = explode('/', trim($uri, '/'))[0];
-    $lastSegmentWithoutParams = explode('?', $lastSegment)[0];
-
-    // Fallback for root
-    if (empty($lastSegmentWithoutParams)) {
-      echo 'Home';
+    // Use title from controller data
+    if (isset($title) && !empty($title)) {
+      echo htmlspecialchars($title);
     } else {
-      // Replace dashes with spaces, then capitalize
-      $title = str_replace('-', ' ', $lastSegmentWithoutParams);
-      echo ucwords($title);
+      echo "Art Gallery";
     }
     ?>
   </title>
