@@ -64,7 +64,7 @@ if (session_status() === PHP_SESSION_NONE) {
             <div class="input-group">
                 <input class="form-control" name="searchQuery" type="text" placeholder="Search" aria-label="Search field">
                 <div class="input-group-append">
-                    <button class="btn btn-outline-success" type="submit">Search</button>
+                    <button class="btn btn-outline-primary" type="submit">Search</button>
                 </div>
             </div>
         </form>
