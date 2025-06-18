@@ -45,7 +45,7 @@ class CustomerLogon
             (int) $record['Type'],
             (string) $record['DateJoined'],
             (string) $record['DateLastModified'],
-            isset($record['isAdmin']) ?? null
+            $record['isAdmin']
         );
     }
 

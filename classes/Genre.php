@@ -31,7 +31,7 @@ class Genre
             era: $record['Era'] ?? null,
             description: $record['Description'] ?? null,
             link: $record['Link'] ?? null,
-            genreId: isset($record['GenreID']) ?? null
+            genreId: $record['GenreID']
         );
     }
 
