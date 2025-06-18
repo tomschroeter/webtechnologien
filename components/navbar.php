@@ -69,9 +69,8 @@ if (session_status() === PHP_SESSION_NONE) {
             </div>
         </form>
 
-        <a href="/advanced-search">
-          <img src="/assets/svgs/search-advanced.svg" alt="Advanced Search" class="btn btn-outline-secondary"
-            style="height: 38px; width: 38px;" />
+        <a href="/advanced-search" class="btn btn-outline-secondary d-flex align-items-center justify-content-center" style="height: 38px; width: 38px;">
+          <img src="/assets/svgs/search-advanced.svg" alt="Advanced Search" style="height: 24px; width: 24px;" />
         </a>
       </div>
 
