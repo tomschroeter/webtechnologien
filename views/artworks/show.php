@@ -270,12 +270,12 @@ $correctLargeImagePath = getImagePathOrPlaceholder($largeImagePath, $placeholder
                                         </tr>
                                     <?php endif; ?>
 
-                                    <?php if ($gallery->getGalleryWebSite()): ?>
+                                    <?php if ($gallery->getWebsite()): ?>
                                         <tr>
                                             <th>Website:</th>
-                                            <td><a href="<?php echo htmlspecialchars($gallery->getGalleryWebSite()) ?>"
+                                            <td><a href="<?php echo htmlspecialchars($gallery->getWebsite()) ?>"
                                                     target="_blank" class="text-decoration-none">
-                                                    <?php echo htmlspecialchars($gallery->getGalleryWebSite()) ?>
+                                                    <?php echo htmlspecialchars($gallery->getWebsite()) ?>
                                                 </a></td>
                                         </tr>
                                     <?php endif; ?>
