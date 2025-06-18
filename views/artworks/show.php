@@ -317,9 +317,11 @@ $correctLargeImagePath = getImagePathOrPlaceholder($largeImagePath, $placeholder
                                 <div id="map"
                                     style="height: 300px; width: 100%; border: 1px solid #ccc; border-radius: 8px;"></div>
 
+                                <!-- Include Leaflet CSS and JS, allowed for this project -->
                                 <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
                                 <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
 
+                                <!-- JavaScript to display map, allowed for this project -->
                                 <script>
                                     document.addEventListener("DOMContentLoaded", function () {
                                         var lat = <?php echo json_encode($latitude); ?>;
