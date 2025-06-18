@@ -391,10 +391,7 @@ $correctLargeImagePath = getImagePathOrPlaceholder($largeImagePath, $placeholder
         <div class="col-12">
             <h3>Reviews</h3>
 
-            <?php
-            // TODO: Add authentication check
-            // Review form (only if user is logged in and hasn't reviewed yet)
-            
+            <?php        
             if (isset($_SESSION['customerId'])):
 
                 $alreadyReviewed = $reviewRepo->hasUserReviewed($_SESSION['customerId'], $artwork->getArtworkId());
@@ -408,7 +405,7 @@ $correctLargeImagePath = getImagePathOrPlaceholder($largeImagePath, $placeholder
                             <label for="star5" title="5 stars">★</label>
                             <input type="radio" name="rating" id="star4" value="4">
                             <label for="star4" title="4 stars">★</label>
-                            <input type="radio" name="rating" id="star3" value="3">
+                            <input type="radio" name="rating" id="star3" value="3" checked>
                             <label for="star3" title="3 stars">★</label>
                             <input type="radio" name="rating" id="star2" value="2">
                             <label for="star2" title="2 stars">★</label>
