@@ -3,7 +3,7 @@
 
 <div class="mt-4 ml-3">
   <div class="row">
-    <div>
+    <div class="col-md-12 p-0">
       <?php
       require_once dirname(dirname(__DIR__)) . "/components/find-image-ref.php";
       $imagePath = "/assets/images/subjects/square-medium/" . $subject->getSubjectId() . ".jpg";
@@ -13,10 +13,8 @@
       <img src="<?php echo $correctImagePath ?>" alt="<?php echo htmlspecialchars($subject->getSubjectName()) ?>"
         style="height: 200px">
     </div>
-  <div class="row">
-    <div class="col-md-12 mt-4">
+    <div class="mt-4 col-md-12 p-0">
       <h3>Artworks with this Subject</h3>
-
       <?php if (!empty($artworks)): ?>
         <div class="row mt-4">
           <?php
