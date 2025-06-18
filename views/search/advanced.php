@@ -74,7 +74,7 @@
         </div>
       </div>
 
-      <button class="btn btn-outline-success mt-4 ml-2" type="submit">Search</button>
+      <button class="btn btn-outline-primary mt-4 ml-2" type="submit">Search</button>
     </form>
   </div>
 </div>
