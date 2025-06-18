@@ -60,20 +60,6 @@ require_once dirname(dirname(__DIR__)) . "/components/find-image-ref.php";
                             <?php echo $isInFavorites ? '<span class="heart">♥</span>' : '<span class="heart">♡</span>' ?>
                         </button>
 
-                        <!-- Fallback form for non-JS users -->
-                        <form method="post" action="/favorites/artists/<?php echo $artist->getArtistId() ?>/toggle"
-                            class="mr-2 mb-0 d-none fallback-form">
-                            <?php if ($isInFavorites): ?>
-                                <input type="hidden" name="_method" value="DELETE">
-                                <button type="submit" class="btn btn-outline-danger">
-                                    ♥
-                                </button>
-                            <?php else: ?>
-                                <button type="submit" class="btn btn-primary">
-                                    ♡
-                                </button>
-                            <?php endif; ?>
-                        </form>
                         <!-- Artist image -->
                         <?php $imagePath = "/assets/images/artists/square-thumb/" . $artist->getArtistId() . ".jpg";
                         $placeholderPath = "/assets/placeholder/artists/square-thumb/placeholder.svg";
@@ -148,21 +134,6 @@ require_once dirname(dirname(__DIR__)) . "/components/find-image-ref.php";
                             <?php echo $isInFavorites ? '<span class="heart">♥</span>' : '<span class="heart">♡</span>' ?>
                         </button>
 
-                        <!-- Fallback form for non-JS users -->
-                        <form method="post"
-                            action="/favorites/artworks/<?php echo $artwork->getArtworkId() ?>/toggle"
-                            class="mr-2 mb-0 d-none fallback-form">
-                            <?php if ($isInFavorites): ?>
-                                <input type="hidden" name="_method" value="DELETE">
-                                <button type="submit" class="btn btn-outline-danger">
-                                    ♥
-                                </button>
-                            <?php else: ?>
-                                <button type="submit" class="btn btn-primary">
-                                    ♡
-                                </button>
-                            <?php endif; ?>
-                        </form>
                         <!-- Artwork image -->
                         <?php $imagePath = "/assets/images/works/square-small/" . $artwork->getImageFileName() . ".jpg";
                         $placeholderPath = "/assets/placeholder/works/square-small/placeholder.svg";
