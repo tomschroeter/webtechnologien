@@ -119,19 +119,6 @@ $correctLargeImagePath = getImagePathOrPlaceholder($largeImagePath, $placeholder
                         <span class="heart">♡</span> Add to Favorites
                     <?php endif; ?>
                 </button>
-
-                <!-- Fallback form for non-JS users -->
-                <form method="post" action="/favorites/artworks/<?php echo $artwork->getArtworkId() ?>/toggle"
-                    class="d-none fallback-form">
-                    <button type="submit"
-                        class="btn <?php echo $isInFavorites ? 'btn-outline-danger' : 'btn-primary' ?>">
-                        <?php if ($isInFavorites): ?>
-                            <span class="heart">♥</span> Remove from Favorites
-                        <?php else: ?>
-                            <span class="heart">♡</span> Add to Favorites
-                        <?php endif; ?>
-                    </button>
-                </form>
             </div>
 
             <?php endif; ?>
