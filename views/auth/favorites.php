@@ -60,7 +60,7 @@ require_once dirname(dirname(__DIR__)) . "/components/find-image-ref.php";
                                         data-id="<?= $artist->getArtistId() ?>"
                                         data-is-favorite="<?= $isInFavorites ? 'true' : 'false' ?>"
                                         title="<?= $isInFavorites ? 'Remove from Favorites' : 'Add to Favorites' ?>">
-                                    <?= $isInFavorites ? '♥' : '♡' ?>
+                                        <?php echo $isInFavorites ? '<span class="heart">♥</span>' : '<span class="heart">♡</span>' ?>
                                 </button>
                             </div>
                         </div>
@@ -113,8 +113,7 @@ require_once dirname(dirname(__DIR__)) . "/components/find-image-ref.php";
                                         data-id="<?= $artwork->getArtworkId() ?>"
                                         data-is-favorite="<?= $isInFavorites ? 'true' : 'false' ?>"
                                         title="<?= $isInFavorites ? 'Remove from Favorites' : 'Add to Favorites' ?>">
-                                    <?= $isInFavorites ? '♥' : '♡' ?>
-                                </button>
+                                        <?php echo $isInFavorites ? '<span class="heart">♥</span>' : '<span class="heart">♡</span>' ?>                                </button>
                             </div>
                         </div>
                     </div>

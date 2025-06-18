@@ -25,11 +25,11 @@
                         data-type="artist"
                         data-id="<?php echo $artist->getArtistId() ?>"
                         data-is-favorite="<?php echo $isInFavorites ? 'true' : 'false' ?>">
-                    <?php if ($isInFavorites): ?>
-                        ♥ Remove from Favorites
-                    <?php else: ?>
-                        ♡ Add to Favorites
-                    <?php endif; ?>
+                        <?php if ($isInFavorites): ?>
+                            <span class="heart">♥</span> Remove from Favorites
+                        <?php else: ?>
+                            <span class="heart">♡</span> Add to Favorites
+                        <?php endif; ?>
                 </button>
                 
                 <!-- Fallback form for non-JS users -->
