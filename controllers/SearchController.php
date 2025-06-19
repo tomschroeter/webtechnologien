@@ -46,13 +46,21 @@ class SearchController extends BaseController
         
         // For regular search, require searchQuery
         if (!$isAdvancedSearch && empty($searchQuery)) {
-            $this->redirect('/error.php?error=missingParam');
+            $this->redirectWithNotification(
+                '/',
+                'Please provide a search term.',
+                'error'
+            );
             return;
         }
         
         // For regular search, check if search query has valid size (>= 3 characters)
         if (!$isAdvancedSearch && strlen($searchQuery) < 3) {
-            $this->redirect('/error.php?error=tooShort');
+            $this->redirectWithNotification(
+                '/',
+                'Your search query is too short. At least 3 characters are required.',
+                'error'
+            );
             return;
         }
         
@@ -118,7 +126,11 @@ class SearchController extends BaseController
             echo $this->renderWithLayout('search/index', $data);
             
         } catch (Exception $e) {
-            $this->redirect('/error.php?error=searchError');
+            $this->redirectWithNotification(
+                '/',
+                'Sorry something went wrong. Please try again.',
+                'error',
+            );
         }
     }
     
@@ -157,7 +169,11 @@ class SearchController extends BaseController
             echo $this->renderWithLayout('search/advanced', $data);
             
         } catch (Exception $e) {
-            $this->redirect('/error.php?error=advancedSearchError');
+            $this->redirectWithNotification(
+                '/',
+                'Sorry something went wrong. Please try again.',
+                'error',
+            );
         }
     }
 }

@@ -69,7 +69,7 @@ class ReviewController extends BaseController
             
             // Create Review object
             $review = new Review(
-                null,               // ReviewId (auto-generated)
+                null, // ReviewId (auto-generated)
                 $artworkId,
                 $customerId,
                 date('Y-m-d H:i:s'),
