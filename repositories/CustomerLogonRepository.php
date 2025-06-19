@@ -74,7 +74,7 @@ class CustomerLogonRepository
         }
 
         $stmt = $this->db->prepareStatement("
-        SELECT c.CustomerID, c.FirstName, c.LastName, c.Email, cl.UserName, cl.Type, cl.State, cl.isAdmin
+        SELECT c.CustomerID, c.FirstName, c.LastName, c.Email, c.Address, c.City, c.Region, c.Country, c.Postal, c.Phone, cl.UserName, cl.Type, cl.State, cl.isAdmin
         FROM customers c
         JOIN customerlogon cl ON c.CustomerID = cl.CustomerID
         ORDER BY LastName, FirstName
@@ -90,6 +90,12 @@ class CustomerLogonRepository
                 $row['LastName'],
                 $row['Email'],
                 $row['UserName'],
+                $row['Address'],
+                $row['City'],
+                $row['Region'],
+                $row['Country'],
+                $row['Postal'],
+                $row['Phone'],
                 $row['Type'],
                 $row['State'],
                 $row['isAdmin']
@@ -108,7 +114,7 @@ class CustomerLogonRepository
         }
 
         $stmt = $this->db->prepareStatement("
-        SELECT c.CustomerID, c.FirstName, c.LastName, c.Email, cl.UserName, cl.Type, cl.State, cl.isAdmin
+        SELECT c.CustomerID, c.FirstName, c.LastName, c.Email, c.Address, c.City, c.Region, c.Country, c.Postal, c.Phone, cl.UserName, cl.Type, cl.State, cl.isAdmin
         FROM customers c
         JOIN customerlogon cl ON c.CustomerId = cl.CustomerId
         WHERE c.CustomerId = :id
@@ -123,6 +129,12 @@ class CustomerLogonRepository
             $result['LastName'],
             $result['Email'],
             $result['UserName'],
+            $result['Address'],
+            $result['City'],
+            $result['Region'],
+            $result['Country'],
+            $result['Postal'],
+            $result['Phone'],
             $result['Type'],
             $result['State'],
             $result['isAdmin']
@@ -140,7 +152,7 @@ class CustomerLogonRepository
         }
 
         $stmt = $this->db->prepareStatement("
-            SELECT c.CustomerID, c.FirstName, c.LastName, c.Email, cl.UserName, cl.Type, cl.State, cl.isAdmin
+            SELECT c.CustomerID, c.FirstName, c.LastName, c.Email, c.Address, c.City, c.Region, c.Country, c.Postal, c.Phone, cl.UserName, cl.Type, cl.State, cl.isAdmin
             FROM customers c
             JOIN customerlogon cl ON c.CustomerId = cl.CustomerId
             WHERE c.Email = :email
@@ -154,6 +166,12 @@ class CustomerLogonRepository
             $result['LastName'],
             $result['Email'],
             $result['UserName'],
+            $result['Address'],
+            $result['City'],
+            $result['Region'],
+            $result['Country'],
+            $result['Postal'],
+            $result['Phone'],
             $result['Type'],
             $result['State'],
             $result['isAdmin']
@@ -164,18 +182,44 @@ class CustomerLogonRepository
         return $user;
     }
 
-    public function updateCustomerBasicInfo(int $id, string $first, string $last, string $email): void
-    {
+    public function updateCustomerBasicInfo(
+        int $id,
+        string $first,
+        string $last,
+        string $email,
+        string $address,
+        string $city,
+        ?string $region,
+        string $country,
+        ?string $postal,
+        ?string $phone
+    ): void {
         if (!$this->db->isConnected()) {
             $this->db->connect();
         }
 
         $stmt = $this->db->prepareStatement("
-        UPDATE customers SET FirstName = :first, LastName = :last, Email = :email WHERE CustomerId = :id
-    ");
+            UPDATE customers 
+            SET FirstName = :first, 
+                LastName = :last, 
+                Email = :email, 
+                Address = :address, 
+                City = :city, 
+                Region = :region,
+                Country = :country, 
+                Postal = :postal, 
+                Phone = :phone 
+            WHERE CustomerId = :id
+        ");
         $stmt->bindValue("first", $first);
         $stmt->bindValue("last", $last);
         $stmt->bindValue("email", $email);
+        $stmt->bindValue("address", $address);
+        $stmt->bindValue("city", $city);
+        $stmt->bindValue("region", $region);
+        $stmt->bindValue("country", $country);
+        $stmt->bindValue("postal", $postal);
+        $stmt->bindValue("phone", $phone);
         $stmt->bindValue("id", $id);
         $stmt->execute();
 
@@ -242,15 +286,13 @@ class CustomerLogonRepository
 
             // Insert login credentials first (let AUTO_INCREMENT handle the CustomerId)
             $hashedPassword = $logon->getPass(); // This should be the complete hash from password_hash()
-            $salt = $this->extractSaltFromHash($hashedPassword);
 
             $stmt = $this->db->prepareStatement("
-                INSERT INTO customerlogon (UserName, Pass, Salt, State, Type, DateJoined, DateLastModified, isAdmin)
-                VALUES (:user, :pass, :salt, :state, :type, :joined, :modified, :isAdmin)
+                INSERT INTO customerlogon (UserName, Pass, State, Type, DateJoined, DateLastModified, isAdmin)
+                VALUES (:user, :pass, :state, :type, :joined, :modified, :isAdmin)
             ");
             $stmt->bindValue("user", $logon->getUserName());
             $stmt->bindValue("pass", $hashedPassword);
-            $stmt->bindValue("salt", $salt);
             $stmt->bindValue("state", $logon->getState());
             $stmt->bindValue("type", $logon->getType());
             $stmt->bindValue("joined", $logon->getDateJoined());
@@ -291,25 +333,6 @@ class CustomerLogonRepository
             $this->db->disconnect();
             throw new Exception("Registration failed: " . $e->getMessage());
         }
-    }
-
-    /**
-     * Extracts the salt from a password hash generated by password_hash().
-     * 
-     * Password hash format: $algorithm$cost$saltAndHash
-     * For bcrypt ($2y$): $2y$10$22-character-salt + 31-character-hash
-     * 
-     * @param string $hash The complete password hash
-     * @return string The extracted salt
-     */
-    private function extractSaltFromHash(string $hash): string
-    {
-        // Check if it's a bcrypt hash ($2y$ or $2a$ or $2x$)
-        if (preg_match('/^\$2[axy]\$\d+\$(.{22})/', $hash, $matches)) {
-            return $matches[1]; // Return the 22-character salt
-        }
-
-        throw new Exception("Unknown hash type in db");
     }
 
     public function getCustomerById(int $id): Customer
@@ -361,14 +384,13 @@ class CustomerLogonRepository
         $this->db->disconnect();
     }
 
-    public function updateCustomerPassword(int $id, string $hashed, string $salt): void
+    public function updateCustomerPassword(int $id, string $hashed): void
     {
         if (!$this->db->isConnected()) {
             $this->db->connect();
         }
-        $stmt = $this->db->prepareStatement("UPDATE customerlogon SET Pass = :pass, Salt = :salt, DateLastModified = NOW() WHERE CustomerId = :id");
+        $stmt = $this->db->prepareStatement("UPDATE customerlogon SET Pass = :pass, DateLastModified = NOW() WHERE CustomerId = :id");
         $stmt->bindValue("pass", $hashed);
-        $stmt->bindValue("salt", $salt);
         $stmt->bindValue("id", $id);
         $stmt->execute();
         $this->db->disconnect();

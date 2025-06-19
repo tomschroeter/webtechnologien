@@ -27,28 +27,28 @@
             <input name="firstName" class="form-control" placeholder="First Name" value="<?= htmlspecialchars($formData['firstName'] ?? '') ?>">
         </div>
         <div class="col-md-6 mb-3">
-            <label class="form-label">Last Name</label>
-            <input name="lastName" class="form-control" placeholder="Last Name*" required value="<?= htmlspecialchars($formData['lastName'] ?? '') ?>">
+            <label class="form-label">Last Name*</label>
+            <input name="lastName" class="form-control" placeholder="Last Name" required value="<?= htmlspecialchars($formData['lastName'] ?? '') ?>">
         </div>
     </div>
     <div class="row">
         <div class="col-md-6 mb-3">
-            <label class="form-label">Address</label>
-            <input name="address" class="form-control" placeholder="Address*" required value="<?= htmlspecialchars($formData['address'] ?? '') ?>">
+            <label class="form-label">Address*</label>
+            <input name="address" class="form-control" placeholder="Address" required value="<?= htmlspecialchars($formData['address'] ?? '') ?>">
         </div>
         <div class="col-md-6 mb-3">
-            <label class="form-label">City</label>
-            <input name="city" class="form-control" placeholder="City*" required value="<?= htmlspecialchars($formData['city'] ?? '') ?>">
+            <label class="form-label">City*</label>
+            <input name="city" class="form-control" placeholder="City" required value="<?= htmlspecialchars($formData['city'] ?? '') ?>">
         </div>
     </div>
     <div class="row">
         <div class="col-md-4 mb-3">
             <label class="form-label">Region</label>
-            <input name="region" class="form-control" placeholder="Region (optional)" value="<?= htmlspecialchars($formData['region'] ?? '') ?>">
+            <input name="region" class="form-control" placeholder="Region" value="<?= htmlspecialchars($formData['region'] ?? '') ?>">
         </div>
         <div class="col-md-4 mb-3">
-            <label class="form-label">Country</label>
-            <input name="country" class="form-control" placeholder="Country*" required value="<?= htmlspecialchars($formData['country'] ?? '') ?>">
+            <label class="form-label">Country*</label>
+            <input name="country" class="form-control" placeholder="Country" required value="<?= htmlspecialchars($formData['country'] ?? '') ?>">
         </div>
         <div class="col-md-4 mb-3">
             <label class="form-label">Postal</label>
@@ -58,26 +58,26 @@
     <div class="row">
         <div class="col-md-6 mb-3">
             <label class="form-label">Phone</label>
-            <input name="phone" class="form-control" placeholder="Phone (optional)" value="<?= htmlspecialchars($formData['phone'] ?? '') ?>">
+            <input name="phone" class="form-control" placeholder="Phone" value="<?= htmlspecialchars($formData['phone'] ?? '') ?>">
         </div>
         <div class="col-md-6 mb-3">
-            <label class="form-label">Email</label>
-            <input name="email" type="email" class="form-control" placeholder="Email*" required value="<?= htmlspecialchars($formData['email'] ?? '') ?>">
+            <label class="form-label">Email*</label>
+            <input name="email" type="email" class="form-control" placeholder="Email" required value="<?= htmlspecialchars($formData['email'] ?? '') ?>">
         </div>
     </div>
     <hr>
     <div class="mb-3">
-        <label class="form-label">Username</label>
-        <input name="username" class="form-control" placeholder="Username*" required value="<?= htmlspecialchars($formData['username'] ?? '') ?>">
+        <label class="form-label">Username*</label>
+        <input name="username" class="form-control" placeholder="Username" required value="<?= htmlspecialchars($formData['username'] ?? '') ?>">
     </div>
     <div class="row">
         <div class="col-md-6 mb-3">
-            <label class="form-label">Password</label>
-            <input name="password" type="password" class="form-control" placeholder="Password*" required>
+            <label class="form-label">Password*</label>
+            <input name="password" type="password" class="form-control" placeholder="Password" required>
         </div>
         <div class="col-md-6 mb-3">
-            <label class="form-label">Repeat Password</label>
-            <input name="password2" type="password" class="form-control" placeholder="Repeat Password*" required>
+            <label class="form-label">Repeat Password*</label>
+            <input name="password2" type="password" class="form-control" placeholder="Repeat Password" required>
         </div>
     </div>
     <div class="form-text mb-3">Your password must be at least 6 characters, contain an uppercase letter, a digit, and a special character.</div>
