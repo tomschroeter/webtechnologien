@@ -208,3 +208,14 @@ body {
 .link-underline-on-hover:focus {
   text-decoration: underline;
 }
+
+/* Accordion - remove blue background when opened or focused */
+.accordion-button:not(.collapsed) {
+  background-color: #fff !important;
+  color: inherit !important;
+}
+
+.accordion-button:focus {
+  box-shadow: none !important;
+  border-color: #dee2e6 !important;
+}
