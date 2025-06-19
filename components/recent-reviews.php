@@ -34,12 +34,9 @@ if ($reviews):
       // Transform date into well-known format
       $date = date("F j, Y", strtotime($review->getReview()->getReviewDate()));
       ?>
-      <!-- Display review -->
-      <div
-        style="flex: 1 1 30%; min-width: 300px; background: #f9f9f9; border-radius: 8px; padding: 20px; box-shadow: 0 2px 8px rgba(0,0,0,0.1); position: relative; overflow: hidden;">
-        <h5 style="margin-bottom: 0.5rem;">
-          <a href="/artworks/<?= $artworkId ?>" style="color: black;"><?= $title ?></a>
-        </h5>
+      <a href="/artworks/<?= $artworkId ?>" class="link-no-underline review-card" style="flex: 1 1 30%; min-width: 300px; background: #f9f9f9; border-radius: 8px; padding: 20px; box-shadow: 0 2px 8px rgba(0,0,0,0.1); 
+                position: relative; overflow: hidden; display: block; color: inherit; text-decoration: none;">
+        <h5 class="link-underline-on-hover" style="margin-bottom: 0.5rem; color: inherit;"><?= $title ?></h5>
         <p style="margin: 0; font-style: italic; color: #666;"><?= $name ?> - <?= $location ?></p>
         <div style="color: #f5b301; font-size: 1.2rem; margin: 10px 0 2px;"><?= $stars ?></div>
         <p style="font-size: 0.85rem; color: #888; margin-bottom: 10px;"><?= $date ?></p>
@@ -47,7 +44,7 @@ if ($reviews):
         <div
           style="position: absolute; bottom: 0; left: 0; width: 100%; height: 140px; background: linear-gradient(to top, #f9f9f9, transparent); pointer-events: none;">
         </div>
-      </div>
+      </a>
     <?php endforeach; ?>
   </div>
 <?php else: ?>

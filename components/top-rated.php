@@ -17,43 +17,46 @@ $artworksWithRating = $artworkRepository->getTopRatedArtworks();
 ?>
 
 <div style="max-width: 500px; margin: auto;">
-  <div style="display: flex; gap: 10px; justify-content: center;">
+  <div class="row justify-content-center g-3">
     <?php if ($artworksWithRating): ?>
       <?php foreach ($artworksWithRating as $index => $combined):
         // Get relevant data
         $artwork = $combined->getArtwork();
-        $artworkTitle = $artwork->getTitle();
+        $artworkTitle = htmlspecialchars($artwork->getTitle());
         $artworkId = $artwork->getArtworkId();
         $artistId = $artwork->getArtistId();
-        $artistName = $combined->getArtistName();
+        $artistName = htmlspecialchars($combined->getArtistName());
         $reviewCount = $combined->getReviewCount();
 
         // Render rating as stars
         $rating = $combined->getRating();
         $stars = renderStars($rating);
-
-        // Get correct image file path
-        $imagePath = "/assets/images/works/square-medium/" . $combined->getArtwork()->getImageFileName() . ".jpg";
+        $imagePath = "/assets/images/works/square-medium/" . $artwork->getImageFileName() . ".jpg";
         $placeholderPath = "/assets/placeholder/works/square-medium/placeholder.svg";
         $correctImagePath = getImagePathOrPlaceholder($imagePath, $placeholderPath);
         ?>
-        <!-- Display Artworks -->
-        <div class="col-md-4 mb-4">
+        <div class="col-12 col-sm-6 col-md-4 d-flex justify-content-center">
           <div class="card" style="width: 150px; min-height: 260px;">
-            <a href="artworks/<?php echo $artworkId ?>">
-              <img class="card-img-top" style="height:150px; width:150px; object-fit:cover;"
-                src="<?php echo $correctImagePath ?>" alt="">
+            <a href="artworks/<?= $artworkId ?>" class="d-block link-no-underline">
+              <img src="<?= $correctImagePath ?>" alt="<?= $artworkTitle ?>" class="card-img-top"
+                style="height: 150px; width: 150px; object-fit: cover;">
             </a>
             <div class="card-body p-2">
+              <!-- Artwork Title Link mit Hover -->
               <h4 class="card-title h6 mb-1">
-                <a href="artworks/<?php echo $artworkId ?>"
-                  style="color: black;"><?php echo htmlspecialchars($artworkTitle) ?></a>
+                <a href="artworks/<?= $artworkId ?>" class="link-underline-on-hover" style="color: inherit;">
+                  <?= $artworkTitle ?>
+                </a>
               </h4>
+
+              <!-- Artist Name Link mit Hover -->
               <p class="card-text small mb-1">
-                <a href="artists/<?php echo $artistId ?>"
-                  style="color: black;"><?php echo htmlspecialchars($artistName) ?></a>
+                <a href="artists/<?= $artistId ?>" class="link-underline-on-hover" style="color: inherit;">
+                  <?= $artistName ?>
+                </a>
               </p>
-              <p class="card-text text-warning" style="font-size: 0.9rem;"><?php echo $stars ?>
+              <p class="card-text text-warning" style="font-size: 0.9rem;">
+                <?= $stars ?>
                 <span class="text-muted" style="font-size: 0.7rem; vertical-align: 1px;">(<?= $reviewCount ?>)</span>
               </p>
             </div>
