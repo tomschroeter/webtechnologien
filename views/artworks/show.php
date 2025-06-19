@@ -444,33 +444,6 @@ $correctLargeImagePath = getImagePathOrPlaceholder($largeImagePath, $placeholder
         </div>
     </div>
     <script>
-        function showNotification(message, type = 'info') {
-            let container = document.getElementById('notification-container');
-            if (!container) {
-                container = document.createElement('div');
-                container.id = 'notification-container';
-                container.style.cssText = 'position: fixed; top: 20px; right: 20px; width: 350px; z-index: 9999;';
-                document.body.appendChild(container);
-            }
-
-            const alert = document.createElement('div');
-            alert.className = `alert alert-${type} alert-dismissible fade show`;
-            alert.style.cssText = 'margin-bottom: 10px; box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);';
-            alert.innerHTML = `
-            ${message}
-            <button type="button" class="close" data-dismiss="alert" aria-label="Close">
-                <span aria-hidden="true">&times;</span>
-            </button>
-        `;
-            container.appendChild(alert);
-
-            setTimeout(() => {
-                if (alert.parentNode) {
-                    alert.remove();
-                }
-            }, 4000);
-        }
-
         document.addEventListener('DOMContentLoaded', function () {
             console.log('Document ready, setting up review handlers');
 
@@ -505,7 +478,7 @@ $correctLargeImagePath = getImagePathOrPlaceholder($largeImagePath, $placeholder
                         }
                     })
                     .then(data => {
-                        showNotification(data.message, 'success');
+                        showPrimaryNotification(data.message);
                         form.reset();
                         form.style.display = 'none';
 
@@ -567,7 +540,7 @@ $correctLargeImagePath = getImagePathOrPlaceholder($largeImagePath, $placeholder
                     })
                     .catch(error => {
                         console.error(error);
-                        showNotification('An error occurred while adding your review.', 'danger');
+                        showErrorNotification('An error occurred while adding your review.');
                     })
                     .finally(() => {
                         submitBtn.disabled = false;
@@ -618,7 +591,7 @@ $correctLargeImagePath = getImagePathOrPlaceholder($largeImagePath, $placeholder
                             }
                         })
                         .then(data => {
-                            showNotification(data.message, 'success');
+                            showPrimaryNotification(data.message);
                             reviewCard.style.transition = 'opacity 0.3s';
                             reviewCard.style.opacity = '0';
 
@@ -692,7 +665,7 @@ $correctLargeImagePath = getImagePathOrPlaceholder($largeImagePath, $placeholder
                         })
                         .catch(error => {
                             console.error(error);
-                            showNotification('An error occurred while deleting the review.', 'danger');
+                            showErrorNotification('An error occurred while deleting the review.');
                         })
                         .finally(() => {
                             deleteBtn.disabled = false;

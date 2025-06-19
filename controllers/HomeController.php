@@ -44,6 +44,11 @@ class HomeController extends BaseController
             session_start();
         }
         
+        // Test flash message - trigger with ?test=flash
+        if (isset($_GET['test']) && $_GET['test'] === 'flash') {
+            $this->redirectWithMessage('/about', 'This is a test flash message!', 'success');
+        }
+        
         // Get flash message if any
         $flashMessage = $this->getFlashMessage();
         
