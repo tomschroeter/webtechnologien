@@ -1,6 +1,6 @@
 <?php
 
-function loadEnv($filePath = '.env')
+function loadEnv($filePath = __DIR__ . '/.env')
 {
     if (!file_exists($filePath)) {
         throw new Exception('Environment file not found!');
