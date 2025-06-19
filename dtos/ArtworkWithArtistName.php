@@ -27,6 +27,11 @@ class ArtworkWithArtistName
     {
         return $this->artistLastName;
     }
+
+    public function getArtistFullName(): string|null
+    {
+        return $this->getArtistFirstName() . ' ' . $this->getArtistLastName();
+    }
 }
 
 

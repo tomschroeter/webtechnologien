@@ -101,12 +101,15 @@
                 <li class="list-group-item d-flex align-items-center justify-content-between">
                     <a href="/artworks/<?= $artwork->getArtworkId() ?>"
                         class="d-flex align-items-center flex-grow-1 text-dark link-underline-on-hover" style="min-width:0;">
-                        <span class="text-truncate" style="max-width: 60%; white-space: normal;">
-                            &quot;<?= htmlspecialchars($artwork->getTitle()) ?>&quot;
-                            by <?= htmlspecialchars($combined->getArtistFirstName()) ?>
-                            <?= htmlspecialchars($combined->getArtistLastName()) ?>,
-                            published <?= htmlspecialchars($artwork->getYearOfWork()) ?>
-                        </span>
+                        <div>
+                            <p class="mb-1"><?= htmlspecialchars($artwork->getTitle()) ?></p>
+                            <p class="mb-1">
+                                <?= $combined->getArtistFullName() ?>
+                                <?php if ($artwork->getYearOfWork()): ?>
+                                    <span class="text-muted"> (<?= htmlspecialchars($artwork->getYearOfWork()) ?>)</span>
+                                <?php endif; ?>
+                            </p>
+                        </div>
                     </a>
 
                     <div class="d-flex align-items-center" style="gap: 0.5rem;">
