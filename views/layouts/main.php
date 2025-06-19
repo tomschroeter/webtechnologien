@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html lang="en">
 
-<?php require_once dirname(dirname(__DIR__)) . "/head.php"; ?>
+<?php require_once dirname(dirname(__DIR__)) . "/components/head.php"; ?>
 
 <body>
     <?php require_once dirname(dirname(__DIR__)) . "/components/navbar.php"; ?>
