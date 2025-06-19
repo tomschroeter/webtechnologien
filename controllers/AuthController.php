@@ -61,20 +61,32 @@ class AuthController extends BaseController
         $password = $_POST['password'] ?? '';
 
         if (!$username || !$password) {
-            $this->redirect('/login?error=missing');
+            $this->redirectWithMessage(
+                '/login',
+                'Username or password is missing.',
+                'error',
+            );
         }
 
         $user = $this->customerRepository->getActiveUserByUsername($username);
 
         if (!$user || !password_verify($password, $user->getPass())) {
-            $this->redirect('/login?error=invalid');
+            $this->redirectWithMessage(
+                '/login',
+                'Password is incorrect.',
+                'error',
+            );
         }
 
         $_SESSION['customerId'] = $user->getCustomerId();
         $_SESSION['username'] = $user->getUserName();
         $_SESSION['isAdmin'] = $user->getIsAdmin();
 
-        $this->redirect('/?login=success');
+        $this->redirectWithMessage(
+            '/',
+            'Welcome back, ' . htmlspecialchars($user->getUserName()) . '! You have successfully logged in.',
+            'success',
+        );
     }
     
     
@@ -130,17 +142,41 @@ class AuthController extends BaseController
         $validPassword = preg_match('/^(?=.*[A-Z])(?=.*\d)(?=.*[\W_]).{6,}$/', $password);
 
         if (!$lastName || !$city || !$address || !$country || !$email || !$password) {
-            $this->redirect('/register?error=empty_field');
+            $this->redirectWithMessage(
+                '/register',
+                'Please fill out all required fields.',
+                'error',
+            );
         } elseif (!$validPhoneNumber && !empty($phone)) {
-            $this->redirect('/register?error=invalid_phone_number');
+            $this->redirectWithMessage(
+                '/register',
+                'The phone number does not have a valid format.',
+                'error',
+            );
         } elseif (!filter_var($email, FILTER_VALIDATE_EMAIL)) {
-            $this->redirect('/register?error=invalid_email');
+            $this->redirectWithMessage(
+                '/register',
+                'The E-Mail does not have a valid format.',
+                'error',
+            );
         } elseif (!$validPassword) {
-            $this->redirect('/register?error=invalid_password');
+            $this->redirectWithMessage(
+                '/register',
+                'The password must contain at least 6 characters, one uppercase letter, one number, and one special character.',
+                'error',
+            );
         } elseif ($password !== $password2) {
-            $this->redirect('/register?error=password_mismatch');
+            $this->redirectWithMessage(
+                '/register',
+                'Passwords do not match. Please try again.',
+                'error',
+            );
         } elseif ($this->customerRepository->userExists($username)) {
-            $this->redirect('/register?error=exists');
+            $this->redirectWithMessage(
+                '/register',
+                'Username already exists. Please choose another one.',
+                'error',
+            );
         } else {
             try {
                 $customer = new Customer(
@@ -177,9 +213,17 @@ class AuthController extends BaseController
                 $_SESSION['isAdmin'] = false; // New users are always regular users
                 
                 // Redirect to home page (logged in)
-                $this->redirect('/?welcome=1');
+                $this->redirectWithMessage(
+                    '/',
+                    'Welcome to Art Gallery,' . htmlspecialchars($user->getUserName()) . '! Your account has been created successfully.',
+                    'success',
+                );
             } catch (Exception $e) {
-                $this->redirect('/register?error=database');
+                $this->redirectWithMessage(
+                    '/register',
+                    'Registration failed due to a database error. Please try again.',
+                    'error',
+                );
             }
         }
     }
@@ -191,7 +235,12 @@ class AuthController extends BaseController
         }
         
         session_destroy();
-        $this->redirect('/login?logout=1');
+
+        $this->redirectWithMessage(
+            '/login',
+            'You have been successfully logged out.',
+            'success',
+        );
     }
     
     public function showAccount()

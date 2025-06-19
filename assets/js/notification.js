@@ -41,13 +41,12 @@ function showToast(message, type = 'primary', autohide = true, delay = 5000) {
     return toast;
 }
 
-// Convenience functions for different toast types
 function showSuccessNotification(message) {
     return showToast(message, 'success');
 }
 
 function showErrorNotification(message) {
-    return showToast(message, 'danger');
+    return showToast(message, 'error');
 }
 
 function showPrimaryNotification(message) {

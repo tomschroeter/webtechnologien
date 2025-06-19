@@ -1,18 +1,5 @@
 <h1 class="mt-4">Manage Users</h1>
 
-<?php if ($error === 'lastadmin'): ?>
-    <div class="alert alert-danger">Cannot demote or deactivate the last administrator. There must be at least one active admin.</div>
-<?php endif; ?>
-
-<?php if (isset($_GET['message'])): ?>
-    <div class="alert alert-success alert-dismissible fade show" role="alert">
-        <?= htmlspecialchars($_GET['message']) ?>
-        <button type="button" class="close" data-dismiss="alert" aria-label="Close">
-            <span aria-hidden="true">&times;</span>
-        </button>
-    </div>
-<?php endif; ?>
-
 <table class="table table-bordered mt-4">
     <thead class="thead-dark">
         <tr>
