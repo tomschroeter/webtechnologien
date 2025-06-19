@@ -67,4 +67,6 @@
     
 </body>
 
+<?php require_once dirname(dirname(__DIR__)) . "/components/footer.php"; ?>
+
 </html>
