@@ -50,15 +50,10 @@ require_once dirname(dirname(__DIR__)) . "/components/find-image-ref.php";
                     <div class="d-flex align-items-center" style="gap: 0.5rem;">
                         <!-- Display add to favorites button -->
                         <?php
-                        $isInFavorites = isset($_SESSION['favoriteArtists']) && in_array($artist->getArtistId(), $_SESSION['favoriteArtists']);
-                        ?>
-                        <button type="button"
-                            class="btn favorite-btn <?php echo $isInFavorites ? 'btn-outline-danger' : 'btn-primary' ?>"
-                            data-type="artist" data-id="<?php echo $artist->getArtistId() ?>"
-                            data-is-favorite="<?php echo $isInFavorites ? 'true' : 'false' ?>"
-                            title="<?php echo $isInFavorites ? 'Remove from Favorites' : 'Add to Favorites' ?>">
-                            <?php echo $isInFavorites ? '<span class="heart">♥</span>' : '<span class="heart">♡</span>' ?>
-                        </button>
+                        $type = "artist";
+                        $item = $artist;
+                        require dirname(dirname(__DIR__)) . "/components/add-to-favorites-button.php"
+                            ?>
 
                         <!-- Fallback form for non-JS users -->
                         <form method="post" action="/favorites/artists/<?php echo $artist->getArtistId() ?>/toggle"
@@ -138,19 +133,13 @@ require_once dirname(dirname(__DIR__)) . "/components/find-image-ref.php";
                     <div class="d-flex align-items-center" style="gap: 0.5rem;">
                         <!-- Display add to favorites button -->
                         <?php
-                        $isInFavorites = isset($_SESSION['favoriteArtworks']) && in_array($artwork->getArtworkId(), $_SESSION['favoriteArtworks']);
-                        ?>
-                        <button type="button"
-                            class="btn favorite-btn <?php echo $isInFavorites ? 'btn-outline-danger' : 'btn-primary' ?>"
-                            data-type="artwork" data-id="<?php echo $artwork->getArtworkId() ?>"
-                            data-is-favorite="<?php echo $isInFavorites ? 'true' : 'false' ?>"
-                            title="<?php echo $isInFavorites ? 'Remove from Favorites' : 'Add to Favorites' ?>">
-                            <?php echo $isInFavorites ? '<span class="heart">♥</span>' : '<span class="heart">♡</span>' ?>
-                        </button>
+                        $type = "artwork";
+                        $item = $artwork;
+                        require dirname(dirname(__DIR__)) . "/components/add-to-favorites-button.php"
+                            ?>
 
                         <!-- Fallback form for non-JS users -->
-                        <form method="post"
-                            action="/favorites/artworks/<?php echo $artwork->getArtworkId() ?>/toggle"
+                        <form method="post" action="/favorites/artworks/<?php echo $artwork->getArtworkId() ?>/toggle"
                             class="mr-2 mb-0 d-none fallback-form">
                             <?php if ($isInFavorites): ?>
                                 <input type="hidden" name="_method" value="DELETE">
