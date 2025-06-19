@@ -59,10 +59,12 @@
         
     </div> <!-- End container -->
     
-    <?php require_once dirname(dirname(__DIR__)) . "/bootstrap.php"; ?>
-    
-    <!-- Include favorites JavaScript -->
+    <!-- Include favorites JavaScript to stay on same page when adding or removing favorite -->
     <script src="/assets/js/favorites.js"></script>
+
+    <!-- Include Bootstrap JS for Dropdowns, Accordions and Closing Banners -->
+    <script src="/assets/bootstrap-5.3.7-dist/js/bootstrap.bundle.min.js"></script>
+    
 </body>
 
 </html>
