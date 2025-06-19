@@ -59,11 +59,18 @@
         
     </div> <!-- End container -->
     
-    <!-- Include favorites JavaScript to stay on same page when adding or removing favorite -->
-    <script src="/assets/js/favorites.js"></script>
+    <!-- Global Toast Container -->
+    <div class="toast-container position-fixed bottom-0 end-0 p-3" id="globalToastContainer">
+        <!-- Toasts will be added here by notification.js -->
+    </div>
+    
 
     <!-- Include Bootstrap JS for Dropdowns, Accordions and Closing Banners -->
     <script src="/assets/bootstrap-5.3.7-dist/js/bootstrap.bundle.min.js"></script>
+    
+    <!-- Include our own scripts for notifications and adding favorites in the background -->
+    <script src="/assets/js/favorites.js"></script>
+    <script src="/assets/js/notification.js"></script>
     
 </body>
 
