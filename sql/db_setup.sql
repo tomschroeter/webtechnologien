@@ -1,7 +1,3 @@
--- Extend Salt column to accommodate bcrypt salt (22 characters)
-ALTER TABLE customerlogon
-MODIFY COLUMN Salt varchar(22);
-
 -- Add isAdmin column to customerlogon table
 ALTER TABLE customerlogon
 ADD COLUMN isAdmin BOOLEAN DEFAULT FALSE;
