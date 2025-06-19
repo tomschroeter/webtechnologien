@@ -1,4 +1,4 @@
-<footer class="bg-light text-center text-muted py-3 mt-auto">
+<footer class="bg-light text-center text-muted mt-auto">
   <div class="container">
     <small>
       &copy; <?= date('Y') ?> Programmers Having Pizza GmbH — 
