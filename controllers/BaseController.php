@@ -28,6 +28,11 @@ abstract class BaseController
     
     protected function renderWithLayout($view, $data = [], $layout = 'layouts/main')
     {
+        // Automatically get flash message if not already provided
+        if (!isset($data['flashMessage'])) {
+            $data['flashMessage'] = $this->getFlashMessage();
+        }
+        
         // Render the view content first
         $content = $this->render($view, $data);
         
