@@ -36,11 +36,12 @@
         <div class="d-flex flex-wrap justify-content-center">
             <?php
             foreach ($contributors as $contributor):
-                $name = $contributor[0];
-                $githubUsername = $contributor[1];
-                $githubUrl = $contributor[2];
-                $profilePicture = $contributor[3];
-                renderContributorCard($name, $githubUsername, $githubUrl, $profilePicture);
+                $name = $contributor['name'];
+                $githubUsername = $contributor['githubUsername'];
+                $githubUrl = $contributor['githubUrl'];
+                $profilePicture = $contributor['profilePicture'];
+                $tickets = $contributor['tickets'];
+                renderContributorCard($name, $githubUsername, $githubUrl, $profilePicture, $tickets);
             endforeach;
             ?>
         </div>
