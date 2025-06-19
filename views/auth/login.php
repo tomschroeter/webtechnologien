@@ -9,12 +9,12 @@
 <?php endif; ?>
 
 <form method="POST" action="/login" class="mt-4">
-    <div class="form-group">
-        <label>Username</label>
+    <div class="mb-3">
+        <label class="form-label">Username</label>
         <input name="username" class="form-control" placeholder="Username" required>
     </div>
-    <div class="form-group">
-        <label>Password</label>
+    <div class="mb-3">
+        <label class="form-label">Password</label>
         <input name="password" type="password" class="form-control" placeholder="Password" required>
     </div>
     <button type="submit" class="btn btn-primary">Login</button>
