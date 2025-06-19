@@ -8,47 +8,47 @@
 
 <h4 class="mt-2">General Information</h4>
 <form class="mt-4 mb-4" action="/edit-account" method="get">
-    <div class="form-row">
-        <div class="form-group col-md-6">
-            <label>First Name</label>
+    <div class="row">
+        <div class="col-md-6 mb-3">
+            <label class="form-label">First Name</label>
             <input name="firstName" class="form-control" value="<?= htmlspecialchars($customer->getFirstName()) ?>" disabled>
         </div>
-        <div class="form-group col-md-6">
-            <label>Last Name</label>
+        <div class="col-md-6 mb-3">
+            <label class="form-label">Last Name</label>
             <input name="lastName" class="form-control" value="<?= htmlspecialchars($customer->getLastName()) ?>" disabled>
         </div>
     </div>
-    <div class="form-row">
-        <div class="form-group col-md-6">
-            <label>Address</label>
+    <div class="row">
+        <div class="col-md-6 mb-3">
+            <label class="form-label">Address</label>
             <input name="address" class="form-control" value="<?= htmlspecialchars($customer->getAddress()) ?>" disabled>
         </div>
-        <div class="form-group col-md-6">
-            <label>City</label>
+        <div class="col-md-6 mb-3">
+            <label class="form-label">City</label>
             <input name="city" class="form-control" value="<?= htmlspecialchars($customer->getCity()) ?>" disabled>
         </div>
     </div>
-    <div class="form-row">
-        <div class="form-group col-md-4">
-            <label>Region</label>
+    <div class="row">
+        <div class="col-md-4 mb-3">
+            <label class="form-label">Region</label>
             <input name="region" class="form-control" value="<?= htmlspecialchars($customer->getRegion()) ?>" disabled>
         </div>
-        <div class="form-group col-md-4">
-            <label>Country</label>
+        <div class="col-md-4 mb-3">
+            <label class="form-label">Country</label>
             <input name="country" class="form-control" value="<?= htmlspecialchars($customer->getCountry()) ?>" disabled>
         </div>
-        <div class="form-group col-md-4">
-            <label>Postal</label>
+        <div class="col-md-4 mb-3">
+            <label class="form-label">Postal</label>
             <input name="postal" class="form-control" value="<?= htmlspecialchars($customer->getPostal()) ?>" disabled>
         </div>
     </div>
-    <div class="form-row">
-        <div class="form-group col-md-6">
-            <label>Phone</label>
+    <div class="row">
+        <div class="col-md-6 mb-3">
+            <label class="form-label">Phone</label>
             <input name="phone" class="form-control" value="<?= htmlspecialchars($customer->getPhone()) ?>" disabled>
         </div>
-        <div class="form-group col-md-6">
-            <label>Email</label>
+        <div class="col-md-6 mb-3">
+            <label class="form-label">Email</label>
             <input name="email" class="form-control" value="<?= htmlspecialchars($customer->getEmail()) ?>" disabled>
         </div>
     </div>
@@ -57,13 +57,13 @@
 
 <h4 class="mt-4">Account Settings</h4>
 <form class="mt-4 mb-4" action="/change-password" method="get">
-    <div class="form-row">
-        <div class="form-group col-md-6">
-            <label>Username</label>
+    <div class="row">
+        <div class="col-md-6 mb-3">
+            <label class="form-label">Username</label>
             <input class="form-control" value="<?= htmlspecialchars($user->getUserName()) ?>" disabled>
         </div>
-        <div class="form-group col-md-6">
-            <label>Password</label>
+        <div class="col-md-6 mb-3">
+            <label class="form-label">Password</label>
             <input class="form-control" value="••••••••" disabled>
         </div>
     </div>
