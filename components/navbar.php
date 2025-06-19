@@ -8,7 +8,7 @@ if (session_status() === PHP_SESSION_NONE) {
   <nav class="navbar fixed-top navbar-expand-sm navbar-light" style="background-color:rgb(240, 243, 246)">
     <a class="navbar-brand" href="/">
 </invoke>
-      <img src="/assets/svgs/logo.svg" alt="Logo" style="height: 40px; width: 40px;">
+      <img src="/assets/svgs/logo.svg" alt="Logo" style="height: 40px; width: 40px; margin-left: 0.5rem;">
     </a>
     <button class="navbar-toggler d-lg-none" type="button" data-bs-toggle="collapse" data-bs-target="#collapsibleNavId"
       aria-controls="collapsibleNavId" aria-expanded="false" aria-label="Toggle navigation">
@@ -40,32 +40,30 @@ if (session_status() === PHP_SESSION_NONE) {
       $browseRoutes = ['artists', 'artworks', 'genres', 'subjects'];
       $isBrowseActive = in_array($currentRoute, $browseRoutes);
       ?>
-      <ul class="navbar-nav mr-auto mt-2 mt-lg-0">
-        <li class="nav-item <?php echo ($currentRoute === 'home') ? 'active' : ''; ?>">
-          <a class="nav-link" href="/">Home <?php if ($currentRoute === 'home'): ?><span class="sr-only">(current)</span><?php endif; ?></a>
+      <ul class="navbar-nav me-auto mt-2 mt-lg-0">
+        <li class="nav-item">
+          <a class="nav-link<?php echo ($currentRoute === 'home') ? ' active fw-bold' : ''; ?>" aria-current="<?php echo ($currentRoute === 'home') ? 'page' : false; ?>" href="/">Home</a>
         </li>
-        <li class="nav-item <?php echo ($currentRoute === 'about') ? 'active' : ''; ?>">
-          <a class="nav-link" href="/about">About <?php if ($currentRoute === 'about'): ?><span class="sr-only">(current)</span><?php endif; ?></a>
+        <li class="nav-item">
+          <a class="nav-link<?php echo ($currentRoute === 'about') ? ' active fw-bold' : ''; ?>" aria-current="<?php echo ($currentRoute === 'about') ? 'page' : false; ?>" href="/about">About</a>
         </li>
-        <li class="nav-item dropdown <?php echo $isBrowseActive ? 'active' : ''; ?>">
-          <a class="nav-link dropdown-toggle" href="#" id="dropdownBrowse" data-bs-toggle="dropdown" aria-haspopup="true"
-            aria-expanded="false">Browse</a>
-          <div class="dropdown-menu" aria-labelledby="dropdownBrowse">
-            <a class="dropdown-item <?php echo ($currentRoute === 'artists') ? 'active' : ''; ?>" href="/artists">Artists</a>
-            <a class="dropdown-item <?php echo ($currentRoute === 'artworks') ? 'active' : ''; ?>" href="/artworks">Artworks</a>
-            <a class="dropdown-item <?php echo ($currentRoute === 'genres') ? 'active' : ''; ?>" href="/genres">Genres</a>
-            <a class="dropdown-item <?php echo ($currentRoute === 'subjects') ? 'active' : ''; ?>" href="/subjects">Subjects</a>
-          </div>
+        <li class="nav-item dropdown">
+          <a class="nav-link dropdown-toggle<?php echo $isBrowseActive ? ' active fw-bold' : ''; ?>" href="#" id="dropdownBrowse" data-bs-toggle="dropdown" aria-haspopup="true"
+        aria-expanded="false">Browse</a>
+          <ul class="dropdown-menu" aria-labelledby="dropdownBrowse">
+        <li><a class="dropdown-item<?php echo ($currentRoute === 'artists') ? ' active fw-bold' : ''; ?>" href="/artists">Artists</a></li>
+        <li><a class="dropdown-item<?php echo ($currentRoute === 'artworks') ? ' active fw-bold' : ''; ?>" href="/artworks">Artworks</a></li>
+        <li><a class="dropdown-item<?php echo ($currentRoute === 'genres') ? ' active fw-bold' : ''; ?>" href="/genres">Genres</a></li>
+        <li><a class="dropdown-item<?php echo ($currentRoute === 'subjects') ? ' active fw-bold' : ''; ?>" href="/subjects">Subjects</a></li>
+          </ul>
         </li>
       </ul>
 
       <div class="d-flex align-items-center" style="gap: 0.5rem;">
         <form class="my-2 my-lg-0" action="/search" method="GET">
             <div class="input-group">
-                <input class="form-control" name="searchQuery" type="text" placeholder="Search" aria-label="Search field">
-                <div class="input-group-append">
-                    <button class="btn btn-outline-primary" type="submit">Search</button>
-                </div>
+          <input class="form-control" name="searchQuery" type="text" placeholder="Search" aria-label="Search field">
+          <button class="btn btn-outline-primary" type="submit">Search</button>
             </div>
         </form>
 
@@ -74,28 +72,28 @@ if (session_status() === PHP_SESSION_NONE) {
         </a>
       </div>
 
-      <ul class="navbar-nav mt-2 mt-lg-0 mx-4">
+      <ul class="navbar-nav mt-2 mt-lg-0 ms-lg-4" style="margin-right: 0.5rem !important;">
         <li class="nav-item dropdown">
           <a class="nav-link dropdown-toggle" href="#" id="dropdownProfile" data-bs-toggle="dropdown" aria-haspopup="true"
-            aria-expanded="false">
+        aria-expanded="false">
             <img src="/assets/svgs/profile.svg" alt="Profile" style="height: 25px; width: 25px;">
           </a>
-          <div class="dropdown-menu dropdown-menu-right" aria-labelledby="dropdownProfile">
-            <?php if (isset($_SESSION['username'])): ?>
-              <span class="dropdown-item-text font-weight-bold" style="font-size: 1.1rem;">
-                <?= htmlspecialchars($_SESSION['username']) ?>
-              </span>
-              <a class="dropdown-item" href="/account">My Account</a>
-              <a class="dropdown-item" href="/favorites">View Favorites</a>
-              <?php if ($_SESSION['isAdmin'] ?? false): ?>
-                <a class="dropdown-item" href="/manage-users">Manage Users</a>
-              <?php endif; ?>
-              <div class="dropdown-divider"></div>
-              <a class="dropdown-item text-danger" href="/logout">Logout</a>
-            <?php else: ?>
-              <a class="dropdown-item" href="/register">Register</a>
-              <a class="dropdown-item" href="/login">Login</a>
-            <?php endif; ?>
+          <div class="dropdown-menu dropdown-menu-end" aria-labelledby="dropdownProfile" style="right: 0; left: auto;">
+        <?php if (isset($_SESSION['username'])): ?>
+          <span class="dropdown-item-text" style="font-size: 1.1rem;">
+            <strong><?= htmlspecialchars($_SESSION['username']) ?></strong>
+          </span>
+          <a class="dropdown-item" href="/account">My Account</a>
+          <a class="dropdown-item" href="/favorites">View Favorites</a>
+          <?php if ($_SESSION['isAdmin'] ?? false): ?>
+            <a class="dropdown-item" href="/manage-users">Manage Users</a>
+          <?php endif; ?>
+          <div class="dropdown-divider"></div>
+          <a class="dropdown-item text-danger" href="/logout">Logout</a>
+        <?php else: ?>
+          <a class="dropdown-item" href="/register">Register</a>
+          <a class="dropdown-item" href="/login">Login</a>
+        <?php endif; ?>
           </div>
         </li>
       </ul>
