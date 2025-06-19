@@ -3,7 +3,7 @@
 
 <div class="mt-4 ml-3">
   <div class="row">
-    <div>
+    <div class="col-auto">
       <?php
       require_once dirname(dirname(__DIR__)) . "/components/find-image-ref.php";
       $imagePath = "/assets/images/genres/square-medium/" . $genre->getGenreId() . ".jpg";
@@ -11,7 +11,7 @@
       $correctImagePath = getImagePathOrPlaceholder($imagePath, $placeholderPath);
       ?>
       <img src="<?php echo $correctImagePath ?>" alt="<?php echo htmlspecialchars($genre->getGenreName()) ?>"
-        style="height: 200px">
+        style="height: 200px; width: 200px; object-fit: cover;">
     </div>
     <div class="col">
       <p><?php echo $genre->getDescription() ?></p>
