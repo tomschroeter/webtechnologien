@@ -6,151 +6,141 @@
     <?php endif; ?>
 </h2>
 
-<?php
-require_once dirname(dirname(__DIR__)) . "/components/find-image-ref.php";
-?>
+<?php require_once dirname(dirname(__DIR__)) . "/components/find-image-ref.php"; ?>
 
 <?php if (sizeof($artistSearchResults) > 0 || sizeof($artworkSearchResults) > 0): ?>
+
     <?php if (sizeof($artistSearchResults) > 0): ?>
         <div class="d-flex align-items-center mt-3 mb-3">
             <h3 class="flex-grow-1 mb-0">Artists</h3>
-            <!-- Form providing the ability to sort the order of displayed artists -->
-            <form method="get">
-                <!-- Sets already submitted url params -->
+        </div>
+
+        <div class="d-flex align-items-center justify-content-between mb-2">
+            <p class="text-muted mb-0">
+                Found:
+                <?= sizeof($artistSearchResults) . ' ' . (sizeof($artistSearchResults) === 1 ? 'artist' : 'artists'); ?>
+            </p>
+
+            <!-- Sorting form for artists -->
+            <form method="get" class="d-flex align-items-center">
                 <?php foreach ($_GET as $key => $value): ?>
                     <?php if ($key !== 'sortArtist'): ?>
-                        <input type="hidden" name="<?php echo htmlspecialchars($key) ?>" value="<?php echo htmlspecialchars($value) ?>">
+                        <input type="hidden" name="<?= htmlspecialchars($key) ?>" value="<?= htmlspecialchars($value) ?>">
                     <?php endif; ?>
                 <?php endforeach; ?>
-                <select name="sortArtist" onchange="this.form.submit()" class="form-select">
-                    <option value="ascending" <?php echo !$sortArtist ? 'selected' : '' ?>>Name (ascending)</option>
-                    <option value="descending" <?php echo $sortArtist ? 'selected' : '' ?>>Name (descending)</option>
+
+                <select name="sortArtist" onchange="this.form.submit()" class="form-select form-select-sm">
+                    <option value="ascending" <?= !$sortArtist ? 'selected' : '' ?>>Name (ascending)</option>
+                    <option value="descending" <?= $sortArtist ? 'selected' : '' ?>>Name (descending)</option>
                 </select>
             </form>
         </div>
-        <div>
-            <p class="text-muted">
-                Found:
-                <?php echo sizeof($artistSearchResults) . ' ' . (sizeof($artistSearchResults) === 1 ? 'artist' : 'artists'); ?>
-            </p>
-        </div>
 
-        <!-- List to display all artists that fit the search query -->
         <ul class="list-group">
             <?php foreach ($artistSearchResults as $artist): ?>
                 <li class="list-group-item d-flex align-items-center justify-content-between">
-                    <!-- Ref link to display single artist -->
-                    <a href="/artists/<?php echo $artist->getArtistId() ?>"
+                    <a href="/artists/<?= $artist->getArtistId() ?>"
                         class="d-flex align-items-center flex-grow-1 text-decoration-none text-dark" style="min-width:0;">
-                        <!-- Display artist name -->
                         <span class="text-truncate" style="max-width: 60%; white-space: normal;">
-                            <?php echo htmlspecialchars($artist->getFirstName()) ?>             <?= htmlspecialchars($artist->getLastName()) ?>
+                            <?= htmlspecialchars($artist->getFirstName()) ?>             <?= htmlspecialchars($artist->getLastName()) ?>
                         </span>
                     </a>
+
                     <div class="d-flex align-items-center" style="gap: 0.5rem;">
-                        <!-- Display add to favorites button -->
                         <?php
                         $type = "artist";
                         $item = $artist;
-                        require dirname(dirname(__DIR__)) . "/components/add-to-favorites-button.php"
-                            ?>
+                        require dirname(dirname(__DIR__)) . "/components/add-to-favorites-button.php";
 
-                        <!-- Artist image -->
-                        <?php $imagePath = "/assets/images/artists/square-thumb/" . $artist->getArtistId() . ".jpg";
+                        $imagePath = "/assets/images/artists/square-thumb/" . $artist->getArtistId() . ".jpg";
                         $placeholderPath = "/assets/placeholder/artists/square-thumb/placeholder.svg";
                         $correctImagePath = getImagePathOrPlaceholder($imagePath, $placeholderPath);
                         ?>
-                        <img src="<?php echo $correctImagePath ?>" alt="Artist Image"
+                        <img src="<?= $correctImagePath ?>" alt="Artist Image"
                             style="width: 60px; height: 60px; object-fit: cover; border-radius: 0.25rem;">
                     </div>
                 </li>
-            <?php endforeach ?>
+            <?php endforeach; ?>
         </ul>
     <?php endif; ?>
 
     <?php if (sizeof($artworkSearchResults) > 0): ?>
-        <div class="d-flex align-items-center mt-3 mb-3">
+        <div class="d-flex align-items-center mt-4 mb-2">
             <h3 class="flex-grow-1 mb-0">Artworks</h3>
-            <!-- Form providing the ability to sort the order of displayed artworks by specific parameters -->
-            <form method="get" class="d-flex">
-                <!-- Sets already submitted url params -->
+        </div>
+
+        <div class="d-flex align-items-center justify-content-between mb-3 flex-wrap gap-2">
+            <p class="text-muted mb-0">
+                Found:
+                <?= sizeof($artworkSearchResults) . ' ' . (sizeof($artworkSearchResults) === 1 ? 'artwork' : 'artworks'); ?>
+            </p>
+
+            <!-- Sorting form for artworks -->
+            <form method="get" class="d-flex align-items-center gap-2">
                 <?php foreach ($_GET as $key => $value): ?>
-                    <?php if ($key !== 'sortParameter' && $key !== 'sortArtwork'): ?>
-                        <input type="hidden" name="<?php echo htmlspecialchars($key) ?>" value="<?php echo htmlspecialchars($value) ?>">
+                    <?php if (!in_array($key, ['sortParameter', 'sortArtwork'])): ?>
+                        <input type="hidden" name="<?= htmlspecialchars($key) ?>" value="<?= htmlspecialchars($value) ?>">
                     <?php endif; ?>
                 <?php endforeach; ?>
 
-                <!-- Form to change the sort parameter -->
-                <select name="sortParameter" onchange="this.form.submit()" class="form-select mx-2">
-                    <option value="Title" <?php echo $sortParameter == "Title" ? 'selected' : '' ?>>Title</option>
-                    <option value="LastName" <?php echo $sortParameter == "LastName" ? 'selected' : '' ?>>Artist name</option>
-                    <option value="YearOfWork" <?php echo $sortParameter == "YearOfWork" ? 'selected' : '' ?>>Year</option>
+                <select name="sortParameter" onchange="this.form.submit()" class="form-select form-select-sm">
+                    <option value="Title" <?= $sortParameter == "Title" ? 'selected' : '' ?>>Title</option>
+                    <option value="LastName" <?= $sortParameter == "LastName" ? 'selected' : '' ?>>Artist name</option>
+                    <option value="YearOfWork" <?= $sortParameter == "YearOfWork" ? 'selected' : '' ?>>Year</option>
                 </select>
 
-                <!-- Form to change the sort order -->
-                <select name="sortArtwork" onchange="this.form.submit()" class="form-select">
-                    <option value="ascending" <?php echo !$sortArtwork ? 'selected' : '' ?>>ascending</option>
-                    <option value="descending" <?php echo $sortArtwork ? 'selected' : '' ?>>descending</option>
+                <select name="sortArtwork" onchange="this.form.submit()" class="form-select form-select-sm">
+                    <option value="ascending" <?= !$sortArtwork ? 'selected' : '' ?>>ascending</option>
+                    <option value="descending" <?= $sortArtwork ? 'selected' : '' ?>>descending</option>
                 </select>
             </form>
         </div>
-        <div>
-            <p class="text-muted">
-                Found:
-                <?php echo sizeof($artworkSearchResults) . ' ' . (sizeof($artworkSearchResults) === 1 ? 'artwork' : 'artworks'); ?>
-            </p>
-        </div>
-
-        <!-- List to display all artworks that fit the search query -->
         <ul class="list-group">
-            <?php foreach ($artworkSearchResults as $index => $combined): ?>
-                <?php $artwork = $combined->getArtwork() ?>
+            <?php foreach ($artworkSearchResults as $combined): ?>
+                <?php $artwork = $combined->getArtwork(); ?>
                 <li class="list-group-item d-flex align-items-center justify-content-between">
-                    <!-- Ref link to display single artwork -->
-                    <a href="/artworks/<?php echo $artwork->getArtworkId() ?>"
-                        class="d-flex align-items-center flex-grow-1 text-decoration-none text-dark" style="min-width:0;">
-                        <!-- Display artwork title, artist name and year of publishment -->
+                    <a href="/artworks/<?= $artwork->getArtworkId() ?>"
+                        class="d-flex align-items-center flex-grow-1 text-dark link-underline-on-hover" style="min-width:0;">
                         <span class="text-truncate" style="max-width: 60%; white-space: normal;">
-                            <?php echo '&quot;' . htmlspecialchars($artwork->getTitle()) . '&quot; ' .
-                                'by ' . htmlspecialchars($combined->getArtistFirstName()) . ' ' . htmlspecialchars($combined->getArtistLastName()) . ',' .
-                                ' published ' . htmlspecialchars($artwork->getYearOfWork()) ?>
+                            &quot;<?= htmlspecialchars($artwork->getTitle()) ?>&quot;
+                            by <?= htmlspecialchars($combined->getArtistFirstName()) ?>
+                            <?= htmlspecialchars($combined->getArtistLastName()) ?>,
+                            published <?= htmlspecialchars($artwork->getYearOfWork()) ?>
                         </span>
                     </a>
+
                     <div class="d-flex align-items-center" style="gap: 0.5rem;">
-                        <!-- Display add to favorites button -->
                         <?php
-                            $type = "artwork";
-                            $item = $artwork;
-                            require dirname(dirname(__DIR__)) . "/components/add-to-favorites-button.php"
+                        $type = "artwork";
+                        $item = $artwork;
+                        require dirname(dirname(__DIR__)) . "/components/add-to-favorites-button.php";
+
+                        $imagePath = "/assets/images/works/square-small/" . $artwork->getImageFileName() . ".jpg";
+                        $placeholderPath = "/assets/placeholder/works/square-small/placeholder.svg";
+                        $correctImagePath = getImagePathOrPlaceholder($imagePath, $placeholderPath);
                         ?>
-                        <!-- Artwork image -->
-                        <?php
-                            $imagePath = "/assets/images/works/square-small/" . $artwork->getImageFileName() . ".jpg";
-                            $placeholderPath = "/assets/placeholder/works/square-small/placeholder.svg";
-                            $correctImagePath = getImagePathOrPlaceholder($imagePath, $placeholderPath);
-                        ?>
-                        <img src="<?php echo $correctImagePath ?>" alt="Artwork Image"
+                        <img src="<?= $correctImagePath ?>" alt="Artwork Image"
                             style="width: 60px; height: 60px; object-fit: cover; border-radius: 0.25rem;">
                     </div>
                 </li>
-            <?php endforeach ?>
+            <?php endforeach; ?>
         </ul>
     <?php endif; ?>
 
-    <!-- Output if search didn't return a result -->
 <?php else: ?>
     <div class="alert alert-info mt-4">
         <h4>No Results Found</h4>
-        <?php if (isset($isAdvancedSearch) && $isAdvancedSearch): ?>
+
+        <?php if (!empty($isAdvancedSearch)): ?>
             <p>No results were found for your advanced search criteria.</p>
+
             <?php if (!empty($filterBy)): ?>
-                <p><strong>Filter:</strong> <?php echo ucfirst(htmlspecialchars($filterBy)) ?></p>
+                <p><strong>Filter:</strong> <?= ucfirst(htmlspecialchars($filterBy)) ?></p>
             <?php endif; ?>
             <?php if (!empty($artistName)): ?>
-                <p><strong>Artist Name:</strong> <?php echo htmlspecialchars($artistName) ?></p>
+                <p><strong>Artist Name:</strong> <?= htmlspecialchars($artistName) ?></p>
             <?php endif; ?>
 
-            <!-- Artist Year Range -->
             <?php
             $today = date("Y");
             if (!empty($artistStartDate) && empty($artistEndDate)) {
@@ -160,21 +150,17 @@ require_once dirname(dirname(__DIR__)) . "/components/find-image-ref.php";
             } elseif (!empty($artistStartDate) && !empty($artistEndDate)) {
                 echo "<p><strong>Artist Year Range:</strong> " . htmlspecialchars($artistStartDate) . " - " . htmlspecialchars($artistEndDate) . "</p>";
             }
-            ?>
 
-            <?php if (!empty($artworkTitle)): ?>
-                <p><strong>Artwork Title:</strong> <?php echo htmlspecialchars($artworkTitle) ?></p>
-            <?php endif; ?>
+            if (!empty($artworkTitle)) {
+                echo "<p><strong>Artwork Title:</strong> " . htmlspecialchars($artworkTitle) . "</p>";
+            }
+            if (!empty($artistNationality)) {
+                echo "<p><strong>Artist Nationality:</strong> " . htmlspecialchars($artistNationality) . "</p>";
+            }
+            if (!empty($artworkGenre)) {
+                echo "<p><strong>Artwork Genre:</strong> " . htmlspecialchars($artworkGenre) . "</p>";
+            }
 
-            <?php if (!empty($artistNationality)): ?>
-                <p><strong>Artist Nationality:</strong> <?php echo htmlspecialchars($artistNationality) ?></p>
-            <?php endif; ?>
-            <?php if (!empty($artworkGenre)): ?>
-                <p><strong>Artwork Genre:</strong> <?php echo htmlspecialchars($artworkGenre) ?></p>
-            <?php endif; ?>
-
-            <!-- Artwork Year Range -->
-            <?php
             if (!empty($artworkStartDate) && empty($artworkEndDate)) {
                 echo "<p><strong>Artwork Year Range:</strong> " . htmlspecialchars($artworkStartDate) . " - $today</p>";
             } elseif (empty($artworkStartDate) && !empty($artworkEndDate)) {
@@ -184,10 +170,11 @@ require_once dirname(dirname(__DIR__)) . "/components/find-image-ref.php";
             }
             ?>
         <?php else: ?>
-            <p>No results were found for the search term <strong>"<?php echo htmlspecialchars($searchQuery) ?>"</strong>.</p>
+            <p>No results were found for the search term <strong>"<?= htmlspecialchars($searchQuery) ?>"</strong>.</p>
         <?php endif; ?>
+
         <div class="mt-3">
-            <a href="/artists" class="btn btn-primary mr-2">Browse All Artists</a>
+            <a href="/artists" class="btn btn-primary me-2">Browse All Artists</a>
             <a href="/artworks" class="btn btn-primary">Browse All Artworks</a>
         </div>
     </div>
