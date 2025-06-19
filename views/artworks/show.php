@@ -56,7 +56,7 @@ $correctLargeImagePath = getImagePathOrPlaceholder($largeImagePath, $placeholder
 <div class="mt-4">
     <div class="row">
         <div class="col-md-6">
-            <a href="#" data-toggle="modal" data-target="#imageModal">
+            <a href="#" data-bs-toggle="modal" data-bs-target="#imageModal">
                 <img src="<?php echo $correctImagePath ?>" alt="<?php echo htmlspecialchars($artwork->getTitle()) ?>"
                     class="img-fluid"
                     style="max-width: auto; max-height: auto; object-fit: contain; cursor: pointer; border: 1px solid #ddd; background-color: #f8f9fa;"></a>
@@ -229,7 +229,7 @@ $correctLargeImagePath = getImagePathOrPlaceholder($largeImagePath, $placeholder
                             <h3 class="mb-0">
                                 <button
                                     class="btn btn-link text-decoration-none text-dark d-flex justify-content-between align-items-center w-100"
-                                    type="button" data-toggle="collapse" data-target="#generalCollapse"
+                                    type="button" data-bs-toggle="collapse" data-bs-target="#generalCollapse"
                                     aria-expanded="false" aria-controls="generalCollapse">
                                     General Information
                                     <span id="generalArrow">▼</span>
@@ -292,7 +292,7 @@ $correctLargeImagePath = getImagePathOrPlaceholder($largeImagePath, $placeholder
                             <h3 class="mb-0">
                                 <button
                                     class="btn btn-link text-decoration-none text-dark d-flex justify-content-between align-items-center w-100"
-                                    type="button" data-toggle="collapse" data-target="#locationCollapse"
+                                    type="button" data-bs-toggle="collapse" data-bs-target="#locationCollapse"
                                     aria-expanded="false" aria-controls="locationCollapse">
                                     Location
                                     <span id="locationArrow">▼</span>
