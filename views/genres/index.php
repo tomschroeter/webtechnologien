@@ -10,7 +10,7 @@ require_once dirname(dirname(__DIR__)) . "/components/find-image-ref.php";
     <?php foreach ($genres as $genre): ?>
       <li class="list-group-item d-flex justify-content-between align-items-center">
         <a href="/genres/<?php echo $genre->getGenreId() ?>"
-           class="d-flex justify-content-between align-items-center w-100 text-decoration-none text-dark">
+           class="d-flex justify-content-between align-items-center w-100 link-underline-on-hover text-dark">
           <span><?php echo htmlspecialchars($genre->getGenreName()) ?></span>
           <!-- Checks if genre image exists -->
           <?php
