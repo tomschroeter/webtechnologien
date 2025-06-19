@@ -17,7 +17,7 @@
         <?php if ($flash): ?>
             <div class="alert alert-<?= $flash['type'] ?> alert-dismissible fade show mt-3" role="alert">
                 <?= htmlspecialchars($flash['message']) ?>
-                <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                <button type="button" class="close" onclick="this.parentElement.style.display='none'" aria-label="Close">
                     <span aria-hidden="true">&times;</span>
                 </button>
             </div>
@@ -61,7 +61,8 @@
     
     <?php require_once dirname(dirname(__DIR__)) . "/bootstrap.php"; ?>
     
-    <!-- Include favorites JavaScript -->
+    <!-- Include notification and favorites JavaScript -->
+    <script src="/assets/js/notification.js"></script>
     <script src="/assets/js/favorites.js"></script>
 </body>
 
