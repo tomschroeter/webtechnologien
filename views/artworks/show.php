@@ -297,11 +297,11 @@ $correctLargeImagePath = getImagePathOrPlaceholder($largeImagePath, $placeholder
                                 <div id="map"
                                     style="height: 300px; width: 100%; border: 1px solid #ccc; border-radius: 8px;"></div>
 
-                                <!-- Include Leaflet CSS and JS, allowed for this project -->
+                                <!-- Include Leaflet CSS and JS, fetching from web allowed for this use -->
                                 <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
                                 <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
 
-                                <!-- JavaScript to display map, allowed for this project -->
+                                <!-- JavaScript to display map, allowed for this use -->
                                 <script>
                                     document.addEventListener("DOMContentLoaded", function () {
                                         var lat = <?php echo json_encode($latitude); ?>;
@@ -318,7 +318,7 @@ $correctLargeImagePath = getImagePathOrPlaceholder($largeImagePath, $placeholder
 
                                         if (locationCollapseElement) {
                                             // Listen for the 'shown.bs.collapse' event, which fires after the accordion panel is fully visible
-                                            $(locationCollapseElement).on('shown.bs.collapse', function () {
+                                            locationCollapseElement.addEventListener('shown.bs.collapse', function () {
                                                 var mapDiv = document.getElementById('map');
                                                 if (!mapDiv) {
                                                     console.error("Map container #map not found when accordion was shown.");
