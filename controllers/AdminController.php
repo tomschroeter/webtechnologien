@@ -29,12 +29,6 @@ class AdminController extends BaseController
             return;
         }
 
-        // Handle POST actions for user management
-        if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-            $this->handleUserAction();
-            return;
-        }
-        
         // Fetch users and admin count
         $users = $this->customerRepository->getAllUsersWithLogonData();
         $adminCount = $this->customerRepository->countActiveAdmins();
@@ -54,8 +48,24 @@ class AdminController extends BaseController
         echo $this->renderWithLayout('admin/manage-users', $data);
     }
     
-    private function handleUserAction()
+    public function handleUserAction()
     {
+        if (session_status() === PHP_SESSION_NONE) {
+            session_start();
+        }
+        
+        $this->requireAuth();
+        
+        // Check if user is admin
+        if (!isset($_SESSION['isAdmin']) || !$_SESSION['isAdmin']) {
+            $this->redirectWithMessage('/', 'Access denied. Administrator privileges required.', 'error');
+            return;
+        }
+
+        if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
+            $this->jsonResponse(['success' => false, 'message' => 'Invalid request method'], 405);
+        }
+
         $customerID = (int)($_POST['customerId'] ?? 0);
         $action = $_POST['action'] ?? '';
 

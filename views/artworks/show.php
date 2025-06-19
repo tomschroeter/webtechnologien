@@ -107,24 +107,11 @@ $correctLargeImagePath = getImagePathOrPlaceholder($largeImagePath, $placeholder
             <?php if (isset($_SESSION['customerId'])): ?>
                 <div class="favorites-container mb-3">
                     <?php
-                    $type = "artwork";
-                    $item = $artwork;
-                    $showLabel = true;
-                    require dirname(dirname(__DIR__)) . "/components/add-to-favorites-button.php"
-                        ?>
-
-                    <!-- Fallback form for non-JS users -->
-                    <form method="post" action="/favorites/artworks/<?php echo $artwork->getArtworkId() ?>/toggle"
-                        class="d-none fallback-form">
-                        <button type="submit"
-                            class="btn <?php echo $isInFavorites ? 'btn-outline-danger' : 'btn-primary' ?>">
-                            <?php if ($isInFavorites): ?>
-                                <span class="heart">♥</span> Remove from Favorites
-                            <?php else: ?>
-                                <span class="heart">♡</span> Add to Favorites
-                            <?php endif; ?>
-                        </button>
-                    </form>
+                        $type = "artwork";
+                        $item = $artwork;
+                        $showLabel = true;
+                        require dirname(dirname(__DIR__)) . "/components/add-to-favorites-button.php"
+                    ?>
                 </div>
 
             <?php endif; ?>

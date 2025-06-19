@@ -55,20 +55,6 @@ require_once dirname(dirname(__DIR__)) . "/components/find-image-ref.php";
                         require dirname(dirname(__DIR__)) . "/components/add-to-favorites-button.php"
                             ?>
 
-                        <!-- Fallback form for non-JS users -->
-                        <form method="post" action="/favorites/artists/<?php echo $artist->getArtistId() ?>/toggle"
-                            class="mr-2 mb-0 d-none fallback-form">
-                            <?php if ($isInFavorites): ?>
-                                <input type="hidden" name="_method" value="DELETE">
-                                <button type="submit" class="btn btn-outline-danger">
-                                    ♥
-                                </button>
-                            <?php else: ?>
-                                <button type="submit" class="btn btn-primary">
-                                    ♡
-                                </button>
-                            <?php endif; ?>
-                        </form>
                         <!-- Artist image -->
                         <?php $imagePath = "/assets/images/artists/square-thumb/" . $artist->getArtistId() . ".jpg";
                         $placeholderPath = "/assets/placeholder/artists/square-thumb/placeholder.svg";
@@ -133,29 +119,15 @@ require_once dirname(dirname(__DIR__)) . "/components/find-image-ref.php";
                     <div class="d-flex align-items-center" style="gap: 0.5rem;">
                         <!-- Display add to favorites button -->
                         <?php
-                        $type = "artwork";
-                        $item = $artwork;
-                        require dirname(dirname(__DIR__)) . "/components/add-to-favorites-button.php"
-                            ?>
-
-                        <!-- Fallback form for non-JS users -->
-                        <form method="post" action="/favorites/artworks/<?php echo $artwork->getArtworkId() ?>/toggle"
-                            class="mr-2 mb-0 d-none fallback-form">
-                            <?php if ($isInFavorites): ?>
-                                <input type="hidden" name="_method" value="DELETE">
-                                <button type="submit" class="btn btn-outline-danger">
-                                    ♥
-                                </button>
-                            <?php else: ?>
-                                <button type="submit" class="btn btn-primary">
-                                    ♡
-                                </button>
-                            <?php endif; ?>
-                        </form>
+                            $type = "artwork";
+                            $item = $artwork;
+                            require dirname(dirname(__DIR__)) . "/components/add-to-favorites-button.php"
+                        ?>
                         <!-- Artwork image -->
-                        <?php $imagePath = "/assets/images/works/square-small/" . $artwork->getImageFileName() . ".jpg";
-                        $placeholderPath = "/assets/placeholder/works/square-small/placeholder.svg";
-                        $correctImagePath = getImagePathOrPlaceholder($imagePath, $placeholderPath);
+                        <?php
+                            $imagePath = "/assets/images/works/square-small/" . $artwork->getImageFileName() . ".jpg";
+                            $placeholderPath = "/assets/placeholder/works/square-small/placeholder.svg";
+                            $correctImagePath = getImagePathOrPlaceholder($imagePath, $placeholderPath);
                         ?>
                         <img src="<?php echo $correctImagePath ?>" alt="Artwork Image"
                             style="width: 60px; height: 60px; object-fit: cover; border-radius: 0.25rem;">
