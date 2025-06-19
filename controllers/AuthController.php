@@ -162,7 +162,6 @@ class AuthController extends BaseController
                     $hashed,
                     1,
                     0,
-                    0,
                     date("Y-m-d H:i:s"),
                     date("Y-m-d H:i:s"),
                     0
@@ -511,9 +510,6 @@ class AuthController extends BaseController
         $errors = [];
 
         // Validate input
-        if (empty($first)) {
-            $errors[] = "First name is required.";
-        }
         if (empty($last)) {
             $errors[] = "Last name is required.";
         }
@@ -690,8 +686,7 @@ class AuthController extends BaseController
         
         try {
             $hashed = password_hash($newPassword1, PASSWORD_DEFAULT);
-            $salt = substr($hashed, 7, 22);
-            $this->customerRepository->updateCustomerPassword($userId, $hashed, $salt);
+            $this->customerRepository->updateCustomerPassword($userId, $hashed);
             
             $this->redirectWithMessage('/account', 'Password changed successfully.', 'success');
             
