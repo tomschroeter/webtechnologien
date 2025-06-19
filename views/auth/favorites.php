@@ -10,7 +10,7 @@ require_once dirname(dirname(__DIR__)) . "/components/find-image-ref.php";
         <p>You haven't added any artists or artworks to your favorites yet. Browse our collection and click the heart (♡)
             button to add items to your favorites!</p>
         <div class="mt-3">
-            <a href="/artists" class="btn btn-primary mr-2">Browse Artists</a>
+            <a href="/artists" class="btn btn-primary me-2">Browse Artists</a>
             <a href="/artworks" class="btn btn-primary">Browse Artworks</a>
         </div>
     </div>
@@ -54,7 +54,7 @@ require_once dirname(dirname(__DIR__)) . "/components/find-image-ref.php";
                                 </p>
                             <?php endif; ?>
                             <div class="d-flex align-items-center mt-auto">
-                                <a href="<?= $artistLink ?>" class="btn btn-primary flex-fill mr-2">View Profile</a>
+                                <a href="<?= $artistLink ?>" class="btn btn-primary flex-fill me-2">View Profile</a>
                                 <?php
                                 $type = "artist";
                                 $item = $artist;
@@ -105,7 +105,7 @@ require_once dirname(dirname(__DIR__)) . "/components/find-image-ref.php";
                                 </p>
                             <?php endif; ?>
                             <div class="d-flex align-items-center mt-auto">
-                                <a href="<?= $artworkLink ?>" class="btn btn-primary flex-fill mr-2">View Artwork</a>
+                                <a href="<?= $artworkLink ?>" class="btn btn-primary flex-fill me-2">View Artwork</a>
                                 <?php
                                 $type = "artwork";
                                 $item = $artwork;
