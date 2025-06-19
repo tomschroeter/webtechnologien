@@ -500,6 +500,12 @@ class AuthController extends BaseController
         $first = trim($_POST['firstName'] ?? '');
         $last = trim($_POST['lastName'] ?? '');
         $email = trim($_POST['email'] ?? '');
+        $address = trim($_POST['address'] ?? '');
+        $city = trim($_POST['city'] ?? '');
+        $region = trim($_POST['region'] ?? '');
+        $country = trim($_POST['country'] ?? '');
+        $postal = trim($_POST['postal'] ?? '');
+        $phone = trim($_POST['phone'] ?? '');
         $isAdmin = $isAdminEdit && isset($_POST['isAdmin']) && $_POST['isAdmin'] === '1';
         
         $errors = [];
@@ -515,6 +521,19 @@ class AuthController extends BaseController
             $errors[] = "Email is required.";
         } elseif (!filter_var($email, FILTER_VALIDATE_EMAIL)) {
             $errors[] = "Please enter a valid email address.";
+        }
+        if (empty($address)) {
+            $errors[] = "Address is required.";
+        }
+        if (empty($city)) {
+            $errors[] = "City is required.";
+        }
+        if (empty($country)) {
+            $errors[] = "Country is required.";
+        }
+        $validPhoneNumber = preg_match('/^\+?[0-9\s\-\(\)\.\/xXextEXT\*#]{5,30}$/', $phone);
+        if (!empty($phone) && !$validPhoneNumber) {
+            $errors[] = "Please enter a valid phone number.";
         }
 
         // Check if email is already taken by another user
@@ -533,7 +552,18 @@ class AuthController extends BaseController
         }
 
         try {
-            $this->customerRepository->updateCustomerBasicInfo($userId, $first, $last, $email);
+            $this->customerRepository->updateCustomerFullInfo(
+                $userId,
+                $first,
+                $last,
+                $address,
+                $city,
+                $region,
+                $country,
+                $postal,
+                $phone,
+                $email
+            );
             
             // Only update admin status if this is an admin edit
             if ($isAdminEdit) {

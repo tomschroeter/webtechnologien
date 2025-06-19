@@ -74,7 +74,7 @@ class CustomerLogonRepository
         }
 
         $stmt = $this->db->prepareStatement("
-        SELECT c.CustomerID, c.FirstName, c.LastName, c.Email, cl.UserName, cl.Type, cl.State, cl.isAdmin
+        SELECT c.CustomerID, c.FirstName, c.LastName, c.Email, c.Address, c.City, c.Region, c.Country, c.Postal, c.Phone, cl.UserName, cl.Type, cl.State, cl.isAdmin
         FROM customers c
         JOIN customerlogon cl ON c.CustomerID = cl.CustomerID
         ORDER BY LastName, FirstName
@@ -90,6 +90,12 @@ class CustomerLogonRepository
                 $row['LastName'],
                 $row['Email'],
                 $row['UserName'],
+                $row['Address'],
+                $row['City'],
+                $row['Region'],
+                $row['Country'],
+                $row['Postal'],
+                $row['Phone'],
                 $row['Type'],
                 $row['State'],
                 $row['isAdmin']
@@ -108,7 +114,7 @@ class CustomerLogonRepository
         }
 
         $stmt = $this->db->prepareStatement("
-        SELECT c.CustomerID, c.FirstName, c.LastName, c.Email, cl.UserName, cl.Type, cl.State, cl.isAdmin
+        SELECT c.CustomerID, c.FirstName, c.LastName, c.Email, c.Address, c.City, c.Region, c.Country, c.Postal, c.Phone, cl.UserName, cl.Type, cl.State, cl.isAdmin
         FROM customers c
         JOIN customerlogon cl ON c.CustomerId = cl.CustomerId
         WHERE c.CustomerId = :id
@@ -123,6 +129,12 @@ class CustomerLogonRepository
             $result['LastName'],
             $result['Email'],
             $result['UserName'],
+            $result['Address'],
+            $result['City'],
+            $result['Region'],
+            $result['Country'],
+            $result['Postal'],
+            $result['Phone'],
             $result['Type'],
             $result['State'],
             $result['isAdmin']
@@ -140,7 +152,7 @@ class CustomerLogonRepository
         }
 
         $stmt = $this->db->prepareStatement("
-            SELECT c.CustomerID, c.FirstName, c.LastName, c.Email, cl.UserName, cl.Type, cl.State, cl.isAdmin
+            SELECT c.CustomerID, c.FirstName, c.LastName, c.Email, c.Address, c.City, c.Region, c.Country, c.Postal, c.Phone, cl.UserName, cl.Type, cl.State, cl.isAdmin
             FROM customers c
             JOIN customerlogon cl ON c.CustomerId = cl.CustomerId
             WHERE c.Email = :email
@@ -154,6 +166,12 @@ class CustomerLogonRepository
             $result['LastName'],
             $result['Email'],
             $result['UserName'],
+            $result['Address'],
+            $result['City'],
+            $result['Region'],
+            $result['Country'],
+            $result['Postal'],
+            $result['Phone'],
             $result['Type'],
             $result['State'],
             $result['isAdmin']
@@ -164,18 +182,44 @@ class CustomerLogonRepository
         return $user;
     }
 
-    public function updateCustomerBasicInfo(int $id, string $first, string $last, string $email): void
-    {
+    public function updateCustomerBasicInfo(
+        int $id,
+        string $first,
+        string $last,
+        string $email,
+        string $address,
+        string $city,
+        ?string $region,
+        string $country,
+        ?string $postal,
+        ?string $phone
+    ): void {
         if (!$this->db->isConnected()) {
             $this->db->connect();
         }
 
         $stmt = $this->db->prepareStatement("
-        UPDATE customers SET FirstName = :first, LastName = :last, Email = :email WHERE CustomerId = :id
-    ");
+            UPDATE customers 
+            SET FirstName = :first, 
+                LastName = :last, 
+                Email = :email, 
+                Address = :address, 
+                City = :city, 
+                Region = :region,
+                Country = :country, 
+                Postal = :postal, 
+                Phone = :phone 
+            WHERE CustomerId = :id
+        ");
         $stmt->bindValue("first", $first);
         $stmt->bindValue("last", $last);
         $stmt->bindValue("email", $email);
+        $stmt->bindValue("address", $address);
+        $stmt->bindValue("city", $city);
+        $stmt->bindValue("region", $region);
+        $stmt->bindValue("country", $country);
+        $stmt->bindValue("postal", $postal);
+        $stmt->bindValue("phone", $phone);
         $stmt->bindValue("id", $id);
         $stmt->execute();
 
