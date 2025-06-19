@@ -50,15 +50,10 @@ require_once dirname(dirname(__DIR__)) . "/components/find-image-ref.php";
                     <div class="d-flex align-items-center" style="gap: 0.5rem;">
                         <!-- Display add to favorites button -->
                         <?php
-                        $isInFavorites = isset($_SESSION['favoriteArtists']) && in_array($artist->getArtistId(), $_SESSION['favoriteArtists']);
-                        ?>
-                        <button type="button"
-                            class="btn favorite-btn <?php echo $isInFavorites ? 'btn-outline-danger' : 'btn-primary' ?>"
-                            data-type="artist" data-id="<?php echo $artist->getArtistId() ?>"
-                            data-is-favorite="<?php echo $isInFavorites ? 'true' : 'false' ?>"
-                            title="<?php echo $isInFavorites ? 'Remove from Favorites' : 'Add to Favorites' ?>">
-                            <?php echo $isInFavorites ? '<span class="heart">♥</span>' : '<span class="heart">♡</span>' ?>
-                        </button>
+                        $type = "artist";
+                        $item = $artist;
+                        require dirname(dirname(__DIR__)) . "/components/add-to-favorites-button.php"
+                            ?>
 
                         <!-- Artist image -->
                         <?php $imagePath = "/assets/images/artists/square-thumb/" . $artist->getArtistId() . ".jpg";
@@ -124,20 +119,15 @@ require_once dirname(dirname(__DIR__)) . "/components/find-image-ref.php";
                     <div class="d-flex align-items-center" style="gap: 0.5rem;">
                         <!-- Display add to favorites button -->
                         <?php
-                        $isInFavorites = isset($_SESSION['favoriteArtworks']) && in_array($artwork->getArtworkId(), $_SESSION['favoriteArtworks']);
+                            $type = "artwork";
+                            $item = $artwork;
+                            require dirname(dirname(__DIR__)) . "/components/add-to-favorites-button.php"
                         ?>
-                        <button type="button"
-                            class="btn favorite-btn <?php echo $isInFavorites ? 'btn-outline-danger' : 'btn-primary' ?>"
-                            data-type="artwork" data-id="<?php echo $artwork->getArtworkId() ?>"
-                            data-is-favorite="<?php echo $isInFavorites ? 'true' : 'false' ?>"
-                            title="<?php echo $isInFavorites ? 'Remove from Favorites' : 'Add to Favorites' ?>">
-                            <?php echo $isInFavorites ? '<span class="heart">♥</span>' : '<span class="heart">♡</span>' ?>
-                        </button>
-
                         <!-- Artwork image -->
-                        <?php $imagePath = "/assets/images/works/square-small/" . $artwork->getImageFileName() . ".jpg";
-                        $placeholderPath = "/assets/placeholder/works/square-small/placeholder.svg";
-                        $correctImagePath = getImagePathOrPlaceholder($imagePath, $placeholderPath);
+                        <?php
+                            $imagePath = "/assets/images/works/square-small/" . $artwork->getImageFileName() . ".jpg";
+                            $placeholderPath = "/assets/placeholder/works/square-small/placeholder.svg";
+                            $correctImagePath = getImagePathOrPlaceholder($imagePath, $placeholderPath);
                         ?>
                         <img src="<?php echo $correctImagePath ?>" alt="Artwork Image"
                             style="width: 60px; height: 60px; object-fit: cover; border-radius: 0.25rem;">
