@@ -3,20 +3,32 @@
 class CustomerWithLogonData
 {
     private int $customerId;
-    private string $firstName;
+    private ?string $firstName;
     private string $lastName;
     private string $email;
     private string $userName;
+    private string $address;
+    private string $city;
+    private ?string $region;
+    private string $country;
+    private ?string $postal;
+    private ?string $phone;
     private int $type;
     private int $state;
     private int $isAdmin;
 
     public function __construct(
         int $customerId,
-        string $firstName,
+        ?string $firstName,
         string $lastName,
         string $email,
         string $userName,
+        string $address,
+        string $city,
+        ?string $region,
+        string $country,
+        ?string $postal,
+        ?string $phone,
         int $type,
         int $state,
         int $isAdmin
@@ -26,6 +38,12 @@ class CustomerWithLogonData
         $this->lastName = $lastName;
         $this->email = $email;
         $this->userName = $userName;
+        $this->address = $address;
+        $this->city = $city;
+        $this->region = $region;
+        $this->country = $country;
+        $this->postal = $postal;
+        $this->phone = $phone;
         $this->type = $type;
         $this->state = $state;
         $this->isAdmin = $isAdmin;
@@ -41,7 +59,7 @@ class CustomerWithLogonData
         $this->customerId = $customerId;
     }
 
-    public function getFirstName(): string
+    public function getFirstName(): ?string
     {
         return $this->firstName;
     }
@@ -79,6 +97,66 @@ class CustomerWithLogonData
     public function setUserName(string $userName): void
     {
         $this->userName = $userName;
+    }
+
+    public function getAddress(): string
+    {
+        return $this->address;
+    }
+
+    public function setAddress(string $address): void
+    {
+        $this->address = $address;
+    }
+
+    public function getCity(): string
+    {
+        return $this->city;
+    }
+
+    public function setCity(string $city): void
+    {
+        $this->city = $city;
+    }
+
+    public function getRegion(): ?string
+    {
+        return $this->region;
+    }
+
+    public function setRegion(string $region): void
+    {
+        $this->region = $region;
+    }
+
+    public function getCountry(): string
+    {
+        return $this->country;
+    }
+
+    public function setCountry(string $country): void
+    {
+        $this->country = $country;
+    }
+
+    public function getPostal(): ?string
+    {
+        return $this->postal;
+    }
+
+    public function setPostal(string $postal): void
+    {
+        $this->postal = $postal;
+    }
+
+    public function getPhone(): ?string
+    {
+        return $this->phone;
+    }
+
+    public function setPhone(string $phone): void
+    {
+        $this->phone = $phone;
     }
 
     public function getType(): int
