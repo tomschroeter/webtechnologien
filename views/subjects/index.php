@@ -10,7 +10,7 @@ require_once dirname(dirname(__DIR__)) . "/components/find-image-ref.php";
     <?php foreach ($subjects as $subject): ?>
       <li class="list-group-item d-flex justify-content-between align-items-center">
         <a href="/subjects/<?php echo $subject->getSubjectId() ?>"
-           class="d-flex justify-content-between align-items-center w-100 text-decoration-none text-dark">
+           class="d-flex justify-content-between align-items-center w-100 link-underline-on-hover text-dark">
           <span><?php echo htmlspecialchars($subject->getSubjectName()) ?></span>
           <!-- Checks if subject image exists -->
           <?php $imagePath =  "/assets/images/subjects/square-thumbs/".$subject->getSubjectId().".jpg";
