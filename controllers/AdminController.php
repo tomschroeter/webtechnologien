@@ -35,13 +35,11 @@ class AdminController extends BaseController
         
         // Handle error messages
         $error = $_GET['error'] ?? null;
-        $flashMessage = $this->getFlashMessage();
         
         $data = [
             'users' => $users,
             'adminCount' => $adminCount,
             'error' => $error,
-            'flashMessage' => $flashMessage,
             'title' => 'Manage Users - Admin Panel'
         ];
         

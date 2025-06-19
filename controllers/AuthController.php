@@ -34,13 +34,8 @@ class AuthController extends BaseController
             $this->redirect('/');
         }
         
-        // Handle error and logout messages from URL params
-        $error = $_GET['error'] ?? null;
-        $logout = $_GET['logout'] ?? null;
         
         $data = [
-            'error' => $error,
-            'logout' => $logout,
             'title' => 'Login - Art Gallery'
         ];
         
@@ -101,14 +96,7 @@ class AuthController extends BaseController
             $this->redirect('/');
         }
         
-        // Handle error messages from URL params
-        $error = $_GET['error'] ?? null;
-        $success = $_GET['success'] ?? null;
-        
         $data = [
-            'error' => $error,
-            'success' => $success,
-            'formData' => [], // Empty form data on GET request
             'title' => 'Register - Art Gallery'
         ];
         
@@ -261,13 +249,9 @@ class AuthController extends BaseController
             $this->redirect('/error.php?error=userNotFound');
         }
         
-        // Handle success messages
-        $success = $_GET['success'] ?? null;
-        
         $data = [
             'user' => $user,
             'customer' => $customer,
-            'success' => $success,
             'title' => 'My Account - Art Gallery'
         ];
         
@@ -353,12 +337,9 @@ class AuthController extends BaseController
             $_SESSION['favoriteArtworks'] = array_values($_SESSION['favoriteArtworks'] ?? []);
         }
         
-        $flashMessage = $this->getFlashMessage();
-        
         $data = [
             'favoriteArtists' => $favoriteArtists,
             'favoriteArtworks' => $favoriteArtworks,
-            'flashMessage' => $flashMessage,
             'title' => 'My Favorites - Art Gallery'
         ];
         
@@ -500,15 +481,10 @@ class AuthController extends BaseController
             return;
         }
 
-        $error = $_GET['error'] ?? null;
-        $flashMessage = $this->getFlashMessage();
-        
         $data = [
             'user' => $user,
             'userId' => $userId,
             'isAdminEdit' => $isAdminEdit,
-            'error' => $error,
-            'flashMessage' => $flashMessage,
             'title' => $isAdminEdit ? 'Edit User - Admin Panel' : 'Edit Profile'
         ];
         
@@ -637,13 +613,10 @@ class AuthController extends BaseController
         }
 
         $error = $_GET['error'] ?? null;
-        $flashMessage = $this->getFlashMessage();
-        
         $data = [
             'user' => $user,
             'csrf_token' => $_SESSION['csrf_token'],
             'error' => $error,
-            'flashMessage' => $flashMessage,
             'title' => 'Change Password'
         ];
         
