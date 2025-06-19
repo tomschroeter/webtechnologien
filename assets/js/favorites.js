@@ -11,7 +11,6 @@ document.addEventListener('DOMContentLoaded', function() {
         
         const type = button.dataset.type; // 'artist' or 'artwork'
         const id = button.dataset.id;
-        const isFavorite = button.dataset.isFavorite === 'true';
         
         // Disable button during request
         button.disabled = true;
@@ -31,11 +30,10 @@ document.addEventListener('DOMContentLoaded', function() {
             const data = await response.json();
             
             if (data.success) {
-                // Update button state
                 const newIsFavorite = data.isFavorite;
                 button.dataset.isFavorite = newIsFavorite ? 'true' : 'false';
                 
-                // Check if button originally had only heart symbol (for cards) or full text
+                // Check if button originaly had only heart symbol (for cards) or full text
                 const isHeartOnly = originalText.trim() === '♡' || originalText.trim() === '♥';
                 
                 if (newIsFavorite) {
@@ -43,19 +41,22 @@ document.addEventListener('DOMContentLoaded', function() {
                     button.innerHTML = isHeartOnly 
                         ? '<span class="heart">♥</span>' 
                         : '<span class="heart">♥</span> Remove from Favorites';
+
+                    showPrimaryNotification("Added to favorites!")
                 } else {
                     button.className = 'btn favorite-btn btn-primary';
                     button.innerHTML = isHeartOnly 
                         ? '<span class="heart">♡</span>' 
                         : '<span class="heart">♡</span> Add to Favorites';
+
+                    showPrimaryNotification("Removed from favorites!")
                 }
-                showNotification(data.message, 'success');
             } else {
-                showNotification(data.message, 'danger');
+                showErrorNotification(data.message);
                 button.textContent = originalText;
             }
         } catch (error) {
-            showNotification('An error occurred while updating favorites', 'danger');
+            showErrorNotification('An error occurred while updating favorites');
             button.textContent = originalText;
         } finally {
             button.disabled = false;

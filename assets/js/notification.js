@@ -42,14 +42,14 @@ function showToast(message, type = 'primary', autohide = true, delay = 5000) {
 }
 
 // Convenience functions for different toast types
-function showSuccessToast(message) {
+function showSuccessNotification(message) {
     return showToast(message, 'success');
 }
 
-function showErrorToast(message) {
+function showErrorNotification(message) {
     return showToast(message, 'danger');
 }
 
-function showPrimaryToast(message) {
+function showPrimaryNotification(message) {
     return showToast(message, 'primary');
 }

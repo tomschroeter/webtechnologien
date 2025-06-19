@@ -56,10 +56,10 @@ require_once dirname(dirname(__DIR__)) . "/components/find-image-ref.php";
                             <div class="d-flex align-items-center mt-auto">
                                 <a href="<?= $artistLink ?>" class="btn btn-primary flex-fill mr-2">View Profile</a>
                                 <?php
-                                $type = "artist";
-                                $item = $artist;
-                                require dirname(dirname(__DIR__)) . "/components/add-to-favorites-button.php"
-                                    ?>
+                                    $type = "artist";
+                                    $item = $artist;
+                                    require dirname(dirname(__DIR__)) . "/components/add-to-favorites-button.php"
+                                ?>
                             </div>
                         </div>
                     </div>
@@ -107,10 +107,10 @@ require_once dirname(dirname(__DIR__)) . "/components/find-image-ref.php";
                             <div class="d-flex align-items-center mt-auto">
                                 <a href="<?= $artworkLink ?>" class="btn btn-primary flex-fill mr-2">View Artwork</a>
                                 <?php
-                                $type = "artwork";
-                                $item = $artwork;
-                                require dirname(dirname(__DIR__)) . "/components/add-to-favorites-button.php"
-                                    ?>
+                                    $type = "artwork";
+                                    $item = $artwork;
+                                    require dirname(dirname(__DIR__)) . "/components/add-to-favorites-button.php"
+                                ?>
                             </div>
                         </div>
                     </div>
