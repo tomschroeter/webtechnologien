@@ -1,9 +1,5 @@
 <h1 class="mt-4">Edit User</h1>
 
-<?php if ($error === 'invalidInput'): ?>
-    <div class="alert alert-danger">Please provide a valid last name and email address.</div>
-<?php endif; ?>
-
 <form method="POST" action="/edit-user" class="mt-4">
     <input type="hidden" name="id" value="<?= htmlspecialchars($user->getCustomerId()) ?>">
     

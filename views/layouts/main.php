@@ -7,52 +7,13 @@
     <?php require_once dirname(dirname(__DIR__)) . "/components/navbar.php"; ?>
     
     <div class="container">
-        <!-- Flash Messages -->
+        <!-- Flash Messages (converted to toast notifications) -->
         <?php 
         $flash = null;
         if (isset($flashMessage)) {
             $flash = $flashMessage;
         }
         ?>
-        <?php if ($flash): ?>
-            <div class="alert alert-<?= $flash['type'] ?> alert-dismissible fade show mt-3" role="alert">
-                <?= htmlspecialchars($flash['message']) ?>
-                <button type="button" class="close" onclick="this.parentElement.style.display='none'" aria-label="Close">
-                    <span aria-hidden="true">&times;</span>
-                </button>
-            </div>
-        <?php endif; ?>
-        
-        <!-- Login success message -->
-        <?php if (isset($_GET['login']) && $_GET['login'] === 'success' && isset($_SESSION['username'])): ?>
-        <div class="alert alert-success alert-dismissible fade show mt-3" role="alert">
-            <strong>Welcome back, <?= htmlspecialchars($_SESSION['username']) ?>!</strong> 
-            You have successfully logged in.
-            <button type="button" class="close" data-dismiss="alert" aria-label="Close">
-                <span aria-hidden="true">&times;</span>
-            </button>
-        </div>
-    <?php endif; ?>
-
-    <!-- Welcome message for newly registered users -->
-    <?php if (isset($_GET['welcome']) && $_GET['welcome'] === '1' && isset($_SESSION['username'])): ?>
-        <div class="alert alert-success alert-dismissible fade show mt-3" role="alert">
-            <strong>Welcome to Art Gallery, <?= htmlspecialchars($_SESSION['username']) ?>!</strong> 
-            Your account has been created successfully.
-            <button type="button" class="close" data-dismiss="alert" aria-label="Close">
-                <span aria-hidden="true">&times;</span>
-            </button>
-        </div>        <?php endif; ?>
-        
-        <!-- URL Message Parameters -->
-        <?php if (isset($_GET['message'])): ?>
-            <div class="alert alert-success alert-dismissible fade show mt-3" role="alert">
-                <?= htmlspecialchars($_GET['message']) ?>
-                <button type="button" class="close" data-dismiss="alert" aria-label="Close">
-                    <span aria-hidden="true">&times;</span>
-                </button>
-            </div>
-        <?php endif; ?>
         
         <!-- Main Content -->
         <?= $content ?>
@@ -72,6 +33,27 @@
     <script src="/assets/js/favorites.js"></script>
     <script src="/assets/js/notification.js"></script>
     
+    <!-- Flash Message Toast Handler -->
+    <?php if ($flash): ?>
+        <script>
+            document.addEventListener('DOMContentLoaded', function() {
+                // Convert flash message type to appropriate toast function
+                const flashType = '<?= $flash['type'] ?>';
+                const flashMessage = '<?= htmlspecialchars($flash['message']) ?>';
+                
+                switch(flashType) {
+                    case 'success':
+                        showSuccessNotification(flashMessage);
+                        break;
+                    case 'error':
+                        showErrorNotification(flashMessage);
+                        break;
+                    default:
+                        showPrimaryNotification(flashMessage);
+                }
+            });
+        </script>
+    <?php endif; ?>
 </body>
 
 </html>

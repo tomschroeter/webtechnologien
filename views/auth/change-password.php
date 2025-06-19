@@ -1,36 +1,5 @@
 <h1 class="mt-4">Change Password</h1>
 
-<!-- Display validation errors -->
-<?php
-$validationErrors = $_SESSION['validation_errors'] ?? [];
-if (!empty($validationErrors)) {
-  unset($_SESSION['validation_errors']); // Clear after displaying
-}
-?>
-<?php if (!empty($validationErrors)): ?>
-  <div class="alert alert-danger">
-    <strong>Please correct the following errors:</strong>
-    <ul class="mb-0 mt-2">
-      <?php foreach ($validationErrors as $error): ?>
-        <li><?= htmlspecialchars($error) ?></li>
-      <?php endforeach; ?>
-    </ul>
-  </div>
-<?php endif; ?>
-
-<!-- Display URL error parameter -->
-<?php if (isset($_GET['error'])): ?>
-  <div class="alert alert-danger">
-    <?php if ($_GET['error'] === 'validation'): ?>
-      Please correct the validation errors above.
-    <?php elseif ($_GET['error'] === 'update'): ?>
-      An error occurred while updating your password. Please try again.
-    <?php else: ?>
-      An error occurred. Please try again.
-    <?php endif; ?>
-  </div>
-<?php endif; ?>
-
 <h4 class="mt-2">Password Security</h4>
 <form class="mt-4 mb-4" method="POST" action="/change-password">
   <input type="hidden" name="csrf_token" value="<?= htmlspecialchars($csrf_token) ?>">

@@ -1,25 +1,5 @@
 <h1 class="mt-4">Register</h1>
 
-<?php if ($error === 'empty_field'): ?>
-    <div class="alert alert-danger">Please fill out all required fields.</div>
-<?php elseif ($error === 'invalid_phone_number'): ?>
-    <div class="alert alert-danger">The phone number doesn't have a valid format.</div>
-<?php elseif ($error === 'invalid_email'): ?>
-    <div class="alert alert-danger">The E-Mail doesn't have a valid format.</div>
-<?php elseif ($error === 'invalid_password'): ?>
-    <div class="alert alert-danger">
-        The password must contain at least 6 characters, one uppercase letter, one number, and one special character.
-    </div>
-<?php elseif ($error === 'exists'): ?>
-    <div class="alert alert-warning">Username already exists. Please choose another one.</div>
-<?php elseif ($error === 'password_mismatch'): ?>
-    <div class="alert alert-danger">Passwords do not match. Please try again.</div>
-<?php elseif ($error === 'database'): ?>
-    <div class="alert alert-danger">Registration failed due to a database error. Please try again.</div>
-<?php elseif ($success): ?>
-    <div class="alert alert-success">Registration successful! You can now <a href="/login">log in</a>.</div>
-<?php endif; ?>
-
 <form method="POST" action="/register" class="mt-4">
     <div class="form-row">
         <div class="form-group col-md-6">
