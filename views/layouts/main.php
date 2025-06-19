@@ -34,13 +34,25 @@
     <script src="/assets/js/notification.js"></script>
     
     <!-- Notifications Toast Handler -->
+    <!-- Debug: Check notifications -->
+    <?php 
+    if (isset($notifications)) {
+        echo "<!-- Debug: notifications variable exists: " . json_encode($notifications) . " -->";
+    } else {
+        echo "<!-- Debug: notifications variable not set -->";
+    }
+    ?>
+    
     <?php if (!empty($notifications)): ?>
         <script>
+            console.log('Debug: About to show notifications:', <?= json_encode($notifications) ?>);
             document.addEventListener('DOMContentLoaded', function() {
                 <?php foreach ($notifications as $notification): ?>
                     // Convert notification type to appropriate toast function
                     const notificationType = '<?= $notification['type'] ?>';
                     const notificationMessage = '<?= htmlspecialchars($notification['message']) ?>';
+                    
+                    console.log('Debug: Showing notification:', notificationType, notificationMessage);
                     
                     switch(notificationType) {
                         case 'success':
