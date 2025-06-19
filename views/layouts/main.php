@@ -33,11 +33,35 @@
     <script src="/assets/js/favorites.js"></script>
     <script src="/assets/js/notification.js"></script>
     
-    <!-- Flash Message Toast Handler -->
+    <!-- Notifications Toast Handler -->
+    <?php if (!empty($notifications)): ?>
+        <script>
+            document.addEventListener('DOMContentLoaded', function() {
+                <?php foreach ($notifications as $notification): ?>
+                    // Convert notification type to appropriate toast function
+                    const notificationType = '<?= $notification['type'] ?>';
+                    const notificationMessage = '<?= htmlspecialchars($notification['message']) ?>';
+                    
+                    switch(notificationType) {
+                        case 'success':
+                            showSuccessNotification(notificationMessage);
+                            break;
+                        case 'danger':
+                        case 'error':
+                            showErrorNotification(notificationMessage);
+                            break;
+                        default:
+                            showPrimaryNotification(notificationMessage);
+                    }
+                <?php endforeach; ?>
+            });
+        </script>
+    <?php endif; ?>
+    
+    <!-- Legacy Flash Message Support -->
     <?php if ($flash): ?>
         <script>
             document.addEventListener('DOMContentLoaded', function() {
-                // Convert flash message type to appropriate toast function
                 const flashType = '<?= $flash['type'] ?>';
                 const flashMessage = '<?= htmlspecialchars($flash['message']) ?>';
                 

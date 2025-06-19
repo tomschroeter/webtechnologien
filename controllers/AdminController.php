@@ -25,7 +25,7 @@ class AdminController extends BaseController
         
         // Check if user is admin
         if (!isset($_SESSION['isAdmin']) || !$_SESSION['isAdmin']) {
-            $this->redirectWithMessage('/', 'Access denied. Administrator privileges required.', 'error');
+            $this->redirectWithNotification('/', 'Access denied. Administrator privileges required.', 'error');
             return;
         }
 
@@ -33,13 +33,9 @@ class AdminController extends BaseController
         $users = $this->customerRepository->getAllUsersWithLogonData();
         $adminCount = $this->customerRepository->countActiveAdmins();
         
-        // Handle error messages
-        $error = $_GET['error'] ?? null;
-        
         $data = [
             'users' => $users,
             'adminCount' => $adminCount,
-            'error' => $error,
             'title' => 'Manage Users - Admin Panel'
         ];
         
@@ -56,7 +52,7 @@ class AdminController extends BaseController
         
         // Check if user is admin
         if (!isset($_SESSION['isAdmin']) || !$_SESSION['isAdmin']) {
-            $this->redirectWithMessage('/', 'Access denied. Administrator privileges required.', 'error');
+            $this->redirectWithNotification('/', 'Access denied. Administrator privileges required.', 'error');
             return;
         }
 
@@ -71,8 +67,11 @@ class AdminController extends BaseController
         if ($action === 'demote') {
             $adminCount = $this->customerRepository->countActiveAdmins();
             if ($adminCount <= 1) {
-                $this->redirect('/manage-users?error=lastadmin');
-                return;
+                $this->redirectWithNotification(
+                    '/manage-users',
+                    'You can not demote yourself because you are the last admin.',
+                    'error'
+                );
             }
         }
 
@@ -82,8 +81,11 @@ class AdminController extends BaseController
             if ($user && $user->getIsAdmin()) {
                 $adminCount = $this->customerRepository->countActiveAdmins();
                 if ($adminCount <= 1) {
-                    $this->redirect('/manage-users?error=lastadmin');
-                    return;
+                    $this->redirectWithNotification(
+                        '/manage-users',
+                        'You can not deactivate yourself because you are the last admin.',
+                        'error'
+                    );
                 }
             }
         }
@@ -110,7 +112,11 @@ class AdminController extends BaseController
                 $this->customerRepository->updateUserState($customerID, 0);
             }
 
-            $this->redirect('/manage-users');
+            $this->redirectWithNotification(
+                '/manage-users',
+                'Successfully updated!',
+                'success'
+            );
         }
     }
 }
