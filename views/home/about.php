@@ -17,7 +17,7 @@
             </p>
         </div>
     </div>
-    <div class="card shadow-sm mb-4">
+    <div class="card shadow-sm mb-5">
         <div class="card-body">
             <h2 class="h4 card-title">Imprint</h2>
             <p class="mb-1"><strong>Owner:</strong> Programmers Having Pizza (PHP) GmbH</p>

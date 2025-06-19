@@ -1,91 +1,88 @@
-<div class="card mb-5 shadow-sm" style="margin-top: 90px;">
-  <div class="card-body">
-    <h2 class="flex-grow-1 mb-1">Advanced Search</h2>
-    <hr>
-    <form method="get" action="/advanced-search" class="form-inline ml-2 mt-3">
-      <label for="filterBy" class="mr-2">Filter By</label>
-      <select name="filterBy" id="filterBy" class="form-control" onchange="this.form.submit()">
-        <option value="artist" <?= $filterBy === 'artist' ? 'selected' : '' ?>>Artist</option>
-        <option value="artwork" <?= $filterBy === 'artwork' ? 'selected' : '' ?>>Artwork</option>
-      </select>
-    </form>
-  </div>
-  <form method="get" action="/search" class="ml-2">
-    <input type="hidden" name="filterBy" value="<?= htmlspecialchars($filterBy) ?>">
-    <div class="col">
-      <!-- Artist Filter Section -->
-      <?php if ($filterBy === 'artist'): ?>
-        <div id="artistFilters">
-          <div class="col form-group w-50">
-            <label for="artistName">Name</label>
-            <input type="text" name="artistName"
-              value="<?php echo isset($_GET['artistName']) ? htmlspecialchars($_GET['artistName']) : '' ?>"
-              id="artistName" class="form-control w-50">
-          </div>
+<div class="d-flex justify-content-center align-items-center">
+  <div class="card mb-5 shadow-sm" style="margin-top: 90px; min-width: 700px; max-width: 900px;">
+    <div class="card-body">
+      <h2 class="mb-3">Advanced Search</h2>
+      <hr>
+      <form method="get" action="/advanced-search" class="d-flex align-items-center gap-3 mb-4">
+        <label for="filterBy" class="form-label mb-0 ms-2">Filter By</label>
+        <select name="filterBy" id="filterBy" class="form-select w-auto" onchange="this.form.submit()">
+          <option value="artist" <?= $filterBy === 'artist' ? 'selected' : '' ?>>Artist</option>
+          <option value="artwork" <?= $filterBy === 'artwork' ? 'selected' : '' ?>>Artwork</option>
+        </select>
+      </form>
 
-          <div class="col w-25 mt-1 form-group">
-            <label for="artistStartDate">Year Range</label>
-            <div class="d-flex align-items-center">
-              <input type="number" name="artistStartDate"
-                value="<?php echo isset($_GET['artistStartDate']) ? htmlspecialchars($_GET['artistStartDate']) : '' ?>"
-                class="w-50 form-control mr-1" id="artistStartDate"> -
-              <input type="number" name="artistEndDate"
-                value="<?php echo isset($_GET['artistEndDate']) ? htmlspecialchars($_GET['artistEndDate']) : '' ?>"
-                class="w-50 form-control ml-1" id="artistEndDate">
+      <form method="get" action="/search" style="max-width: 200px;">
+        <input type="hidden" name="filterBy" value="<?= htmlspecialchars($filterBy) ?>">
+
+        <!-- Artist Filters -->
+        <?php if ($filterBy === 'artist'): ?>
+          <div id="artistFilters" class="mb-3 ms-5">
+            <div class="mb-3">
+              <label for="artistName" class="form-label">Name</label>
+              <input type="text" name="artistName" id="artistName" class="form-control"
+                value="<?= isset($_GET['artistName']) ? htmlspecialchars($_GET['artistName']) : '' ?>">
+            </div>
+
+            <div class="mb-3">
+              <label for="artistStartDate" class="form-label">Year Range</label>
+              <div class="d-flex align-items-center gap-2">
+                <input type="number" name="artistStartDate" id="artistStartDate" class="form-control"
+                  value="<?= isset($_GET['artistStartDate']) ? htmlspecialchars($_GET['artistStartDate']) : '' ?>">
+                <span>-</span>
+                <input type="number" name="artistEndDate" id="artistEndDate" class="form-control"
+                  value="<?= isset($_GET['artistEndDate']) ? htmlspecialchars($_GET['artistEndDate']) : '' ?>">
+              </div>
+            </div>
+
+            <div class="mb-3">
+              <label for="artistNationality" class="form-label">Nationality</label>
+              <select name="artistNationality" id="artistNationality" class="form-select">
+                <option value="" <?= $selectedArtistNationality === '' ? 'selected' : '' ?>>None</option>
+                <?php foreach ($nationalities as $nationality): ?>
+                  <option value="<?= htmlspecialchars($nationality) ?>" <?= $selectedArtistNationality === $nationality ? 'selected' : '' ?>>
+                    <?= htmlspecialchars($nationality) ?>
+                  </option>
+                <?php endforeach; ?>
+              </select>
             </div>
           </div>
+        <?php endif; ?>
 
-          <div class="col mt-1 form-group w-50">
-            <label for="artistNationality">Nationality</label>
-            <select name="artistNationality" id="artistNationality" class="form-control w-50">
-              <option value="" <?php echo $selectedArtistNationality === '' ? 'selected' : '' ?>>None</option>
-              <?php foreach ($nationalities as $nationality): ?>
-                <option value="<?php echo $nationality; ?>" <?php echo $selectedArtistNationality === $nationality ? 'selected' : '' ?>>
-                  <?php echo $nationality; ?>
-                </option>
-              <?php endforeach; ?>
-            </select>
-          </div>
-        </div>
-      <?php endif; ?>
+        <!-- Artwork Filters -->
+        <?php if ($filterBy === 'artwork'): ?>
+          <div id="artworkFilters" class="mb-3 ms-5">
+            <div class="mb-3">
+              <label for="artworkTitle" class="form-label">Title</label>
+              <input type="text" name="artworkTitle" id="artworkTitle" class="form-control"
+                value="<?= isset($_GET['artworkTitle']) ? htmlspecialchars($_GET['artworkTitle']) : '' ?>">
+            </div>
 
-      <!-- Artwork Filter Section -->
-      <?php if ($filterBy === 'artwork'): ?>
-        <div id="artworkFilters">
-          <div class="col form-group w-50">
-            <label for="artworkTitle">Title</label>
-            <input type="text" name="artworkTitle"
-              value="<?php echo isset($_GET['artworkTitle']) ? htmlspecialchars($_GET['artworkTitle']) : '' ?>"
-              id="artworkTitle" class="form-control w-50">
-          </div>
+            <div class="mb-3">
+              <label for="artworkStartDate" class="form-label">Year Range</label>
+              <div class="d-flex align-items-center gap-2">
+                <input type="number" name="artworkStartDate" id="artworkStartDate" class="form-control"
+                  value="<?= isset($_GET['artworkStartDate']) ? htmlspecialchars($_GET['artworkStartDate']) : '' ?>">
+                <span>-</span>
+                <input type="number" name="artworkEndDate" id="artworkEndDate" class="form-control"
+                  value="<?= isset($_GET['artworkEndDate']) ? htmlspecialchars($_GET['artworkEndDate']) : '' ?>">
+              </div>
+            </div>
 
-          <div class="col w-25 mt-1 form-group">
-            <label for="artworkStartDate">Year Range</label>
-            <div class="d-flex align-items-center">
-              <input type="number" name="artworkStartDate"
-                value="<?php echo isset($_GET['artworkStartDate']) ? htmlspecialchars($_GET['artworkStartDate']) : '' ?>"
-                class="w-50 form-control mr-1" id="artworkStartDate"> -
-              <input type="number" name="artworkEndDate"
-                value="<?php echo isset($_GET['artworkEndDate']) ? htmlspecialchars($_GET['artworkEndDate']) : '' ?>"
-                class="w-50 form-control ml-1" id="artworkEndDate">
+            <div class="mb-3">
+              <label for="artworkGenre" class="form-label">Genre</label>
+              <select name="artworkGenre" id="artworkGenre" class="form-select">
+                <option value="" <?= $selectedArtworkGenre === '' ? 'selected' : '' ?>>None</option>
+                <?php foreach ($genreNames as $genre): ?>
+                  <option value="<?= htmlspecialchars($genre) ?>" <?= $selectedArtworkGenre === $genre ? 'selected' : '' ?>>
+                    <?= htmlspecialchars($genre) ?>
+                  </option>
+                <?php endforeach; ?>
+              </select>
             </div>
           </div>
+        <?php endif; ?>
 
-          <div class="col mt-1 form-group w-50">
-            <label for="artworkGenre">Genre</label>
-            <select name="artworkGenre" id="artworkGenre" class="form-control w-50">
-              <option value="" <?php echo $selectedArtworkGenre === '' ? 'selected' : '' ?>>None</option>
-              <?php foreach ($genreNames as $genre): ?>
-                <option value="<?php echo $genre; ?>" <?php echo $selectedArtworkGenre === $genre ? 'selected' : '' ?>>
-                  <?php echo $genre; ?>
-                </option>
-              <?php endforeach; ?>
-            </select>
-          </div>
-        </div>
-      <?php endif; ?>
+        <button type="submit" class="btn btn-outline-primary ms-2 mt-3 mb-3">Search</button>
+      </form>
     </div>
-    <button class="btn btn-outline-primary mt-4 ml-2 mb-4" type="submit">Search</button>
-  </form>
-</div>
-</div>
+  </div>
