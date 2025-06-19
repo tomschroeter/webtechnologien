@@ -39,7 +39,7 @@ if (!empty($validationErrors)) {
   <div class="row">
     <div class="col-md-6 mb-3">
       <label class="form-label">First Name</label>
-      <input type="text" name="firstName" class="form-control" value="<?= htmlspecialchars($user->getFirstName()) ?>" required>
+      <input type="text" name="firstName" class="form-control" value="<?= htmlspecialchars($user->getFirstName()) ?>">
     </div>
     <div class="col-md-6 mb-3">
       <label class="form-label">Last Name*</label>
@@ -50,11 +50,11 @@ if (!empty($validationErrors)) {
   <div class="row">
     <div class="col-md-6 mb-3">
       <label class="form-label">Address*</label>
-      <input type="text" name="address" class="form-control" value="<?= htmlspecialchars($user->getAddress()) ?>">
+      <input type="text" name="address" class="form-control" value="<?= htmlspecialchars($user->getAddress()) ?>" required>
     </div>
     <div class="col-md-6 mb-3">
       <label class="form-label">City*</label>
-      <input type="text" name="city" class="form-control" value="<?= htmlspecialchars($user->getCity()) ?>">
+      <input type="text" name="city" class="form-control" value="<?= htmlspecialchars($user->getCity()) ?>" required>
     </div>
   </div>
   
@@ -65,7 +65,7 @@ if (!empty($validationErrors)) {
     </div>
     <div class="col-md-4 mb-3">
       <label class="form-label">Country*</label>
-      <input type="text" name="country" class="form-control" value="<?= htmlspecialchars($user->getCountry()) ?>">
+      <input type="text" name="country" class="form-control" value="<?= htmlspecialchars($user->getCountry()) ?>" required>
     </div>
     <div class="col-md-4 mb-3">
       <label class="form-label">Postal</label>
