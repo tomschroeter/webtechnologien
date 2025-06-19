@@ -5,7 +5,6 @@ class CustomerLogon
     private ?int $customerId;
     private string $userName;
     private string $pass;
-    private ?string $salt;
     private int $state;
     private int $type;
     private string $dateJoined;
@@ -16,7 +15,6 @@ class CustomerLogon
         ?int $customerId,
         string $userName,
         string $pass,
-        ?string $salt,
         int $state,
         int $type,
         string $dateJoined,
@@ -26,7 +24,6 @@ class CustomerLogon
         $this->setCustomerId($customerId);
         $this->setUserName($userName);
         $this->setPass($pass);
-        $this->setSalt($salt);
         $this->setState($state);
         $this->setType($type);
         $this->setDateJoined($dateJoined);
@@ -40,7 +37,6 @@ class CustomerLogon
             (int) $record['CustomerID'],
             (string) $record['UserName'],
             (string) $record['Pass'],
-            $record['Salt'] ?? null,
             (int) $record['State'],
             (int) $record['Type'],
             (string) $record['DateJoined'],
@@ -77,16 +73,6 @@ class CustomerLogon
     public function setPass(string $pass): void
     {
         $this->pass = $pass;
-    }
-
-    public function getSalt(): ?string
-    {
-        return $this->salt;
-    }
-
-    public function setSalt(?string $salt): void
-    {
-        $this->salt = $salt;
     }
 
     public function getState(): int
