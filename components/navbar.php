@@ -10,7 +10,7 @@ if (session_status() === PHP_SESSION_NONE) {
 </invoke>
       <img src="/assets/svgs/logo.svg" alt="Logo" style="height: 40px; width: 40px;">
     </a>
-    <button class="navbar-toggler d-lg-none" type="button" data-toggle="collapse" data-target="#collapsibleNavId"
+    <button class="navbar-toggler d-lg-none" type="button" data-bs-toggle="collapse" data-bs-target="#collapsibleNavId"
       aria-controls="collapsibleNavId" aria-expanded="false" aria-label="Toggle navigation">
       <span class="navbar-toggler-icon"></span>
     </button>
@@ -48,7 +48,7 @@ if (session_status() === PHP_SESSION_NONE) {
           <a class="nav-link" href="/about">About <?php if ($currentRoute === 'about'): ?><span class="sr-only">(current)</span><?php endif; ?></a>
         </li>
         <li class="nav-item dropdown <?php echo $isBrowseActive ? 'active' : ''; ?>">
-          <a class="nav-link dropdown-toggle" href="#" id="dropdownBrowse" data-toggle="dropdown" aria-haspopup="true"
+          <a class="nav-link dropdown-toggle" href="#" id="dropdownBrowse" data-bs-toggle="dropdown" aria-haspopup="true"
             aria-expanded="false">Browse</a>
           <div class="dropdown-menu" aria-labelledby="dropdownBrowse">
             <a class="dropdown-item <?php echo ($currentRoute === 'artists') ? 'active' : ''; ?>" href="/artists">Artists</a>
@@ -76,7 +76,7 @@ if (session_status() === PHP_SESSION_NONE) {
 
       <ul class="navbar-nav mt-2 mt-lg-0 mx-4">
         <li class="nav-item dropdown">
-          <a class="nav-link dropdown-toggle" href="#" id="dropdownProfile" data-toggle="dropdown" aria-haspopup="true"
+          <a class="nav-link dropdown-toggle" href="#" id="dropdownProfile" data-bs-toggle="dropdown" aria-haspopup="true"
             aria-expanded="false">
             <img src="/assets/svgs/profile.svg" alt="Profile" style="height: 25px; width: 25px;">
           </a>
