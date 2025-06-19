@@ -168,3 +168,13 @@ body {
 .star-rating label:hover~label {
   color: gold;
 }
+
+.link-no-underline {
+  text-decoration: none;
+  color: inherit;
+}
+
+.link-underline-on-hover:hover {
+  text-decoration: underline;
+  color: inherit;
+}
