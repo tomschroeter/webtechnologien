@@ -62,7 +62,15 @@ if (session_status() === PHP_SESSION_NONE) {
       <div class="d-flex align-items-center" style="gap: 0.5rem;">
         <form class="my-2 my-lg-0" action="/search" method="GET">
             <div class="input-group">
-                <input class="form-control" name="searchQuery" type="text" placeholder="Search" aria-label="Search field">
+                <input
+                    class="form-control"
+                    name="searchQuery"
+                    type="text"
+                    placeholder="Search"
+                    aria-label="Search field"
+                    required
+                    minlength="3"
+                >
                 <div class="input-group-append">
                     <button class="btn btn-outline-primary" type="submit">Search</button>
                 </div>
