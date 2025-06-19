@@ -11,11 +11,24 @@
 <form method="POST" action="/login" class="mt-4">
     <div class="form-group">
         <label>Username</label>
-        <input name="username" class="form-control" placeholder="Username" required>
+        <input
+            name="username"
+            class="form-control"
+            placeholder="Username"
+            required
+            minlength="3"
+        >
     </div>
     <div class="form-group">
         <label>Password</label>
-        <input name="password" type="password" class="form-control" placeholder="Password" required>
+        <input
+            name="password"
+            type="password"
+            class="form-control"
+            placeholder="Password"
+            required
+            minlength="6"
+        >
     </div>
     <button type="submit" class="btn btn-primary">Login</button>
 </form>

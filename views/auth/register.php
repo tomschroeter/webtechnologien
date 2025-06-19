@@ -24,62 +24,101 @@
     <div class="form-row">
         <div class="form-group col-md-6">
             <label>First Name</label>
-            <input name="firstName" class="form-control" placeholder="First Name" value="<?= htmlspecialchars($formData['firstName'] ?? '') ?>">
+            <input name="firstName" class="form-control" placeholder="First Name">
         </div>
         <div class="form-group col-md-6">
             <label>Last Name</label>
-            <input name="lastName" class="form-control" placeholder="Last Name*" required value="<?= htmlspecialchars($formData['lastName'] ?? '') ?>">
+            <input name="lastName" class="form-control" placeholder="Last Name*" required>
         </div>
     </div>
     <div class="form-row">
         <div class="form-group col-md-6">
             <label>Address</label>
-            <input name="address" class="form-control" placeholder="Address*" required value="<?= htmlspecialchars($formData['address'] ?? '') ?>">
+            <input name="address" class="form-control" placeholder="Address*" required>
         </div>
         <div class="form-group col-md-6">
             <label>City</label>
-            <input name="city" class="form-control" placeholder="City*" required value="<?= htmlspecialchars($formData['city'] ?? '') ?>">
+            <input name="city" class="form-control" placeholder="City*" required>
         </div>
     </div>
     <div class="form-row">
         <div class="form-group col-md-4">
             <label>Region</label>
-            <input name="region" class="form-control" placeholder="Region (optional)" value="<?= htmlspecialchars($formData['region'] ?? '') ?>">
+            <input name="region" class="form-control" placeholder="Region (optional)">
         </div>
         <div class="form-group col-md-4">
             <label>Country</label>
-            <input name="country" class="form-control" placeholder="Country*" required value="<?= htmlspecialchars($formData['country'] ?? '') ?>">
+            <input
+                name="country"
+                class="form-control"
+                placeholder="Country*"
+                required
+                minlength="4"
+            >
         </div>
         <div class="form-group col-md-4">
             <label>Postal</label>
-            <input name="postal" class="form-control" placeholder="Postal Code" value="<?= htmlspecialchars($formData['postal'] ?? '') ?>">
+            <input
+                name="postal"
+                class="form-control"
+                placeholder="Postal Code"
+                inputmode="numeric"
+                pattern="^\d{10}$|^\d{5}-\d{4}$"
+                title="Please enter valid postal code. Postal codes can only be 10-digits long and must be numeric."
+            >
         </div>
     </div>
     <div class="form-row">
         <div class="form-group col-md-6">
             <label>Phone</label>
-            <input name="phone" class="form-control" placeholder="Phone (optional)" value="<?= htmlspecialchars($formData['phone'] ?? '') ?>">
+            <input
+                type="tel"
+                name="phone"
+                class="form-control"
+                placeholder="Phone (optional)"
+                pattern="[0-9]{3}-[0-9]{3}-[0-9]{4}"
+                title="Please enter a valid phone number."
+            >
         </div>
         <div class="form-group col-md-6">
             <label>Email</label>
-            <input name="email" type="email" class="form-control" placeholder="Email*" required value="<?= htmlspecialchars($formData['email'] ?? '') ?>">
+            <input name="email" type="email" class="form-control" placeholder="Email*" required>
         </div>
     </div>
     <hr>
     <div class="form-group">
         <label>Username</label>
-        <input name="username" class="form-control" placeholder="Username*" required value="<?= htmlspecialchars($formData['username'] ?? '') ?>">
+        <input
+            name="username"
+            class="form-control"
+            placeholder="Username*"
+            required
+            minlength="3"
+        >
     </div>
     <div class="form-row">
         <div class="form-group col-md-6">
             <label>Password</label>
-            <input name="password" type="password" class="form-control" placeholder="Password*" required>
+            <input
+                name="password"
+                type="password"
+                class="form-control"
+                placeholder="Password*"
+                required
+                minlength="6"
+            >
         </div>
         <div class="form-group col-md-6">
             <label>Repeat Password</label>
-            <input name="password2" type="password" class="form-control" placeholder="Repeat Password*" required>
+            <input
+                name="password2"
+                type="password"
+                class="form-control"
+                placeholder="Repeat Password*"
+                required
+                minlength="6"
+            >
         </div>
     </div>
-    <small class="form-text text-muted mb-3">Your password must be at least 6 characters, contain an uppercase letter, a digit, and a special character.</small>
     <button type="submit" class="btn btn-primary">Register</button>
 </form>

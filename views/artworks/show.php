@@ -498,8 +498,6 @@ $correctLargeImagePath = getImagePathOrPlaceholder($largeImagePath, $placeholder
 
     // Wait for DOM to be ready
     document.addEventListener('DOMContentLoaded', function () {
-        console.log('Document ready, setting up review handlers');
-
         // Function to handle add review form submission
         function handleAddReviewSubmit(e) {
             console.log('Add review form submitted');
