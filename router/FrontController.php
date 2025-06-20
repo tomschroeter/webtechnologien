@@ -11,6 +11,8 @@ require_once dirname(__DIR__) . "/controllers/SearchController.php";
 require_once dirname(__DIR__) . "/controllers/ReviewController.php";
 require_once dirname(__DIR__) . "/controllers/ErrorController.php";
 
+// Front Controller class responsible for routing incoming HTTP requests
+// to the apropriate controller and action based on defined routes.
 class FrontController
 {
     private $routes = [];
@@ -20,6 +22,7 @@ class FrontController
         $this->setupRoutes();
     }
     
+    // Defines mappings between url patterns and their corresponding controller/action pairs
     private function setupRoutes()
     {
         // Define controller routes
@@ -63,6 +66,8 @@ class FrontController
         ];
     }
     
+    // Parses the request uri, finds matching route, and redirects to controller.
+    // Returns true if request was handled, false if it should be handled elsewhere
     public function dispatch()
     {
         $method = $_SERVER['REQUEST_METHOD'];
@@ -79,7 +84,7 @@ class FrontController
         if (!$routeInfo) {
             // Check if this is a static file or asset request
             if ($this->isStaticFileRequest($uri)) {
-                return false; // Let server handle static files
+                return false; // Let the normal server handle static files
             }
             
             // Show 404 page for all other requests
@@ -95,8 +100,11 @@ class FrontController
         
         if (method_exists($controller, $action)) {
             if (!empty($params)) {
+                // Use call_user_func_array to dynamically call the method with parameters
+                // Example --> $action = 'show'; $params = ['123'] --> this calls $controller->show('123')
                 call_user_func_array([$controller, $action], $params);
             } else {
+                // No parameters needed, call method directly
                 $controller->$action();
             }
             return true;
@@ -105,39 +113,58 @@ class FrontController
         return false;
     }
     
+    // This finds the route for the http method and uri
+    // and supports parameterized routes with placeholders like {id}
+    // Parameters: method (http method like get, post), uri (request uri path)
+    // returns [controllerName, action, parameters] if found, null otherwise
     private function findRoute($method, $uri)
     {
+        // Check if there are any routes defined for this HTTP method (GET, POST...)
         if (!isset($this->routes[$method])) {
-            return null;
+            return null; // No routes for this method --> return null
         }
         
+        // Loop through each route pattern for this HTTP method
+        // $pattern is something like '/artists/{id}', $handler is ['ArtistController', 'show']
         foreach ($this->routes[$method] as $pattern => $handler) {
-            $params = [];
+            $params = []; // Initialize empty array to store extracted parameters
             
-            // Convert route pattern to regex
-            // Handle both {id} for regular routes and {id} for API routes
+            // Convert route pattern into a regular expression for matching
+            // Example: '/artists/{id}' --> becomes '/artists/([^/]+)'
+            // The {id} placeholder gets replaced with ([^/]+) which matches any characters except /
             $regex = preg_replace('/\{(\w+)\}/', '([^/]+)', $pattern);
+            
+            // Add regex delimiters and anchors
+            // Example: '/artists/([^/]+)' becomes '#^/artists/([^/]+)$#'
+            // ^ means start of string, $ means end of string, # are delimiters
             $regex = '#^' . $regex . '$#';
             
+            // Test if the uri matchbs this route pattern
+            // If it matches, $matches will contain the full match and any captured groups
             if (preg_match($regex, $uri, $matches)) {
-                // Extract parameters
-                array_shift($matches); // Remove full match
-                $params = $matches;
+                // Extract the parameter values from the matched groups
+                // $matches[0] is the full match, $matches[1], $matches[2]... are the captured parameters
+                array_shift($matches); // Remove the full match, keep only the parameter values
+                $params = $matches; // Store the parameter values
                 
+                // Return array with: [controller class name, method name, parameters]
+                // Example: ['ArtistController', 'show', ['123']]
                 return [$handler[0], $handler[1], $params];
             }
         }
         
+        // No matching route found for this URI
         return null;
     }
     
+    // Determines if the requested uri is for a static file (css, js, images...)
+    // that should be served directly by the web server and not processed by the application
     private function isStaticFileRequest($uri)
     {
         // List of static file extensions and paths that should be served directly
         $staticPaths = [
             '/assets/',
             '/favicon.ico',
-            '/robots.txt'
         ];
         
         $staticExtensions = [
@@ -145,14 +172,14 @@ class FrontController
             '.ico', '.woff', '.woff2', '.ttf', '.eot', '.pdf'
         ];
         
-        // Check if URI starts with static paths
+        // Check if uri starts with static paths
         foreach ($staticPaths as $path) {
             if (strpos($uri, $path) === 0) {
                 return true;
             }
         }
         
-        // Check if URI has static file extension
+        // Check if uri has static file extension
         foreach ($staticExtensions as $ext) {
             if (substr($uri, -strlen($ext)) === $ext) {
                 return true;
