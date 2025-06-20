@@ -7,13 +7,6 @@
     <?php require_once dirname(dirname(__DIR__)) . "/components/navbar.php"; ?>
     
     <div class="container">
-        <!-- Flash Messages (converted to toast notifications) -->
-        <?php 
-        $flash = null;
-        if (isset($flashMessage)) {
-            $flash = $flashMessage;
-        }
-        ?>
         
         <!-- Main Content -->
         <?= $content ?>
