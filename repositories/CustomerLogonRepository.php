@@ -145,7 +145,7 @@ class CustomerLogonRepository
         return $user;
     }
 
-    public function getUserDetailsByEmail(string $email): CustomerWithLogonData
+    public function getUserDetailsByEmail(string $email): ?CustomerWithLogonData
     {
         if (!$this->db->isConnected()) {
             $this->db->connect();
@@ -160,6 +160,12 @@ class CustomerLogonRepository
         $stmt->bindValue("email", $email);
         $stmt->execute();
         $result = $stmt->fetch();
+        
+        if ($result === false) {
+            $this->db->disconnect();
+            return null;
+        }
+        
         $user = new CustomerWithLogonData(
             $result['CustomerID'],
             $result['FirstName'],

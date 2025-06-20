@@ -38,7 +38,7 @@
     </div>
     <div class="col-md-4 mb-3">
       <label class="form-label">Postal</label>
-      <input type="text" name="postal" class="form-control" value="<?= htmlspecialchars($user->getPostal()) ?>">
+      <input type="text" name="postal" class="form-control" value="<?= htmlspecialchars($user->getPostal()) ?>" minlength="4" maxlength="10">
     </div>
   </div>
   
@@ -52,23 +52,6 @@
       <input type="email" name="email" class="form-control" value="<?= htmlspecialchars($user->getEmail()) ?>" required>
     </div>
   </div>
-
-<?php if ($isAdminEdit): ?>
-  <div class="row">
-    <div class="col-md-6 mb-3">
-      <label class="form-label">Role</label>
-      <select name="isAdmin" class="form-select" required>
-        <option value="0" <?= !$user->getIsAdmin() ? 'selected' : '' ?>>User</option>
-        <option value="1" <?= $user->getIsAdmin() ? 'selected' : '' ?>>Administrator</option>
-      </select>
-      <?php if (isset($_SESSION['customerId']) && (int)$_SESSION['customerId'] === (int)$userId): ?>
-        <div class="form-text text-muted">
-          <strong>Warning:</strong> If you demote yourself from admin, you will lose admin privileges immediately.
-        </div>
-      <?php endif; ?>
-    </div>
-  </div>
-<?php endif; ?>
 
 <div class="d-flex justify-content-start gap-2"></div>
   <button type="submit" class="btn btn-primary">Save Changes</button>
