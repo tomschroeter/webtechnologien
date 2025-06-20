@@ -28,7 +28,7 @@ class AuthController extends BaseController
         if (session_status() === PHP_SESSION_NONE) {
             session_start();
         }
-        
+
         // If user is already logged in, redirect to home
         if (isset($_SESSION['customerId'])) {
             $this->redirect('/');
