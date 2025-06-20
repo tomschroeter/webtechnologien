@@ -6,6 +6,7 @@
         <input
             name="username"
             class="form-control"
+            value="<?= htmlspecialchars($formData['username'] ?? '') ?>"
             placeholder="Username"
             required
             minlength="3"

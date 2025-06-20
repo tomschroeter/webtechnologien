@@ -33,9 +33,14 @@ class AuthController extends BaseController
         if (isset($_SESSION['customerId'])) {
             $this->redirect('/');
         }
+
+        // Get form data from session if available, then clear it
+        $formData = $_SESSION['login_form_data'] ?? [];
+        unset($_SESSION['login_form_data']);
         
         $data = [
-            'title' => 'Login - Art Gallery'
+            'title' => 'Login - Art Gallery',
+            'formData' => $formData,
         ];
         
         echo $this->renderWithLayout('auth/login', $data);
@@ -53,6 +58,12 @@ class AuthController extends BaseController
         
         $username = trim($_POST['username'] ?? '');
         $password = $_POST['password'] ?? '';
+
+        // Store form data in session for repopulating form on validation errors
+        // Don't store passwords for security reasons
+        $_SESSION['login_form_data'] = [
+            'username' => $username
+        ];
 
         if (!$username || !$password) {
             $this->redirectWithNotification(
@@ -95,8 +106,13 @@ class AuthController extends BaseController
             $this->redirect('/');
         }
         
+        // Get form data from session if available, then clear it
+        $formData = $_SESSION['register_form_data'] ?? [];
+        unset($_SESSION['register_form_data']);
+        
         $data = [
-            'title' => 'Register - Art Gallery'
+            'title' => 'Register - Art Gallery',
+            'formData' => $formData
         ];
         
         echo $this->renderWithLayout('auth/register', $data);
@@ -124,6 +140,21 @@ class AuthController extends BaseController
         $username = trim($_POST['username'] ?? '');
         $password = $_POST['password'] ?? '';
         $password2 = $_POST['password2'] ?? '';
+
+        // Store form data in session for repopulating form on validation errors
+        // Don't store passwords for security reasons
+        $_SESSION['register_form_data'] = [
+            'firstName' => $firstName,
+            'lastName' => $lastName,
+            'address' => $address,
+            'city' => $city,
+            'region' => $region,
+            'country' => $country,
+            'postal' => $postal,
+            'phone' => $phone,
+            'email' => $email,
+            'username' => $username
+        ];
 
         $validPhoneNumber = preg_match('/^\+?[0-9\s\-\(\)\.\/xXextEXT\*#]{5,30}$/', $phone);
         $validPassword = preg_match('/^(?=.*[A-Z])(?=.*\d)(?=.*[\W_]).{6,}$/', $password);
@@ -193,6 +224,9 @@ class AuthController extends BaseController
                 // Use atomic registration method to prevent race conditions
                 $customerId = $this->customerRepository->registerCustomer($customer, $logon);
                 
+                // Clear form data from session on successful registration
+                unset($_SESSION['register_form_data']);
+                
                 // Automatically log the user in after successful registration
                 $_SESSION['customerId'] = $customerId;
                 $_SESSION['username'] = $username;
@@ -201,7 +235,7 @@ class AuthController extends BaseController
                 // Redirect to home page (logged in)
                 $this->redirectWithNotification(
                     '/',
-                    'Welcome to Art Gallery,' . htmlspecialchars($user->getUserName()) . '! Your account has been created successfully.',
+                    'Welcome to Art Gallery, ' . htmlspecialchars($username) . '! Your account has been created successfully.',
                     'success',
                 );
             } catch (Exception $e) {
@@ -694,7 +728,7 @@ class AuthController extends BaseController
                 $notifications[] = ['message' => $error, 'type' => 'error'];
             }
             
-            $this->redirectWithNotifications($redirectUrl, $notifications);
+            $this->redirectWithNotifications('/change-password', $notifications);
             return;
         }
         
