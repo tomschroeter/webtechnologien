@@ -2,8 +2,6 @@
 
 <h4 class="mt-2">Password Security</h4>
 <form class="mt-4 mb-4" method="POST" action="/change-password">
-  <input type="hidden" name="csrf_token" value="<?= htmlspecialchars($csrf_token) ?>">
-
   <div class="row">
     <div class="col-md-4 mb-3">
       <label class="form-label">Current Password</label>
