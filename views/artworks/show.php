@@ -392,7 +392,7 @@ $correctLargeImagePath = getImagePathOrPlaceholder($largeImagePath, $placeholder
             <?php endif; ?>
 
             <?php if (!empty($reviews)): ?>
-                <div id="reviews-container" class="mt-3">
+                <div id="reviews-container" class="mt-4">
                     <?php foreach ($reviews as $reviewWithCustomerInfo): ?>
                         <div class="card mb-3">
                             <div class="card-body">
