@@ -38,14 +38,6 @@ class AuthController extends BaseController
             'title' => 'Login - Art Gallery'
         ];
         
-        // Debug: Check if notifications are being retrieved
-        $notifications = $this->getNotifications();
-        if (!empty($notifications)) {
-            error_log("Debug: Notifications found: " . json_encode($notifications));
-        } else {
-            error_log("Debug: No notifications found");
-        }
-        
         echo $this->renderWithLayout('auth/login', $data);
     }
     
@@ -68,7 +60,6 @@ class AuthController extends BaseController
                 'Username or password is missing.',
                 'error',
             );
-            return;
         }
 
         $user = $this->customerRepository->getActiveUserByUsername($username);
@@ -79,7 +70,6 @@ class AuthController extends BaseController
                 'Password is incorrect.',
                 'error',
             );
-            return;
         }
 
         $_SESSION['customerId'] = $user->getCustomerId();
