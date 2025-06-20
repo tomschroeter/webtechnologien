@@ -1,11 +1,5 @@
 <h1 class="mt-4">My Account</h1>
 
-<?php if ($success === 'info'): ?>
-    <div class="alert alert-success">Profile updated successfully.</div>
-<?php elseif ($success === 'password'): ?>
-    <div class="alert alert-success">Password updated successfully.</div>
-<?php endif; ?>
-
 <h4 class="mt-2">General Information</h4>
 <form class="mt-4 mb-4" action="/edit-account" method="get">
     <div class="row">

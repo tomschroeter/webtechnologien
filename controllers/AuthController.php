@@ -33,15 +33,14 @@ class AuthController extends BaseController
         if (isset($_SESSION['customerId'])) {
             $this->redirect('/');
         }
-        
-        // Handle error and logout messages from URL params
-        $error = $_GET['error'] ?? null;
-        $logout = $_GET['logout'] ?? null;
+
+        // Get form data from session if available, then clear it
+        $formData = $_SESSION['login_form_data'] ?? [];
+        unset($_SESSION['login_form_data']);
         
         $data = [
-            'error' => $error,
-            'logout' => $logout,
-            'title' => 'Login - Art Gallery'
+            'title' => 'Login - Art Gallery',
+            'formData' => $formData,
         ];
         
         echo $this->renderWithLayout('auth/login', $data);
@@ -60,21 +59,39 @@ class AuthController extends BaseController
         $username = trim($_POST['username'] ?? '');
         $password = $_POST['password'] ?? '';
 
+        // Store form data in session for repopulating form on validation errors
+        // Don't store passwords for security reasons
+        $_SESSION['login_form_data'] = [
+            'username' => $username
+        ];
+
         if (!$username || !$password) {
-            $this->redirect('/login?error=missing');
+            $this->redirectWithNotification(
+                '/login',
+                'Username or password is missing.',
+                'error',
+            );
         }
 
         $user = $this->customerRepository->getActiveUserByUsername($username);
 
         if (!$user || !password_verify($password, $user->getPass())) {
-            $this->redirect('/login?error=invalid');
+            $this->redirectWithNotification(
+                '/login',
+                'Password is incorrect.',
+                'error',
+            );
         }
 
         $_SESSION['customerId'] = $user->getCustomerId();
         $_SESSION['username'] = $user->getUserName();
         $_SESSION['isAdmin'] = $user->getIsAdmin();
 
-        $this->redirect('/?login=success');
+        $this->redirectWithNotification(
+            '/',
+            'Welcome back, ' . htmlspecialchars($user->getUserName()) . '! You have successfully logged in.',
+            'success',
+        );
     }
     
     
@@ -89,15 +106,13 @@ class AuthController extends BaseController
             $this->redirect('/');
         }
         
-        // Handle error messages from URL params
-        $error = $_GET['error'] ?? null;
-        $success = $_GET['success'] ?? null;
+        // Get form data from session if available, then clear it
+        $formData = $_SESSION['register_form_data'] ?? [];
+        unset($_SESSION['register_form_data']);
         
         $data = [
-            'error' => $error,
-            'success' => $success,
-            'formData' => [], // Empty form data on GET request
-            'title' => 'Register - Art Gallery'
+            'title' => 'Register - Art Gallery',
+            'formData' => $formData
         ];
         
         echo $this->renderWithLayout('auth/register', $data);
@@ -126,21 +141,60 @@ class AuthController extends BaseController
         $password = $_POST['password'] ?? '';
         $password2 = $_POST['password2'] ?? '';
 
+        // Store form data in session for repopulating form on validation errors
+        // Don't store passwords for security reasons
+        $_SESSION['register_form_data'] = [
+            'firstName' => $firstName,
+            'lastName' => $lastName,
+            'address' => $address,
+            'city' => $city,
+            'region' => $region,
+            'country' => $country,
+            'postal' => $postal,
+            'phone' => $phone,
+            'email' => $email,
+            'username' => $username
+        ];
+
         $validPhoneNumber = preg_match('/^\+?[0-9\s\-\(\)\.\/xXextEXT\*#]{5,30}$/', $phone);
         $validPassword = preg_match('/^(?=.*[A-Z])(?=.*\d)(?=.*[\W_]).{6,}$/', $password);
 
         if (!$lastName || !$city || !$address || !$country || !$email || !$password) {
-            $this->redirect('/register?error=empty_field');
+            $this->redirectWithNotification(
+                '/register',
+                'Please fill out all required fields.',
+                'error',
+            );
         } elseif (!$validPhoneNumber && !empty($phone)) {
-            $this->redirect('/register?error=invalid_phone_number');
+            $this->redirectWithNotification(
+                '/register',
+                'The phone number does not have a valid format.',
+                'error',
+            );
         } elseif (!filter_var($email, FILTER_VALIDATE_EMAIL)) {
-            $this->redirect('/register?error=invalid_email');
+            $this->redirectWithNotification(
+                '/register',
+                'The E-Mail does not have a valid format.',
+                'error',
+            );
         } elseif (!$validPassword) {
-            $this->redirect('/register?error=invalid_password');
+            $this->redirectWithNotification(
+                '/register',
+                'The password must contain at least 6 characters, one uppercase letter, one number, and one special character.',
+                'error',
+            );
         } elseif ($password !== $password2) {
-            $this->redirect('/register?error=password_mismatch');
+            $this->redirectWithNotification(
+                '/register',
+                'Passwords do not match. Please try again.',
+                'error',
+            );
         } elseif ($this->customerRepository->userExists($username)) {
-            $this->redirect('/register?error=exists');
+            $this->redirectWithNotification(
+                '/register',
+                'Username already exists. Please choose another one.',
+                'error',
+            );
         } else {
             try {
                 $customer = new Customer(
@@ -170,15 +224,26 @@ class AuthController extends BaseController
                 // Use atomic registration method to prevent race conditions
                 $customerId = $this->customerRepository->registerCustomer($customer, $logon);
                 
+                // Clear form data from session on successful registration
+                unset($_SESSION['register_form_data']);
+                
                 // Automatically log the user in after successful registration
                 $_SESSION['customerId'] = $customerId;
                 $_SESSION['username'] = $username;
                 $_SESSION['isAdmin'] = false; // New users are always regular users
                 
                 // Redirect to home page (logged in)
-                $this->redirect('/?welcome=1');
+                $this->redirectWithNotification(
+                    '/',
+                    'Welcome to Art Gallery, ' . htmlspecialchars($username) . '! Your account has been created successfully.',
+                    'success',
+                );
             } catch (Exception $e) {
-                $this->redirect('/register?error=database');
+                $this->redirectWithNotification(
+                    '/register',
+                    'Registration failed due to a database error. Please try again.',
+                    'error',
+                );
             }
         }
     }
@@ -190,7 +255,12 @@ class AuthController extends BaseController
         }
         
         session_destroy();
-        $this->redirect('/login?logout=1');
+
+        $this->redirectWithNotification(
+            '/login',
+            'You have been successfully logged out.',
+            'success',
+        );
     }
     
     public function showAccount()
@@ -211,13 +281,9 @@ class AuthController extends BaseController
             $this->redirect('/error.php?error=userNotFound');
         }
         
-        // Handle success messages
-        $success = $_GET['success'] ?? null;
-        
         $data = [
             'user' => $user,
             'customer' => $customer,
-            'success' => $success,
             'title' => 'My Account - Art Gallery'
         ];
         
@@ -303,12 +369,9 @@ class AuthController extends BaseController
             $_SESSION['favoriteArtworks'] = array_values($_SESSION['favoriteArtworks'] ?? []);
         }
         
-        $flashMessage = $this->getFlashMessage();
-        
         $data = [
             'favoriteArtists' => $favoriteArtists,
             'favoriteArtworks' => $favoriteArtworks,
-            'flashMessage' => $flashMessage,
             'title' => 'My Favorites - Art Gallery'
         ];
         
@@ -428,7 +491,7 @@ class AuthController extends BaseController
         if ($userId) {
             // Admin editing another user's profile
             if (!isset($_SESSION['isAdmin']) || !$_SESSION['isAdmin']) {
-                $this->redirectWithMessage('/', 'Access denied. Administrator privileges required.', 'error');
+                $this->redirectWithNotification('/', 'Access denied. Administrator privileges required.', 'error');
                 return;
             }
             $isAdminEdit = true;
@@ -439,26 +502,21 @@ class AuthController extends BaseController
         }
         
         if (!$userId || !is_numeric($userId)) {
-            $this->redirectWithMessage($isAdminEdit ? '/manage-users' : '/account', 'Invalid user ID.', 'error');
+            $this->redirectWithNotification($isAdminEdit ? '/manage-users' : '/account', 'Invalid user ID.', 'error');
             return;
         }
 
         $user = $this->customerRepository->getUserDetailsById($userId);
 
         if (!$user) {
-            $this->redirectWithMessage($isAdminEdit ? '/manage-users' : '/account', 'User not found.', 'error');
+            $this->redirectWithNotification($isAdminEdit ? '/manage-users' : '/account', 'User not found.', 'error');
             return;
         }
 
-        $error = $_GET['error'] ?? null;
-        $flashMessage = $this->getFlashMessage();
-        
         $data = [
             'user' => $user,
             'userId' => $userId,
             'isAdminEdit' => $isAdminEdit,
-            'error' => $error,
-            'flashMessage' => $flashMessage,
             'title' => $isAdminEdit ? 'Edit User - Admin Panel' : 'Edit Profile'
         ];
         
@@ -480,7 +538,7 @@ class AuthController extends BaseController
         if ($userId && (int)$userId !== (int)$_SESSION['customerId']) {
             // Admin editing another user's profile
             if (!isset($_SESSION['isAdmin']) || !$_SESSION['isAdmin']) {
-                $this->redirectWithMessage('/', 'Access denied. Administrator privileges required.', 'error');
+                $this->redirectWithNotification('/', 'Access denied. Administrator privileges required.', 'error');
                 return;
             }
             $isAdminEdit = true;
@@ -492,7 +550,7 @@ class AuthController extends BaseController
 
         if (!$userId || !is_numeric($userId)) {
             $redirectUrl = $isAdminEdit ? '/manage-users' : '/account';
-            $this->redirectWithMessage($redirectUrl, 'Invalid user ID.', 'error');
+            $this->redirectWithNotification($redirectUrl, 'Invalid user ID.', 'error');
             return;
         }
 
@@ -505,7 +563,6 @@ class AuthController extends BaseController
         $country = trim($_POST['country'] ?? '');
         $postal = trim($_POST['postal'] ?? '');
         $phone = trim($_POST['phone'] ?? '');
-        $isAdmin = $isAdminEdit && isset($_POST['isAdmin']) && $_POST['isAdmin'] === '1';
         
         $errors = [];
 
@@ -539,11 +596,15 @@ class AuthController extends BaseController
         }
 
         if (!empty($errors)) {
-            $redirectUrl = $isAdminEdit ? "/edit-profile/$userId?error=validation" : "/edit-profile?error=validation";
+            $redirectUrl = $isAdminEdit ? "/edit-profile/$userId" : "/edit-profile";
             
-            // Store errors in session for display
-            $_SESSION['validation_errors'] = $errors;
-            $this->redirect($redirectUrl);
+            // Create notifications array from errors
+            $notifications = [];
+            foreach ($errors as $error) {
+                $notifications[] = ['message' => $error, 'type' => 'error'];
+            }
+            
+            $this->redirectWithNotifications($redirectUrl, $notifications);
             return;
         }
 
@@ -561,34 +622,14 @@ class AuthController extends BaseController
                 $email
             );
             
-            // Only update admin status if this is an admin edit
-            if ($isAdminEdit) {
-                $this->customerRepository->updateUserAdmin($userId, $isAdmin);
-                
-                // Check if admin is demoting themselves
-                if (isset($_SESSION['customerId']) && 
-                    $userId === (int)$_SESSION['customerId'] && 
-                    !$isAdmin && 
-                    ($_SESSION['isAdmin'] ?? false)) {
-                    
-                    // Update session to reflect they're no longer admin
-                    $_SESSION['isAdmin'] = false;
-                    
-                    // Redirect to home page instead of manage-users
-                    $this->redirectWithMessage('/', 'You have been demoted from admin status.', 'info');
-                    return;
-                }
-            }
-
             $successMessage = $isAdminEdit ? 'User updated successfully.' : 'Your profile has been updated successfully.';
             $redirectUrl = $isAdminEdit ? '/manage-users' : '/account';
-            $this->redirectWithMessage($redirectUrl, $successMessage, 'success');
+            $this->redirectWithNotification($redirectUrl, $successMessage, 'success');
             
         } catch (Exception $e) {
-            $redirectUrl = $isAdminEdit ? "/edit-profile/$userId?error=update" : "/edit-profile?error=update";
+            $redirectUrl = $isAdminEdit ? "/edit-profile/$userId" : "/edit-profile";
             
-            $_SESSION['validation_errors'] = ["An error occurred while updating the profile. Please try again."];
-            $this->redirect($redirectUrl);
+            $this->redirectWithNotification($redirectUrl, 'An error occurred while updating the profile. Please try again.', 'error');
         }
     }
     
@@ -604,23 +645,12 @@ class AuthController extends BaseController
         $user = $this->customerRepository->getUserDetailsById($userId);
 
         if (!$user) {
-            $this->redirectWithMessage('/account', 'User not found.', 'error');
+            $this->redirectWithNotification('/account', 'User not found.', 'error');
             return;
         }
 
-        // CSRF token generation
-        if (empty($_SESSION['csrf_token'])) {
-            $_SESSION['csrf_token'] = bin2hex(random_bytes(32));
-        }
-
-        $error = $_GET['error'] ?? null;
-        $flashMessage = $this->getFlashMessage();
-        
         $data = [
             'user' => $user,
-            'csrf_token' => $_SESSION['csrf_token'],
-            'error' => $error,
-            'flashMessage' => $flashMessage,
             'title' => 'Change Password'
         ];
         
@@ -635,17 +665,11 @@ class AuthController extends BaseController
         
         $this->requireAuth();
         
-        // CSRF token validation
-        if (!isset($_POST['csrf_token']) || $_POST['csrf_token'] !== $_SESSION['csrf_token']) {
-            $this->redirectWithMessage('/account', 'Invalid security token. Please try again.', 'error');
-            return;
-        }
-        
         $userId = (int)$_SESSION['customerId'];
         $user = $this->customerRepository->getUserDetailsById($userId);
         
         if (!$user) {
-            $this->redirectWithMessage('/account', 'User not found.', 'error');
+            $this->redirectWithNotification('/account', 'User not found.', 'error');
             return;
         }
         
@@ -679,8 +703,12 @@ class AuthController extends BaseController
         }
         
         if (!empty($errors)) {
-            $_SESSION['validation_errors'] = $errors;
-            $this->redirect('/change-password?error=validation');
+            $notifications = [];
+            foreach ($errors as $error) {
+                $notifications[] = ['message' => $error, 'type' => 'error'];
+            }
+            
+            $this->redirectWithNotifications('/change-password', $notifications);
             return;
         }
         
@@ -688,11 +716,10 @@ class AuthController extends BaseController
             $hashed = password_hash($newPassword1, PASSWORD_DEFAULT);
             $this->customerRepository->updateCustomerPassword($userId, $hashed);
             
-            $this->redirectWithMessage('/account', 'Password changed successfully.', 'success');
+            $this->redirectWithNotification('/account', 'Password changed successfully.', 'success');
             
         } catch (Exception $e) {
-            $_SESSION['validation_errors'] = ["An error occurred while updating your password. Please try again."];
-            $this->redirect('/change-password?error=update');
+            $this->redirectWithNotification('/change-password', 'An error occurred while updating the password. Please try again.', 'error');
         }
     }
 }
