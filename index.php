@@ -26,5 +26,5 @@ try {
     
     // Show generic 500 error page
     $errorController = new ErrorController();
-    $errorController->handleError(500, "An unexpected error occurred. Please try again later.");
+    $errorController->handleError(500, "An unexpected error occurred. Please try again later.", 'Internal Server Error');
 }
