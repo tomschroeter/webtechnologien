@@ -38,7 +38,7 @@
     </div>
     <div class="col-md-4 mb-3">
       <label class="form-label">Postal</label>
-      <input type="text" name="postal" class="form-control" value="<?= htmlspecialchars($user->getPostal()) ?>" minlength="4" maxlength="10">
+      <input type="text" name="postal" class="form-control" value="<?= htmlspecialchars($user->getPostal()) ?>">
     </div>
   </div>
   
