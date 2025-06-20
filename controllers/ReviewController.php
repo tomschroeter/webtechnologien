@@ -24,15 +24,7 @@ class ReviewController extends BaseController
         
         // Check if user is logged in
         if (!isset($_SESSION['customerId'])) {
-            if ($this->isAjaxRequest()) {
-                http_response_code(401);
-                header('Content-Type: application/json');
-                echo json_encode(['success' => false, 'message' => 'You must be logged in to add a review']);
-                return;
-            } else {
-                $this->redirect('/error.php?error=notLoggedIn');
-                return;
-            }
+            $this->redirect('/error.php?error=notLoggedIn');
         }
         
         $artworkId = $_POST['artworkId'] ?? null;
@@ -42,29 +34,13 @@ class ReviewController extends BaseController
         
         // Basic input validation
         if (!$artworkId || !$rating || $rating < 1 || $rating > 5 || empty($comment)) {
-            if ($this->isAjaxRequest()) {
-                http_response_code(400);
-                header('Content-Type: application/json');
-                echo json_encode(['success' => false, 'message' => 'Invalid review data provided']);
-                return;
-            } else {
-                $this->redirect('/error.php?error=invalidReviewData');
-                return;
-            }
+            $this->redirect('/error.php?error=invalidReviewData');
         }
         
         try {
             // Prevent duplicate review
             if ($this->reviewRepository->hasUserReviewed($customerId, $artworkId)) {
-                if ($this->isAjaxRequest()) {
-                    http_response_code(409);
-                    header('Content-Type: application/json');
-                    echo json_encode(['success' => false, 'message' => 'You have already reviewed this artwork']);
-                    return;
-                } else {
-                    $this->redirect('/error.php?error=duplicateReview');
-                    return;
-                }
+                $this->redirect('/error.php?error=duplicateReview');
             }
             
             // Create Review object
@@ -79,42 +55,17 @@ class ReviewController extends BaseController
             
             // Save to database and get the review ID
             $reviewId = $this->reviewRepository->addReview($review);
-            
-            if ($this->isAjaxRequest()) {
-                // Get user info for the response
-                require_once dirname(__DIR__) . "/repositories/CustomerLogonRepository.php";
-                $customerRepo = new CustomerLogonRepository($this->db);
-                $customer = $customerRepo->getCustomerById($customerId);
-                
-                $responseData = [
-                    'success' => true, 
-                    'message' => 'Review added successfully',
-                    'review' => [
-                        'reviewId' => $reviewId,
-                        'rating' => $rating,
-                        'comment' => $comment,
-                        'reviewDate' => date('Y-m-d H:i:s'),
-                        'customerName' => $customer ? ($customer->getFullName()) : 'Anonymous',
-                        'customerLocation' => $customer ? $customer->getCity() . ', ' . $customer->getCountry() : 'Unknown',
-                        'artworkId' => $artworkId
-                    ],
-                    'isAdmin' => $_SESSION['isAdmin'] ?? false
-                ];
-                
-                header('Content-Type: application/json');
-                echo json_encode($responseData);
-            } else {
-                $this->redirect($_SERVER['HTTP_REFERER'] ?? '/artworks/' . $artworkId);
-            }
+
+            $redirectUrl = "/artworks/$artworkId";
+
+            $this->redirectWithNotification(
+                $redirectUrl,
+                'Successfully added your review!',
+                'success'
+            );
             
         } catch (Exception $e) {
-            if ($this->isAjaxRequest()) {
-                http_response_code(500);
-                header('Content-Type: application/json');
-                echo json_encode(['success' => false, 'message' => 'Failed to add review']);
-            } else {
-                $this->redirect('/error.php?error=reviewError');
-            }
+            $this->redirect('/error.php?error=reviewError');
         }
     }
     
@@ -126,49 +77,28 @@ class ReviewController extends BaseController
         
         // Only allow admin users
         if (!($_SESSION['isAdmin'] ?? false)) {
-            if ($this->isAjaxRequest()) {
-                http_response_code(403);
-                header('Content-Type: application/json');
-                echo json_encode(['success' => false, 'message' => 'Only administrators can delete reviews']);
-                return;
-            } else {
-                $this->redirect('/error.php?error=unauthorized');
-                return;
-            }
+            $this->redirect('/error.php?error=unauthorized');
+            return;
         }
         
         // Validate review ID
         if (!$reviewId || !is_numeric($reviewId)) {
-            if ($this->isAjaxRequest()) {
-                http_response_code(400);
-                header('Content-Type: application/json');
-                echo json_encode(['success' => false, 'message' => 'Invalid review ID']);
-                return;
-            } else {
-                $this->redirect('/error.php?error=missingReviewData');
-                return;
-            }
+            $this->redirect('/error.php?error=missingReviewData');
+            return;
         }
         
         try {
             // Delete the review
             $this->reviewRepository->deleteReview($reviewId);
             
-            if ($this->isAjaxRequest()) {
-                header('Content-Type: application/json');
-                echo json_encode(['success' => true, 'message' => 'Review deleted successfully']);
-            } else {
-                $this->redirect($_SERVER['HTTP_REFERER'] ?? '/');
-            }
+            $this->redirectWithNotification(
+                $_SERVER['HTTP_REFERER'] ?? '/',
+                'Successfully removed review!',
+                'success',
+            );
             
         } catch (Exception $e) {
-            if ($this->isAjaxRequest()) {
-                http_response_code(500);
-                header('Content-Type: application/json');
-                echo json_encode(['success' => false, 'message' => 'Failed to delete review']);
-            } else {
-                $this->redirect('/error.php?error=reviewError');
-            }
+            $this->redirect('/error.php?error=reviewError');
         }
     }
     
