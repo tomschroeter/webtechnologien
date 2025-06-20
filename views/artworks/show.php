@@ -64,7 +64,8 @@ $correctLargeImagePath = getImagePathOrPlaceholder($largeImagePath, $placeholder
 
             <!-- Modal for large image -->
             <div class="modal fade" id="imageModal" tabindex="-1" aria-labelledby="imageModalLabel" aria-hidden="true">
-                <div class="modal-dialog modal-dialog-centered" style="max-width: 80vw; max-height: auto">
+                <div class="modal-dialog modal-dialog-centered"
+                    style="width: fit-content; max-width: 80vw; max-height: auto">
                     <div class="modal-content">
                         <div class="modal-header">
                             <h5 class="modal-title" id="imageModalLabel">
@@ -76,7 +77,7 @@ $correctLargeImagePath = getImagePathOrPlaceholder($largeImagePath, $placeholder
                         <!-- Remove max-height and overflow-y here -->
                         <div class="modal-body p-3">
                             <img src="<?= $correctLargeImagePath ?>" alt="<?= htmlspecialchars($artwork->getTitle()) ?>"
-                                class="img-fluid" style="object-fit: contain; width: 100%;">
+                                class="img-fluid" style="max-width: 100%; height: auto; object-fit: contain;">
                         </div>
                     </div>
                 </div>
