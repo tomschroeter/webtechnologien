@@ -42,18 +42,19 @@ class GenreController extends BaseController
         
         // Check if genre ID is provided and valid
         if (!$id || !is_numeric($id)) {
-            $this->redirect("/error.php?error=invalidParam");
+            throw new HttpException(400, "The genre ID parameter is invalid or missing.");
         }
         
         $genreId = (int)$id;
         
         try {
             $genre = $this->genreRepository->getGenreById($genreId);
-            $artworks = $this->artworkRepository->getArtworksByGenre($genreId);
             
             if (!$genre) {
-                $this->redirect("/error.php?error=genreNotFound");
+                throw new HttpException(404, "No genre with the given ID was found.");
             }
+            
+            $artworks = $this->artworkRepository->getArtworksByGenre($genreId);
             
             $data = [
                 'genre' => $genre,
@@ -65,7 +66,7 @@ class GenreController extends BaseController
             
         } catch (Exception $e) {
             error_log("Error loading genre: " . $e->getMessage());
-            $this->redirect("/error.php?error=databaseError");
+            throw new HttpException(500, "A database error occurred while loading the genre. Please try again later.");
         }
     }
 }

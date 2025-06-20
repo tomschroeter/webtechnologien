@@ -10,6 +10,7 @@ require_once dirname(__DIR__) . "/controllers/AdminController.php";
 require_once dirname(__DIR__) . "/controllers/SearchController.php";
 require_once dirname(__DIR__) . "/controllers/ReviewController.php";
 require_once dirname(__DIR__) . "/controllers/ErrorController.php";
+require_once dirname(__DIR__) . "/exceptions/HttpException.php";
 
 // Front Controller class responsible for routing incoming HTTP requests
 // to the apropriate controller and action based on defined routes.
@@ -95,22 +96,37 @@ class FrontController
         
         [$controllerName, $action, $params] = $routeInfo;
         
-        // Instantiate controller and call action
-        $controller = new $controllerName();
-        
-        if (method_exists($controller, $action)) {
-            if (!empty($params)) {
-                // Use call_user_func_array to dynamically call the method with parameters
-                // Example --> $action = 'show'; $params = ['123'] --> this calls $controller->show('123')
-                call_user_func_array([$controller, $action], $params);
-            } else {
-                // No parameters needed, call method directly
-                $controller->$action();
+        // Wrap controller execution in exception handling
+        try {
+            // Instantiate controller and call action
+            $controller = new $controllerName();
+            
+            if (method_exists($controller, $action)) {
+                if (!empty($params)) {
+                    // Use call_user_func_array to dynamically call the method with parameters
+                    // Example --> $action = 'show'; $params = ['123'] --> this calls $controller->show('123')
+                    call_user_func_array([$controller, $action], $params);
+                } else {
+                    // No parameters needed, call method directly
+                    $controller->$action();
+                }
+                return true;
             }
+            
+            return false;
+            
+        } catch (HttpException $e) {
+            // Handle HttpExceptions globally
+            $errorController = new ErrorController();
+            $errorController->handleHttpException($e);
+            return true;
+        } catch (Exception $e) {
+            // Convert other exceptions to 500 errors
+            error_log("Unexpected error in FrontController: " . $e->getMessage());
+            $errorController = new ErrorController();
+            $errorController->handleError(500, "An unexpected error occurred: " . $e->getMessage());
             return true;
         }
-        
-        return false;
     }
     
     // This finds the route for the http method and uri

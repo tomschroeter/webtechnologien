@@ -278,7 +278,7 @@ class AuthController extends BaseController
         $customer = $this->customerRepository->getCustomerById($id);
 
         if (!$user || !$customer) {
-            $this->redirect('/error.php?error=userNotFound');
+            throw new HttpException(404, "User not found.");
         }
         
         $data = [
