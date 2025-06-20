@@ -88,45 +88,28 @@ class FrontController
                 return false; // Let the normal server handle static files
             }
             
-            // Show 404 page for all other requests
-            $errorController = new ErrorController();
-            $errorController->notFound();
-            return true;
+            // Throw 404 exception instead of handling it here
+            throw new HttpException(404, "The requested page was not found.");
         }
         
         [$controllerName, $action, $params] = $routeInfo;
         
-        // Wrap controller execution in exception handling
-        try {
-            // Instantiate controller and call action
-            $controller = new $controllerName();
-            
-            if (method_exists($controller, $action)) {
-                if (!empty($params)) {
-                    // Use call_user_func_array to dynamically call the method with parameters
-                    // Example --> $action = 'show'; $params = ['123'] --> this calls $controller->show('123')
-                    call_user_func_array([$controller, $action], $params);
-                } else {
-                    // No parameters needed, call method directly
-                    $controller->$action();
-                }
-                return true;
+        // Instantiate controller and call action
+        $controller = new $controllerName();
+        
+        if (method_exists($controller, $action)) {
+            if (!empty($params)) {
+                // Use call_user_func_array to dynamically call the method with parameters
+                call_user_func_array([$controller, $action], $params);
+            } else {
+                // No parameters needed, call method directly
+                $controller->$action();
             }
-            
-            return false;
-            
-        } catch (HttpException $e) {
-            // Handle HttpExceptions globally
-            $errorController = new ErrorController();
-            $errorController->handleHttpException($e);
-            return true;
-        } catch (Exception $e) {
-            // Convert other exceptions to 500 errors
-            error_log("Unexpected error in FrontController: " . $e->getMessage());
-            $errorController = new ErrorController();
-            $errorController->handleError(500, "An unexpected error occurred: " . $e->getMessage());
             return true;
         }
+        
+        // Method doesn't exist - this is a 404
+        throw new HttpException(404, "The requested action was not found.");
     }
     
     // This finds the route for the http method and uri

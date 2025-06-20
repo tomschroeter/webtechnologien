@@ -7,19 +7,17 @@ class ErrorController extends BaseController
 {
     public function handleError(int $statusCode, string $message = '', string $statusText = '')
     {
-        // Set proper HTTP status code
+        // Set HTTP status code
         http_response_code($statusCode);
         
         if (session_status() === PHP_SESSION_NONE) {
             session_start();
         }
         
-        // Generate default status text if not provided
         if (empty($statusText)) {
             $statusText = $this->getStatusText($statusCode);
         }
         
-        // Generate default message if not provided
         if (empty($message)) {
             $message = $this->getDefaultMessage($statusCode);
         }
@@ -41,12 +39,6 @@ class ErrorController extends BaseController
             $exception->getMessage(),
             $exception->getStatusText()
         );
-    }
-    
-    // Legacy methods for backward compatibility
-    public function notFound()
-    {
-        $this->handleError(404);
     }
     
     public function serverError()
