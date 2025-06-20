@@ -89,19 +89,20 @@ class ArtworkController extends BaseController
         
         // Check if artwork ID is provided and valid
         if (!$id || !is_numeric($id)) {
-            $this->redirect("/error.php?error=invalidParam");
+            throw new HttpException(400, "The artwork ID parameter is invalid or missing.");
         }
         
         $artworkId = (int)$id;
         
         try {
             $artwork = $this->artworkRepository->findById($artworkId);
-            $artist = $this->artistRepository->getArtistById($artwork->getArtistId());
-            $reviews = $this->reviewRepository->getAllReviewsWithCustomerInfo($artworkId);
             
             if (!$artwork) {
-                $this->redirect("/error.php?error=artworkNotFound");
+                throw new HttpException(404, "No artwork with the given ID was found.");
             }
+            
+            $artist = $this->artistRepository->getArtistById($artwork->getArtistId());
+            $reviews = $this->reviewRepository->getAllReviewsWithCustomerInfo($artworkId);
             
             $data = [
                 'artwork' => $artwork,
@@ -112,9 +113,11 @@ class ArtworkController extends BaseController
             
             $this->renderWithLayout('artworks/show', $data);
             
+        } catch (HttpException $e) {
+            throw $e; // Re-throw HttpExceptions
         } catch (Exception $e) {
             error_log("Error loading artwork: " . $e->getMessage());
-            $this->redirect("/error.php?error=databaseError");
+            throw new HttpException(500, "A database error occurred while loading the artwork. Please try again later.");
         }
     }
 }
