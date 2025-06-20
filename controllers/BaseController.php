@@ -28,6 +28,11 @@ abstract class BaseController
     
     protected function renderWithLayout($view, $data = [], $layout = 'layouts/main')
     {
+        // Automatically get notifications if not already provided
+        if (!isset($data['notifications'])) {
+            $data['notifications'] = $this->getNotifications();
+        }
+        
         // Render the view content first
         $content = $this->render($view, $data);
         
@@ -45,18 +50,44 @@ abstract class BaseController
         exit();
     }
     
-    protected function redirectWithMessage($url, $message, $type = 'success')
+    protected function redirectWithNotification($url, $message, $type = 'success')
     {
         if (session_status() === PHP_SESSION_NONE) {
             session_start();
         }
         
-        $_SESSION['flash_message'] = $message;
-        $_SESSION['flash_type'] = $type;
+        // Put in array
+        $_SESSION['notifications'] = [['message' => $message, 'type' => $type]];
         
         $this->redirect($url);
     }
     
+    protected function redirectWithNotifications($url, $notifications)
+    {
+        if (session_status() === PHP_SESSION_NONE) {
+            session_start();
+        }
+        
+        $_SESSION['notifications'] = $notifications;
+        
+        $this->redirect($url);
+    }
+    
+    protected function getNotifications()
+    {
+        if (session_status() === PHP_SESSION_NONE) {
+            session_start();
+        }
+        
+        $notifications = $_SESSION['notifications'] ?? [];
+        
+        // Clear the notifications
+        unset($_SESSION['notifications']);
+        
+        return $notifications;
+    }
+    
+    // Legacy method - converts old flash message to notification array
     protected function getFlashMessage()
     {
         if (session_status() === PHP_SESSION_NONE) {

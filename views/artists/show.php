@@ -21,28 +21,11 @@
             <?php if (isset($_SESSION['customerId'])): ?>
                 <div class="favorites-container mb-3">
                     <?php
-                    $type = "artist";
-                    $item = $artist;
-                    $showLabel = true;
-                    require dirname(dirname(__DIR__)) . "/components/add-to-favorites-button.php"
-                        ?>
-
-                    <!-- Fallback form for non-JS users -->
-                    <form method="post" action="/favorites-handler.php" class="d-none fallback-form">
-                        <?php if ($isInFavorites): ?>
-                            <input type="hidden" name="action" value="remove_artist_from_favorites">
-                            <input type="hidden" name="artistId" value="<?php echo $artist->getArtistId() ?>">
-                            <button type="submit" class="btn btn-outline-danger">
-                                ♥ Remove from Favorites
-                            </button>
-                        <?php else: ?>
-                            <input type="hidden" name="action" value="add_artist_to_favorites">
-                            <input type="hidden" name="artistId" value="<?php echo $artist->getArtistId() ?>">
-                            <button type="submit" class="btn btn-primary">
-                                ♡ Add to Favorites
-                            </button>
-                        <?php endif; ?>
-                    </form>
+                        $type = "artist";
+                        $item = $artist;
+                        $showLabel = true;
+                        require dirname(dirname(__DIR__)) . "/components/add-to-favorites-button.php"
+                    ?>
                 </div>
             <?php endif ?>
 

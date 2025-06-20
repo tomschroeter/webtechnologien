@@ -27,11 +27,7 @@ class HomeController extends BaseController
             session_start();
         }
         
-        // Get flash message if any
-        $flashMessage = $this->getFlashMessage();
-        
         $data = [
-            'flashMessage' => $flashMessage,
             'title' => 'Home - Art Gallery'
         ];
         
@@ -44,14 +40,10 @@ class HomeController extends BaseController
             session_start();
         }
         
-        // Get flash message if any
-        $flashMessage = $this->getFlashMessage();
-        
         // Load contributors data
         require_once dirname(__DIR__) . "/components/contributor-list.php";
         
         $data = [
-            'flashMessage' => $flashMessage,
             'title' => 'About Us - Art Gallery',
             'contributors' => $contributors
         ];

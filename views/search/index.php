@@ -48,16 +48,19 @@
 
                     <div class="d-flex align-items-center" style="gap: 0.5rem;">
                         <?php
-                        $type = "artist";
-                        $item = $artist;
-                        require dirname(dirname(__DIR__)) . "/components/add-to-favorites-button.php";
+                            $type = "artist";
+                            $item = $artist;
+                            require dirname(dirname(__DIR__)) . "/components/add-to-favorites-button.php";
 
-                        $imagePath = "/assets/images/artists/square-thumb/" . $artist->getArtistId() . ".jpg";
-                        $placeholderPath = "/assets/placeholder/artists/square-thumb/placeholder.svg";
-                        $correctImagePath = getImagePathOrPlaceholder($imagePath, $placeholderPath);
+                            $imagePath = "/assets/images/artists/square-thumb/" . $artist->getArtistId() . ".jpg";
+                            $placeholderPath = "/assets/placeholder/artists/square-thumb/placeholder.svg";
+                            $correctImagePath = getImagePathOrPlaceholder($imagePath, $placeholderPath);
                         ?>
-                        <img src="<?= $correctImagePath ?>" alt="Artist Image"
-                            style="width: 60px; height: 60px; object-fit: cover; border-radius: 0.25rem;">
+                        <img
+                            src="<?= $correctImagePath ?>"
+                            alt="Artist Image"
+                            style="width: 60px; height: 60px; object-fit: cover; border-radius: 0.25rem;"
+                        >
                     </div>
                 </li>
             <?php endforeach; ?>
@@ -122,7 +125,8 @@
                         $placeholderPath = "/assets/placeholder/works/square-small/placeholder.svg";
                         $correctImagePath = getImagePathOrPlaceholder($imagePath, $placeholderPath);
                         ?>
-                        <img src="<?= $correctImagePath ?>" alt="Artwork Image"
+                        <img
+                            src="<?= $correctImagePath ?>" alt="Artwork Image"
                             style="width: 60px; height: 60px; object-fit: cover; border-radius: 0.25rem;">
                     </div>
                 </li>
