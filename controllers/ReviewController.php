@@ -24,7 +24,7 @@ class ReviewController extends BaseController
         
         // Check if user is logged in
         if (!isset($_SESSION['customerId'])) {
-            $this->redirect('/error.php?error=notLoggedIn');
+            throw new HttpException(401, "You must be logged in to add a review.");
         }
         
         $artworkId = $_POST['artworkId'] ?? null;
@@ -34,13 +34,13 @@ class ReviewController extends BaseController
         
         // Basic input validation
         if (!$artworkId || !$rating || $rating < 1 || $rating > 5 || empty($comment)) {
-            $this->redirect('/error.php?error=invalidReviewData');
+            throw new HttpException(422, "Invalid review data. Please provide a valid rating (1-5) and comment.");
         }
         
         try {
             // Prevent duplicate review
             if ($this->reviewRepository->hasUserReviewed($customerId, $artworkId)) {
-                $this->redirect('/error.php?error=duplicateReview');
+                throw new HttpException(409, "You have already reviewed this artwork.");
             }
             
             // Create Review object
@@ -65,7 +65,7 @@ class ReviewController extends BaseController
             );
             
         } catch (Exception $e) {
-            $this->redirect('/error.php?error=reviewError');
+            throw new HttpException(500, "An error occurred while saving your review. Please try again.");
         }
     }
     
@@ -77,14 +77,12 @@ class ReviewController extends BaseController
         
         // Only allow admin users
         if (!($_SESSION['isAdmin'] ?? false)) {
-            $this->redirect('/error.php?error=unauthorized');
-            return;
+            throw new HttpException(403, "You are not authorized to delete reviews.");
         }
         
         // Validate review ID
         if (!$reviewId || !is_numeric($reviewId)) {
-            $this->redirect('/error.php?error=missingReviewData');
-            return;
+            throw new HttpException(400, "Invalid review ID provided.");
         }
         
         try {
@@ -97,8 +95,10 @@ class ReviewController extends BaseController
                 'success',
             );
             
+        } catch (HttpException $e) {
+            throw $e; // Re-throw HttpExceptions
         } catch (Exception $e) {
-            $this->redirect('/error.php?error=reviewError');
+            throw new HttpException(500, "An error occurred while deleting the review. Please try again.");
         }
     }
     

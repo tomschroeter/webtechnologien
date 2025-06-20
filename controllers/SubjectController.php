@@ -42,18 +42,19 @@ class SubjectController extends BaseController
         
         // Check if subject ID is provided and valid
         if (!$id || !is_numeric($id)) {
-            $this->redirect("/error.php?error=invalidParam");
+            throw new HttpException(400, "The subject ID parameter is invalid or missing.");
         }
         
         $subjectId = (int)$id;
         
         try {
             $subject = $this->subjectRepository->getSubjectById($subjectId);
-            $artworks = $this->artworkRepository->getArtworksBySubject($subjectId);
             
             if (!$subject) {
-                $this->redirect("/error.php?error=subjectNotFound");
+                throw new HttpException(404, "No subject with the given ID was found.");
             }
+            
+            $artworks = $this->artworkRepository->getArtworksBySubject($subjectId);
             
             $data = [
                 'subject' => $subject,
@@ -65,7 +66,7 @@ class SubjectController extends BaseController
             
         } catch (Exception $e) {
             error_log("Error loading subject: " . $e->getMessage());
-            $this->redirect("/error.php?error=databaseError");
+            throw new HttpException(500, "A database error occurred while loading the subject. Please try again later.");
         }
     }
 }

@@ -8,6 +8,6 @@ RewriteRule ^(.*)$ index.php [QSA,L]
 php_flag display_errors on
 php_value error_reporting 6143
 
-# in /src/components/.htaccess
+# Deny direct access to components directory
 RewriteCond %{REQUEST_URI} ^/components/
-RewriteRule ^.*$ /error.php?error=unauthorized [L,R=302]
+RewriteRule ^.*$ - [F,L]

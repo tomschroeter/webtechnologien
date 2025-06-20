@@ -1,38 +1,35 @@
 <?php
 
 require_once __DIR__ . "/BaseController.php";
+require_once __DIR__ . "/../exceptions/HttpException.php";
 
 class ErrorController extends BaseController
 {
-    public function notFound()
+    public function handleError(int $statusCode, string $message, string $statusText)
     {
-        // Set proper HTTP status code
-        http_response_code(404);
+        // Set HTTP status code
+        http_response_code($statusCode);
         
         if (session_status() === PHP_SESSION_NONE) {
             session_start();
         }
         
         $data = [
-            'title' => '404 - Page Not Found - Art Gallery'
+            'title' => "{$statusCode} - {$statusText} - Art Gallery",
+            'statusCode' => $statusCode,
+            'statusText' => $statusText,
+            'message' => $message
         ];
         
-        echo $this->renderWithLayout('errors/404', $data);
+        echo $this->renderWithLayout('errors/error', $data);
     }
     
-    public function serverError()
+    public function handleHttpException(HttpException $exception)
     {
-        // Set proper HTTP status code
-        http_response_code(500);
-        
-        if (session_status() === PHP_SESSION_NONE) {
-            session_start();
-        }
-        
-        $data = [
-            'title' => '500 - Server Error - Art Gallery'
-        ];
-        
-        echo $this->renderWithLayout('errors/500', $data);
+        $this->handleError(
+            $exception->getStatusCode(),
+            $exception->getMessage(),
+            $exception->getStatusText(),
+        );
     }
 }
