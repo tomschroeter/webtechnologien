@@ -43,7 +43,7 @@
                 class="form-control"
                 placeholder="Postal Code"
                 inputmode="numeric"
-                pattern="^\d{10}$|^\d{5}-\d{4}$"
+                minlength="4"
                 title="Please enter valid postal code. Postal codes can only be 10-digits long and must be numeric."
             >
         </div>
@@ -56,7 +56,6 @@
                 name="phone"
                 class="form-control"
                 placeholder="Phone (optional)"
-                pattern="[0-9]{3}-[0-9]{3}-[0-9]{4}"
                 title="Please enter a valid phone number."
             >
         </div>
