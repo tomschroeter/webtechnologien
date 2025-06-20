@@ -3,15 +3,15 @@
 <h4 class="mt-2">Password Security</h4>
 <form class="mt-4 mb-4" method="POST" action="/change-password">
   <div class="row">
-    <div class="col-md-4 mb-3">
+    <div class="col-md-4">
       <label class="form-label">Current Password</label>
       <input name="oldPassword" type="password" class="form-control" autocomplete="current-password" required>
     </div>
-    <div class="col-md-4 mb-3">
+    <div class="col-md-4">
       <label class="form-label">New Password</label>
       <input name="newPassword1" type="password" class="form-control" autocomplete="new-password" required>
     </div>
-    <div class="col-md-4 mb-3">
+    <div class="col-md-4">
       <label class="form-label">Confirm New Password</label>
       <input name="newPassword2" type="password" class="form-control" autocomplete="new-password" required>
     </div>
