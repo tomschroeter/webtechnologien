@@ -208,3 +208,38 @@ body {
 .link-underline-on-hover:focus {
   text-decoration: underline;
 }
+
+/* Accordion - remove blue background when opened or focused */
+.accordion-button:not(.collapsed) {
+  background-color: #fff !important;
+  color: inherit !important;
+}
+
+.accordion-button:focus {
+  box-shadow: none !important;
+  border-color: #dee2e6 !important;
+}
+
+/* User management table - spread action buttons evenly */
+.actions-cell {
+  display: flex;
+  gap: 0.5rem;
+  justify-content: space-between;
+  align-items: center;
+  flex-wrap: wrap;
+}
+
+.actions-cell .btn {
+  flex: 1;
+  min-width: 40px;
+  white-space: nowrap;
+}
+
+.actions-cell form {
+  flex: 1;
+  display: flex;
+}
+
+.actions-cell form .btn {
+  width: 100%;
+}
