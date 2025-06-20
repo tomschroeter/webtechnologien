@@ -37,23 +37,21 @@
     <?php if (!empty($notifications)): ?>
         <script>
             document.addEventListener('DOMContentLoaded', function() {
-                <?php foreach ($notifications as $notification): ?>
-                    // Convert notification type to appropriate toast function
-                    const notificationType = '<?= $notification['type'] ?>';
-                    const notificationMessage = '<?= htmlspecialchars($notification['message']) ?>';
-                    
-                    switch(notificationType) {
+                const notifications = <?= json_encode($notifications) ?>;
+                
+                notifications.forEach(function(notification) {
+                    switch(notification.type) {
                         case 'success':
-                            showSuccessNotification(notificationMessage);
+                            showSuccessNotification(notification.message);
                             break;
                         case 'danger':
                         case 'error':
-                            showErrorNotification(notificationMessage);
+                            showErrorNotification(notification.message);
                             break;
                         default:
-                            showPrimaryNotification(notificationMessage);
+                            showPrimaryNotification(notification.message);
                     }
-                <?php endforeach; ?>
+                });
             });
         </script>
     <?php endif; ?>
