@@ -563,7 +563,6 @@ class AuthController extends BaseController
         $country = trim($_POST['country'] ?? '');
         $postal = trim($_POST['postal'] ?? '');
         $phone = trim($_POST['phone'] ?? '');
-        $isAdmin = $isAdminEdit && isset($_POST['isAdmin']) && $_POST['isAdmin'] === '1';
         
         $errors = [];
 
@@ -623,25 +622,6 @@ class AuthController extends BaseController
                 $email
             );
             
-            // Only update admin status if this is an admin edit
-            if ($isAdminEdit) {
-                $this->customerRepository->updateUserAdmin($userId, $isAdmin);
-                
-                // Check if admin is demoting themselves
-                if (isset($_SESSION['customerId']) && 
-                    $userId === (int)$_SESSION['customerId'] && 
-                    !$isAdmin && 
-                    ($_SESSION['isAdmin'] ?? false)) {
-                    
-                    // Update session to reflect they're no longer admin
-                    $_SESSION['isAdmin'] = false;
-                    
-                    // Redirect to home page instead of manage-users
-                    $this->redirectWithNotification('/', 'You have been demoted from admin status.', 'primary');
-                    return;
-                }
-            }
-
             $successMessage = $isAdminEdit ? 'User updated successfully.' : 'Your profile has been updated successfully.';
             $redirectUrl = $isAdminEdit ? '/manage-users' : '/account';
             $this->redirectWithNotification($redirectUrl, $successMessage, 'success');
