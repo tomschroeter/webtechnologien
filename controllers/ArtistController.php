@@ -47,7 +47,7 @@ class ArtistController extends BaseController
         
         // Check if artist ID is provided and valid
         if (!$id || !is_numeric($id)) {
-            $this->redirect("/error.php?error=invalidParam");
+            throw new HttpException(400, "The artist ID parameter is invalid or missing.");
         }
         
         $artistId = (int)$id;
@@ -55,11 +55,12 @@ class ArtistController extends BaseController
         // Load artist and artworks
         try {
             $artist = $this->artistRepository->getArtistById($artistId);
-            $artworks = $this->artworkRepository->getArtworksByArtist($artistId);
             
             if (!$artist) {
-                $this->redirect("/error.php?error=artistNotFound");
+                throw new HttpException(404, "No artist with the given ID was found.");
             }
+            
+            $artworks = $this->artworkRepository->getArtworksByArtist($artistId);
             
             $data = [
                 'artist' => $artist,
@@ -71,7 +72,7 @@ class ArtistController extends BaseController
             
         } catch (Exception $e) {
             error_log("Error loading artist: " . $e->getMessage());
-            $this->redirect("/error.php?error=databaseError");
+            throw new HttpException(500, "A database error occurred while loading the artist. Please try again later.");
         }
     }
 }

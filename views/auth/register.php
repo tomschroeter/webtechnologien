@@ -60,11 +60,11 @@
             placeholder="Username" required minlength="3">
     </div>
     <div class="row">
-        <div class="col-md-6 mb-3">
+        <div class="col-md-6">
             <label class="form-label">Password*</label>
             <input name="password" type="password" class="form-control" placeholder="Password" required minlength="6">
         </div>
-        <div class="col-md-6 mb-3">
+        <div class="col-md-6">
             <label class="form-label">Repeat Password*</label>
             <input name="password2" type="password" class="form-control" placeholder="Repeat Password" required
                 minlength="6">
