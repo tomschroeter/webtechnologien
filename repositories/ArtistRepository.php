@@ -179,9 +179,11 @@ class ArtistRepository
             $this->db->connect();
         }
 
+        // Initialize SQL query with WHERE 1=1 to simplify appending conditions
         $sql = "SELECT * FROM artists WHERE 1=1";
         $params = [];
-
+        
+        // Append name condition if provided, filtering by first and last name
         if (!empty($name)) {
             $nameParts = preg_split('/\s+/', trim($name));
             $i = 0;
@@ -192,23 +194,28 @@ class ArtistRepository
             }
         }
 
+        // Append nationality condition if provided
         if (!empty($nationality)) {
             $sql .= " AND Nationality = :nationality";
             $params['nationality'] = $nationality;
         }
 
+        // Append start year range condition if provided, NULL is allowed
         if (!empty($startYear)) {
             $sql .= " AND (YearOfBirth >= :startYear OR YearOfBirth IS NULL)";
             $params['startYear'] = (int) $startYear;
         }
 
+        // Append end year range condition if provided, NULL is allowed
         if (!empty($endYear)) {
             $sql .= " AND (YearOfBirth <= :endYear OR YearOfBirth IS NULL)";
             $params['endYear'] = (int) $endYear;
         }
 
+        // Ordering appended at the end
         $sql .= " ORDER BY LastName " . ($sortDesc ? "DESC" : "ASC");
 
+        // Prepare and execute the statement
         $stmt = $this->db->prepareStatement($sql);
         $stmt->execute($params);
 
