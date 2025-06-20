@@ -12,7 +12,7 @@
             minlength="3"
         >
     </div>
-    <div class="form-group">
+    <div class="form-group mt-4">
         <label>Password</label>
         <input
             name="password"
@@ -23,5 +23,5 @@
             minlength="6"
         >
     </div>
-    <button type="submit" class="btn btn-primary">Login</button>
+    <button type="submit" class="btn btn-primary mt-4">Login</button>
 </form>
