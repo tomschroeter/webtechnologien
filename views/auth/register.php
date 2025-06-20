@@ -44,6 +44,7 @@
                 placeholder="Postal Code"
                 inputmode="numeric"
                 minlength="4"
+                maxlength="10"
                 title="Please enter valid postal code. Postal codes can only be 10-digits long and must be numeric."
             >
         </div>
