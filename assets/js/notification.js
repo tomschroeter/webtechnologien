@@ -46,7 +46,7 @@ function showSuccessNotification(message) {
 }
 
 function showErrorNotification(message) {
-    return showToast(message, 'danger');  // Bootstrap uses 'danger' for red/error color
+    return showToast(message, 'danger');
 }
 
 function showPrimaryNotification(message) {

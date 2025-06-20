@@ -44,35 +44,13 @@
                         case 'success':
                             showSuccessNotification(notification.message);
                             break;
-                        case 'danger':
                         case 'error':
                             showErrorNotification(notification.message);
                             break;
                         default:
-                            showPrimaryNotification(notification.message);
+                            showSuccessNotification(notification.message);
                     }
                 });
-            });
-        </script>
-    <?php endif; ?>
-    
-    <!-- Legacy Flash Message Support -->
-    <?php if ($flash): ?>
-        <script>
-            document.addEventListener('DOMContentLoaded', function() {
-                const flashType = '<?= $flash['type'] ?>';
-                const flashMessage = '<?= htmlspecialchars($flash['message']) ?>';
-                
-                switch(flashType) {
-                    case 'success':
-                        showSuccessNotification(flashMessage);
-                        break;
-                    case 'error':
-                        showErrorNotification(flashMessage);
-                        break;
-                    default:
-                        showPrimaryNotification(flashMessage);
-                }
             });
         </script>
     <?php endif; ?>

@@ -42,14 +42,14 @@ document.addEventListener('DOMContentLoaded', function() {
                         ? '<span class="heart">♥</span>' 
                         : '<span class="heart">♥</span> Remove from Favorites';
 
-                    showPrimaryNotification("Added to favorites!")
+                    showSuccessNotification("Added to favorites!")
                 } else {
                     button.className = 'btn favorite-btn btn-primary';
                     button.innerHTML = isHeartOnly 
                         ? '<span class="heart">♡</span>' 
                         : '<span class="heart">♡</span> Add to Favorites';
 
-                    showPrimaryNotification("Removed from favorites!")
+                    showSuccessNotification("Removed from favorites!")
                 }
             } else {
                 showErrorNotification(data.message);
