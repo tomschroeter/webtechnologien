@@ -14,7 +14,10 @@ class ArtistRepository
     }
 
     /**
-     * @return Artist[]
+     * Retrieves all artists from the database, sorted by last name and first name.
+     *
+     * @param bool $sortDesc Whether to sort in descending order (true) or ascending (false).
+     * @return Artist[] An array of Artist objects.
      */
     public function getAllArtists(bool $sortDesc): array
     {
@@ -41,6 +44,12 @@ class ArtistRepository
         return $artists;
     }
 
+    /**
+     * Retrieves the top N artists based on the number of reviews.
+     *
+     * @param int $n The number of top-reviewed artists to retrieve.
+     * @return ArtistWithStatsArray A typed array of ArtistWithStats objects.
+     */
     public function getMostReviewed(int $n): ArtistWithStatsArray
     {
         if (!$this->db->isConnected()) {
@@ -77,7 +86,11 @@ class ArtistRepository
 
 
     /**
-     * @throws Exception if artist couldn't be found
+     * Retrieves a single artist by their ID.
+     *
+     * @param int $artistId The ID of the artist to retrieve.
+     * @return Artist The matching Artist object.
+     * @throws Exception If no artist is found for the given ID.
      */
     public function getArtistById(int $artistId): Artist
     {
@@ -103,10 +116,11 @@ class ArtistRepository
     }
 
     /**
-     * Summary of getArtistBySearchQuery
-     * @param string $searchQuery
-     * @param bool $sortDesc
-     * @return Artist[]
+     * Retrieves artists whose last name matches the search query.
+     *
+     * @param string $searchQuery The partial string to search for in last names.
+     * @param bool $sortDesc Whether to sort results descending by last name.
+     * @return Artist[] Array of matching Artist objects.
      */
     public function getArtistBySearchQuery(string $searchQuery, bool $sortDesc): array
     {
@@ -134,19 +148,20 @@ class ArtistRepository
     }
 
     /**
-     * Summary of getArtistNationalities
-     * @return array
+     * Retrieves a list of distinct artist nationalities from the database.
+     *
+     * @return string[] Array of unique nationalities.
      */
-    public function getArtistNationalities()
+    public function getArtistNationalities(): array
     {
         if (!$this->db->isConnected()) {
             $this->db->connect();
         }
 
         $sql = "
-        SELECT DISTINCT nationality FROM artists 
-        WHERE nationality IS NOT NULL 
-        ORDER BY nationality;
+        SELECT DISTINCT Nationality FROM artists 
+        WHERE Nationality IS NOT NULL 
+        ORDER BY Nationality;
         ";
 
         $stmt = $this->db->prepareStatement($sql);
@@ -155,7 +170,7 @@ class ArtistRepository
         $nationalities = [];
 
         foreach ($stmt as $row) {
-            $nationalities[] = $row['nationality']; // Fixed: use [] instead of ::append() and access the column
+            $nationalities[] = $row['Nationality'];
         }
 
         $this->db->disconnect();
@@ -164,15 +179,16 @@ class ArtistRepository
     }
 
     /**
-     * Summary of getArtistByAdvancedSearch
-     * @param mixed $name
-     * @param mixed $startYear
-     * @param mixed $endYear
-     * @param mixed $nationality
-     * @param bool $sortDesc
-     * @return Artist[]
+     * Performs an advanced search for artists based on optional filters.
+     *
+     * @param string|null $name The artist name to match (first and/or last name).
+     * @param int|null $startYear Minimum birth year filter.
+     * @param int|null $endYear Maximum birth year filter.
+     * @param string|null $nationality Nationality to filter by.
+     * @param bool $sortDesc Whether to sort results descending by last name.
+     * @return Artist[] Array of artists matching the filter criteria.
      */
-    public function getArtistByAdvancedSearch($name = null, $startYear = null, $endYear = null, $nationality = null, bool $sortDesc)
+    public function getArtistByAdvancedSearch($name = null, $startYear = null, $endYear = null, $nationality = null, bool $sortDesc): array
     {
         if (!$this->db->isConnected()) {
             $this->db->connect();
