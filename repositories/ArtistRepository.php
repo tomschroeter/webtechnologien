@@ -41,32 +41,31 @@ class ArtistRepository
         return $artists;
     }
 
-    public function findMostReviewed(int $n = 3): ArtistWithStatsArray
+    public function getMostReviewed(int $n): ArtistWithStatsArray
     {
         if (!$this->db->isConnected()) {
             $this->db->connect();
         }
 
-        $sql = "
-            select a.*, count(r.ReviewId) review_count
-            from artists a
-            join artworks aw on aw.ArtistID = a.ArtistID
-            join reviews r on r.ArtWorkId = aw.ArtWorkID
-            group by a.ArtistID
-            order by review_count desc
-            limit :n
+        $sql = "SELECT a.*, COUNT(r.ReviewId) AS ReviewCount
+        FROM artists a
+        JOIN artworks aw ON aw.ArtistID = a.ArtistID
+        JOIN reviews r ON r.ArtWorkId = aw.ArtWorkID
+        GROUP BY a.ArtistID
+        ORDER BY ReviewCount DESC
+        LIMIT :n
         ";
 
         // use prepared statement
         $stmt = $this->db->prepareStatement($sql);
-        $stmt->bindValue("n", $n, PDO::PARAM_INT); // without type n is inserted as string
+        $stmt->bindValue("n", $n, PDO::PARAM_INT);
         $stmt->execute();
 
         $mostReviewedArtists = new ArtistWithStatsArray();
 
         foreach ($stmt as $row) {
             $artist = Artist::createArtistFromRecord($row);
-            $reviewCount = $row['review_count'];
+            $reviewCount = $row['ReviewCount'];
 
             $mostReviewedArtists[] = new ArtistWithStats($artist, $reviewCount);
         }
@@ -182,7 +181,7 @@ class ArtistRepository
         // Initialize SQL query with WHERE 1=1 to simplify appending conditions
         $sql = "SELECT * FROM artists WHERE 1=1";
         $params = [];
-        
+
         // Append name condition if provided, filtering by first and last name
         if (!empty($name)) {
             $nameParts = preg_split('/\s+/', trim($name));

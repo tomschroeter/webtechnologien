@@ -1,7 +1,12 @@
 <?php
 
-require_once dirname(__DIR__) . "/classes/Review.php";
-
+/**
+ * Represents a Review object along with the associated customer data and artwork.
+ *
+ * This class encapsulates a Review instance together with the associated customer data and antwork,
+ * providing convenient accessors to retrieve an antwork's review and the author's data.
+ *
+ */
 class ReviewWithCustomerInfoAndArtwork
 {
     private Review $review;
@@ -47,11 +52,6 @@ class ReviewWithCustomerInfoAndArtwork
         return $this->customerLastName;
     }
 
-    public function getCustomerFullName(): string
-    {
-        return $this->customerFirstName . ' ' . $this->customerLastName;
-    }
-
     public function getCustomerCity(): string
     {
         return $this->customerCity;
@@ -66,12 +66,17 @@ class ReviewWithCustomerInfoAndArtwork
     {
         return $this->customerCity . ' (' . $this->customerCountry . ')';
     }
+
+    /**
+     * Returns customer's full name 
+     */
+    public function getCustomerFullName(): string
+    {
+        return $this->customerFirstName . ' ' . $this->customerLastName;
+    }
 }
 
 /**
- * https://stackoverflow.com/questions/20763744/type-hinting-specify-an-array-of-objects
- *
- * For type completion:
  * @extends \ArrayObject<ReviewWithCustomerInfoAndArtwork>
  */
 class ReviewWithCustomerInfoAndArtworkArray extends \ArrayObject

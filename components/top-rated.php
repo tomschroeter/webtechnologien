@@ -27,7 +27,7 @@ $artworksWithRating = $artworkRepository->getTopRatedArtworks();
         $artworkTitle = htmlspecialchars($artwork->getTitle());
         $artworkId = $artwork->getArtworkId();
         $artistId = $artwork->getArtistId();
-        $artistName = htmlspecialchars($combined->getArtistName());
+        $artistName = htmlspecialchars($combined->getArtistFullName());
         $reviewCount = $combined->getReviewCount();
 
         // Get the rating and render it as stars
