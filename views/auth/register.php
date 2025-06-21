@@ -95,5 +95,5 @@
     </div>
 
     <!-- Submit button -->
-    <button type="submit" class="btn btn-primary mb-3">Register</button>
+    <button type="submit" class="btn btn-primary mb-4">Register</button>
 </form>
