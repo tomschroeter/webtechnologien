@@ -65,7 +65,6 @@ class ArtistRepository
         LIMIT :n
         ";
 
-        // use prepared statement
         $stmt = $this->db->prepareStatement($sql);
         $stmt->bindValue("n", $n, PDO::PARAM_INT);
         $stmt->execute();
@@ -230,7 +229,6 @@ class ArtistRepository
         // Ordering appended at the end
         $sql .= " ORDER BY LastName " . ($sortDesc ? "DESC" : "ASC");
 
-        // Prepare and execute the statement
         $stmt = $this->db->prepareStatement($sql);
         $stmt->execute($params);
 
