@@ -1,5 +1,15 @@
 <?php
 
+/**
+ * Represents a customer's logon data entity from the database.
+ * 
+ * This class encapsulates customer logon data and provides
+ * getter and setter methods for accessing and modifying
+ * customer logon properties.
+ * 
+ * Instances are created using the constructor or the static method `createCustomerLogonFromRecord()`,
+ * which accepts an associative array (e.g., a database record).
+ */
 class CustomerLogon
 {
     private ?int $customerId;

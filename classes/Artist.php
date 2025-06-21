@@ -1,5 +1,15 @@
 <?php
 
+/**
+ * Represents an artist entity from the database.
+ * 
+ * This class encapsulates artist data and provides
+ * getter and setter methods for accessing and modifying
+ * artist properties.
+ * 
+ * Instances are created using the static method `createArtistFromRecord()`,
+ * which accepts an associative array (e.g., a database record).
+ */
 class Artist
 {
     private int $artistId;
