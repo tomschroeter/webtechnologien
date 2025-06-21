@@ -99,7 +99,7 @@ class ArtworkController extends BaseController
 
         // Retrieve artwork, artist and review data
         try {
-            $artwork = $this->artworkRepository->findById($artworkId);
+            $artwork = $this->artworkRepository->getArtworkById($artworkId);
 
             if (!$artwork) {
                 throw new HttpException(404, "No artwork with the given ID was found.");

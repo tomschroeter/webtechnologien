@@ -11,7 +11,15 @@ class GalleryRepository
         $this->db = $db;
     }
 
-    public function getGalleryById($galleryId)
+    /**
+     * Retrieves a gallery by its unique ID.
+     *
+     * @param int $galleryId The ID of the gallery to retrieve.
+     * @return ?Gallery The gallery corresponding to the given ID if found, null otherwise.
+     *
+     * @throws Exception If the gallery is not found in the database.
+     */
+    public function getGalleryById($galleryId): ?Gallery
     {
         if (!$this->db->isConnected()) {
             $this->db->connect();
@@ -24,6 +32,7 @@ class GalleryRepository
         $stmt->execute();
 
         $record = $stmt->fetch(PDO::FETCH_ASSOC);
+
         $this->db->disconnect();
 
         if (!$record) {

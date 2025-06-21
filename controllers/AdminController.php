@@ -44,7 +44,7 @@ class AdminController extends BaseController
         }
 
         // Fetch users and admin count
-        $users = $this->customerRepository->getAllUsersWithLogonData();
+        $users = $this->customerRepository->getAllCustomersWithLogonData();
         $adminCount = $this->customerRepository->countActiveAdmins();
 
         $data = [
@@ -100,7 +100,7 @@ class AdminController extends BaseController
 
         // Prevent deactivation of the last admin
         if ($action === 'deactivate') {
-            $user = $this->customerRepository->getUserDetailsById($customerID);
+            $user = $this->customerRepository->getCustomerDetailsById($customerID);
             if ($user && $user->getIsAdmin()) {
                 $adminCount = $this->customerRepository->countActiveAdmins();
                 if ($adminCount <= 1) {
@@ -128,9 +128,9 @@ class AdminController extends BaseController
                     return;
                 }
             } elseif ($action === 'activate') {
-                $this->customerRepository->updateUserState($customerID, 1);
+                $this->customerRepository->updateCustomerState($customerID, 1);
             } elseif ($action === 'deactivate') {
-                $this->customerRepository->updateUserState($customerID, 0);
+                $this->customerRepository->updateCustomerState($customerID, 0);
             }
 
             $this->redirectWithNotification(

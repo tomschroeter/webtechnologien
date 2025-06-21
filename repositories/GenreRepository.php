@@ -13,7 +13,9 @@ class GenreRepository
     }
 
     /**
-     * @return Genre[]
+     * Retrieves all genres from the database, ordered by era and genre name.
+     *
+     * @return Genre[] An array of Genre objects.
      */
     public function getAllGenres(): array
     {
@@ -24,6 +26,7 @@ class GenreRepository
         $sql = "SELECT * FROM genres ORDER BY era, genreName ASC;";
 
         $stmt = $this->db->prepareStatement($sql);
+
         $stmt->execute();
 
         $genres = [];
@@ -38,10 +41,12 @@ class GenreRepository
     }
 
     /**
-     * Get genre by ID
-     * @param int $genreId
-     * @return Genre
-     * @throws Exception if genre couldn't be found
+     * Retrieves a genre by its unique ID.
+     *
+     * @param int $genreId The ID of the genre to retrieve.
+     * @return Genre The genre corresponding to the given ID.
+     *
+     * @throws Exception If the genre is not found in the database.
      */
     public function getGenreById(int $genreId): Genre
     {
@@ -67,9 +72,10 @@ class GenreRepository
     }
 
     /**
-     * Get genres for a specific artwork
-     * @param int $artworkId
-     * @return Genre[]
+     * Retrieves all genres associated with a specific artwork.
+     *
+     * @param int $artworkId The ID of the artwork.
+     * @return Genre[] An array of Genre objects linked to the artwork.
      */
     public function getGenresByArtwork(int $artworkId): array
     {
@@ -90,6 +96,7 @@ class GenreRepository
         $stmt->execute();
 
         $genres = [];
+
         foreach ($stmt as $row) {
             $genres[] = Genre::createGenreFromRecord($row);
         }

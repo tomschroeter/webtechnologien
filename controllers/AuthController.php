@@ -77,7 +77,7 @@ class AuthController extends BaseController
         }
 
         // Authenticate user
-        $user = $this->customerRepository->getActiveUserByUsername($username);
+        $user = $this->customerRepository->getActiveCustomerByUsername($username);
 
         if (!$user || !password_verify($password, $user->getPass())) {
             $this->redirectWithNotification('/login', 'Password is incorrect.', 'error');
@@ -160,7 +160,7 @@ class AuthController extends BaseController
             $this->redirectWithNotification('/register', 'The password must contain at least 6 characters, one uppercase letter, one number, and one special character.', 'error');
         } elseif ($password !== $password2) {
             $this->redirectWithNotification('/register', 'Passwords do not match. Please try again.', 'error');
-        } elseif ($this->customerRepository->userExists($username)) {
+        } elseif ($this->customerRepository->customerExists($username)) {
             $this->redirectWithNotification('/register', 'Username already exists. Please choose another one.', 'error');
         }
 
@@ -214,7 +214,7 @@ class AuthController extends BaseController
 
         $id = (int) $_SESSION['customerId'];
 
-        $user = $this->customerRepository->getUserDetailsById($id);
+        $user = $this->customerRepository->getCustomerDetailsById($id);
         $customer = $this->customerRepository->getCustomerById($id);
 
         if (!$user || !$customer) {
@@ -278,7 +278,7 @@ class AuthController extends BaseController
         // Load favorite artworks from repository
         foreach ($favoriteArtworkIds as $artworkId) {
             try {
-                $artwork = $this->artworkRepository->findById($artworkId);
+                $artwork = $this->artworkRepository->getArtworkById($artworkId);
                 if ($artwork) {
                     try {
                         $artist = $this->artistRepository->getArtistById($artwork->getArtistId());
@@ -473,7 +473,7 @@ class AuthController extends BaseController
         }
 
         // Retrieve user details
-        $user = $this->customerRepository->getUserDetailsById($userId);
+        $user = $this->customerRepository->getCustomerDetailsById($userId);
 
         if (!$user) {
             $this->redirectWithNotification($isAdminEdit ? '/manage-users' : '/account', 'User not found.', 'error');
@@ -566,7 +566,7 @@ class AuthController extends BaseController
         }
 
         // Check for email uniqueness (excluding self)
-        $existingUser = $this->customerRepository->getUserDetailsByEmail($email);
+        $existingUser = $this->customerRepository->getCustomerDetailsByEmail($email);
         if ($existingUser && $existingUser->getCustomerId() != $userId) {
             $errors[] = "This email address is already in use by another user.";
         }
@@ -624,7 +624,7 @@ class AuthController extends BaseController
 
         // Get user details from session
         $userId = (int) $_SESSION['customerId'];
-        $user = $this->customerRepository->getUserDetailsById($userId);
+        $user = $this->customerRepository->getCustomerDetailsById($userId);
 
         if (!$user) {
             $this->redirectWithNotification('/account', 'User not found.', 'error');
@@ -667,7 +667,7 @@ class AuthController extends BaseController
             $userId = (int)$_SESSION['customerId'];
         }
         echo $userId;
-        $user = $this->customerRepository->getUserDetailsById($userId);
+        $user = $this->customerRepository->getCustomerDetailsById($userId);
 
         if (!$user) {
             $this->redirectWithNotification('/account', 'User not found.', 'error');
@@ -682,7 +682,7 @@ class AuthController extends BaseController
         $errors = [];
 
         // Get current password hash
-        $userLogon = $this->customerRepository->getActiveUserByUsername($user->getUserName());
+        $userLogon = $this->customerRepository->getActiveCustomerByUsername($user->getUserName());
         
         // Validate old password
         if (!$isAdminEdit && (!$userLogon || !password_verify($oldPassword, $userLogon->getPass()))) {
