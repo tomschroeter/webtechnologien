@@ -59,6 +59,7 @@ class FrontController
                 '/edit-profile' => ['AuthController', 'updateProfile'],
                 '/edit-profile/{id}' => ['AuthController', 'updateProfile'],
                 '/change-password' => ['AuthController', 'updatePassword'],
+                '/change-password/{id}' => ['AuthController', 'updatePassword'],
                 '/favorites/artists/{id}/toggle' => ['AuthController', 'toggleArtistFavoriteAjax'],
                 '/favorites/artworks/{id}/toggle' => ['AuthController', 'toggleArtworkFavoriteAjax'],
                 '/reviews/add' => ['ReviewController', 'addReview'],
