@@ -1,5 +1,15 @@
 <?php
 
+/**
+ * Represents a genre entity from the database.
+ * 
+ * This class encapsulates genre data and provides
+ * getter and setter methods for accessing and modifying
+ * genre properties.
+ * 
+ * Instances are created using the static method `createGenreFromRecord()`,
+ * which accepts an associative array (e.g., a database record).
+ */
 class Genre
 {
     private int $genreId;
