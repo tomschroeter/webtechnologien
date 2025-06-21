@@ -48,7 +48,7 @@ class Artist
             (string) $record['FirstName'],
             (string) $record['LastName'],
             $record['Nationality'] ?? null,
-            $record['YearOfBirth'], 
+            $record['YearOfBirth'],
             $record['YearOfDeath'],
             $record['Details'] ?? null,
             $record['ArtistLink'] ?? null
