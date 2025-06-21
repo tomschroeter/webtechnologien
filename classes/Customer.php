@@ -163,6 +163,9 @@ class Customer
         $this->email = $email;
     }
 
+    /**
+     * Returns the full customer name 
+     */
     public function getFullName(): string
     {
         return $this->getFirstName() . ' ' . $this->getLastName();

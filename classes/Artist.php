@@ -135,6 +135,9 @@ class Artist
         $this->artistLink = $artistLink;
     }
 
+    /**
+     * Returns the full artist name 
+     */
     public function getFullName(): string
     {
         return trim(($this->getFirstName() ?? '') . ' ' . $this->getLastName());
