@@ -3,11 +3,13 @@
 ## What has been implemented
 
 ### 1. MVC Structure Created
+
 - **Models**: Using existing repositories and DTOs as the Model layer
 - **Views**: Created view templates in `/src/views/` directory
 - **Controllers**: Created controller classes in `/src/controllers/` directory
 
 ### 2. Controllers Implemented
+
 - `BaseController.php` - Base controller with common functionality
 - `HomeController.php` - Home page controller
 - `ArtistController.php` - Artists listing and individual artist pages
@@ -20,6 +22,7 @@
 - `SearchController.php` - Moved search functionality to MVC architecture
 
 ### 3. Views Created
+
 - `layouts/main.php` - Main layout template
 - `home/index.php` - Home page view
 - `artists/index.php` - Artists listing view
@@ -36,11 +39,13 @@
 - `search/index.php` - Search results view with improved styling
 
 ### 4. Routing System
+
 - `FrontController.php` - Main routing controller
 - `mvc_bootstrap.php` - Bootstrap file that tries MVC first, falls back to original
 - Updated existing PHP files to check MVC routing first
 
 ### 5. Key Features
+
 - **Backward Compatibility**: All original functionality is preserved
 - **Gradual Migration**: MVC routes are tried first, original files serve as fallback
 - **Flash Messages**: Implemented flash message system for user feedback
@@ -56,6 +61,7 @@
 5. If no MVC route matches, the original PHP file handles the request
 
 ## Routes Implemented in MVC
+
 - `GET /` → HomeController::index()
 - `GET /index` → HomeController::index()
 - `GET /artists` → ArtistController::index()
@@ -74,6 +80,7 @@
 - `GET /search` → SearchController::index()
 
 ## Files Modified
+
 - `index.php` - Added MVC bootstrap
 - `artists.php` - Added MVC bootstrap
 - `artworks.php` - Added MVC bootstrap
@@ -87,11 +94,12 @@
 ## Recent Updates
 
 ### Migration from Main Branch (June 2025)
+
 - **Merge Conflicts Resolved** - Successfully merged main branch with updated styling and fonts
 - **New Content Migrated** - Updated views with new styling, fonts (Lobster, Lato), and improved layouts
 - **Removed Legacy Files** - Cleaned up old files that were replaced by MVC structure:
   - `about.php` → MVC about route
-  - `artists.php` → MVC artists route  
+  - `artists.php` → MVC artists route
   - `artworks.php` → MVC artworks route
   - `genres.php` → MVC genres route
   - `subjects.php` → MVC subjects route
@@ -104,6 +112,7 @@
 - **Improved Components** - Updated artwork-card-list with enhanced favorites functionality
 
 ### 404 Error Handling Implementation (June 2025)
+
 - **ErrorController.php** - New controller for handling error pages
 - **views/errors/404.php** - Styled 404 error page
 - **views/errors/500.php** - Styled 500 error page
@@ -112,25 +121,30 @@
 - **Static File Handling** - System properly distinguishes between missing pages and static assets
 
 ### Search MVC Implementation
+
 - **SearchController.php** - Moved search functionality to MVC architecture
 - **views/search/index.php** - Search results view with improved styling
 - **Updated navbar** - Search form now uses `/search` route instead of `/search.php`
 - **search.php** - Now redirects to MVC route for backward compatibility
 
 ### Testing 404 Functionality
+
 To test the 404 system:
+
 1. Visit any non-existent URL (e.g., `/non-existent-page`)
 2. Try accessing a non-existent artist ID (e.g., `/artists/999999`)
 3. Check that static assets still work (e.g., `/assets/style.css`)
 4. Verify specific error messages appear for different error types
 
 ## Architecture Benefits
+
 - **Centralized Error Handling**: All 404s and errors go through consistent system
 - **Better UX**: Styled error pages instead of default browser 404s
 - **SEO Friendly**: Proper HTTP status codes (404, 500) are sent
 - **Maintainable**: Error handling logic is centralized and reusable
 
 ## Next Steps (Optional)
+
 1. Migrate remaining pages (login, register, account, etc.) to MVC
 2. Add POST route handling for forms
 3. Implement more sophisticated error handling
@@ -139,6 +153,7 @@ To test the 404 system:
 6. Add API endpoints for AJAX functionality
 
 ## Benefits Achieved
+
 - **Separation of Concerns**: Logic, presentation, and data are now separated
 - **Code Reusability**: Controllers and views can be reused
 - **Maintainability**: Easier to maintain and extend
