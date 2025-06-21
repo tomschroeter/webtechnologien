@@ -116,6 +116,7 @@ $correctLargeImagePath = getImagePathOrPlaceholder($largeImagePath, $placeholder
                 </div>
             <?php endif; ?>
 
+            <!-- Display artwork details -->
             <table class="table table-bordered">
                 <thead class="table-dark">
                     <tr>
@@ -280,72 +281,96 @@ $correctLargeImagePath = getImagePathOrPlaceholder($largeImagePath, $placeholder
 <?php if ($gallery && $gallery->getLatitude() && $gallery->getLongitude()): ?>
     <div class="row mt-4">
         <div class="col-12">
+            <!-- Bootstrap accordion to toggle visibility of location map -->
             <div class="accordion" id="locationAccordion">
                 <div class="accordion-item">
                     <h2 class="accordion-header" id="locationHeading">
+                        <!-- Accordion button to expand/collapse the location panel -->
                         <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse"
                             data-bs-target="#locationCollapse" aria-expanded="false" aria-controls="locationCollapse">
                             Location
                         </button>
                     </h2>
+
+                    <!-- Accordion collapse panel containing the map -->
                     <div id="locationCollapse" class="accordion-collapse collapse" aria-labelledby="locationHeading"
                         data-bs-parent="#locationAccordion">
                         <div class="accordion-body">
                             <?php
+                            // Store latitude and longitude from gallery object for use in JS
                             $latitude = $gallery->getLatitude();
                             $longitude = $gallery->getLongitude();
                             ?>
+
+                            <!-- Div container for the Leaflet map, styled with fixed height and border -->
                             <div id="map" style="height: 300px; width: 100%; border: 1px solid #ccc; border-radius: 8px;">
                             </div>
 
-                            <!-- Leaflet CSS & JS to display map -->
+                            <!-- Load Leaflet CSS and JS from CDN for map rendering -->
                             <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
                             <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
 
                             <script>
+                                // Wait until the DOM content is fully loaded before running the script
                                 document.addEventListener("DOMContentLoaded", function () {
+                                    // Pass PHP latitude and longitude variables into JS
                                     var lat = <?= json_encode($latitude) ?>;
                                     var lon = <?= json_encode($longitude) ?>;
 
-                                    var mapInstance = null;
-                                    var markerInstance = null;
-                                    var isMapInitialized = false;
+                                    var mapInstance = null;      // Leaflet map object
+                                    var markerInstance = null;   // Marker object on the map
+                                    var isMapInitialized = false; // Flag to prevent re-initialization
 
+                                    // Get the accordion collapse element by ID
                                     var locationCollapseElement = document.getElementById('locationCollapse');
 
                                     if (locationCollapseElement) {
+                                        // Listen for when the accordion panel is fully shown (expanded)
                                         locationCollapseElement.addEventListener('shown.bs.collapse', function () {
                                             var mapDiv = document.getElementById('map');
+
+                                            // Check that map container div exists
                                             if (!mapDiv) {
                                                 console.error("Map container #map not found.");
                                                 return;
                                             }
 
+                                            // Initialize map only once to optimize performance
                                             if (!isMapInitialized) {
+                                                // Create Leaflet map centered at gallery coordinates
                                                 mapInstance = L.map('map').setView([lat, lon], 13);
 
+                                                // Add OpenStreetMap tiles as base layer with proper attribution
                                                 L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
                                                     maxZoom: 19,
                                                     attribution: '© <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
                                                 }).addTo(mapInstance);
 
+                                                // Add a marker on the gallery's latitude and longitude
                                                 markerInstance = L.marker([lat, lon]).addTo(mapInstance);
 
+                                                // Create popup content with gallery name and coordinates
                                                 var galleryName = <?= json_encode($gallery->getGalleryName()) ?>;
                                                 var popupContent = '<strong>' + galleryName + '</strong><br>Latitude: ' + lat + '<br>Longitude: ' + lon;
+
+                                                // Bind the popup to the marker
                                                 markerInstance.bindPopup(popupContent);
 
+                                                // Open popup on marker click
                                                 markerInstance.on('click', function () {
                                                     markerInstance.openPopup();
                                                 });
 
+                                                // Set flag indicating map has been initialized
                                                 isMapInitialized = true;
                                             } else {
+                                                // If map already initialized, refresh its size and re-center it
                                                 mapInstance.invalidateSize();
                                                 mapInstance.setView([lat, lon], 13);
                                             }
                                         });
                                     } else {
+                                        // Log error if accordion collapse element is not found in the DOM
                                         console.error("Accordion collapse element #locationCollapse not found.");
                                     }
                                 });
