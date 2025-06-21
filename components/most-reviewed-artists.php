@@ -15,10 +15,11 @@ require_once dirname(__DIR__) . "/classes/Artist.php";
 require_once dirname(__DIR__) . "/repositories/ArtistRepository.php";
 
 // Instantiate repository with a database connection
-$artistRepository = new ArtistRepository(new Database());
+$db = new Database();
+$artistRepository = new ArtistRepository($db);
 
 // Fetch top 3 artists ranked by number of reviews
-$mostReviewedArtists = $artistRepository->findMostReviewed(3);
+$mostReviewedArtists = $artistRepository->getMostReviewed(3);
 ?>
 
 <div class="container" style="max-width: 500px;">
@@ -28,8 +29,8 @@ $mostReviewedArtists = $artistRepository->findMostReviewed(3);
       // Extract individual artist and associated review count
       $artist = $combined->getArtist();
       $artistName = $artist->getFullName();
-      $reviewCount = $combined->getReviewCount();
       $artistId = $artist->getArtistId();
+      $reviewCount = $combined->getReviewCount();
 
       // Position in ranking (1-based index)
       $position = $index + 1;

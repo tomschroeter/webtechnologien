@@ -14,7 +14,10 @@ class ArtistRepository
     }
 
     /**
-     * @return Artist[]
+     * Retrieves all artists from the database, sorted by last name and first name.
+     *
+     * @param bool $sortDesc Whether to sort in descending order (true) or ascending (false).
+     * @return Artist[] An array of Artist objects.
      */
     public function getAllArtists(bool $sortDesc): array
     {
@@ -41,32 +44,36 @@ class ArtistRepository
         return $artists;
     }
 
-    public function findMostReviewed(int $n = 3): ArtistWithStatsArray
+    /**
+     * Retrieves the top N artists based on the number of reviews.
+     *
+     * @param int $n The number of top-reviewed artists to retrieve.
+     * @return ArtistWithStatsArray A typed array of ArtistWithStats objects.
+     */
+    public function getMostReviewed(int $n): ArtistWithStatsArray
     {
         if (!$this->db->isConnected()) {
             $this->db->connect();
         }
 
-        $sql = "
-            select a.*, count(r.ReviewId) review_count
-            from artists a
-            join artworks aw on aw.ArtistID = a.ArtistID
-            join reviews r on r.ArtWorkId = aw.ArtWorkID
-            group by a.ArtistID
-            order by review_count desc
-            limit :n
+        $sql = "SELECT a.*, COUNT(r.ReviewId) AS ReviewCount
+        FROM artists a
+        JOIN artworks aw ON aw.ArtistID = a.ArtistID
+        JOIN reviews r ON r.ArtWorkId = aw.ArtWorkID
+        GROUP BY a.ArtistID
+        ORDER BY ReviewCount DESC
+        LIMIT :n
         ";
 
-        // use prepared statement
         $stmt = $this->db->prepareStatement($sql);
-        $stmt->bindValue("n", $n, PDO::PARAM_INT); // without type n is inserted as string
+        $stmt->bindValue("n", $n, PDO::PARAM_INT);
         $stmt->execute();
 
         $mostReviewedArtists = new ArtistWithStatsArray();
 
         foreach ($stmt as $row) {
             $artist = Artist::createArtistFromRecord($row);
-            $reviewCount = $row['review_count'];
+            $reviewCount = $row['ReviewCount'];
 
             $mostReviewedArtists[] = new ArtistWithStats($artist, $reviewCount);
         }
@@ -78,7 +85,11 @@ class ArtistRepository
 
 
     /**
-     * @throws Exception if artist couldn't be found
+     * Retrieves a single artist by their ID.
+     *
+     * @param int $artistId The ID of the artist to retrieve.
+     * @return Artist The matching Artist object.
+     * @throws Exception If no artist is found for the given ID.
      */
     public function getArtistById(int $artistId): Artist
     {
@@ -104,10 +115,11 @@ class ArtistRepository
     }
 
     /**
-     * Summary of getArtistBySearchQuery
-     * @param string $searchQuery
-     * @param bool $sortDesc
-     * @return Artist[]
+     * Retrieves artists whose last name matches the search query.
+     *
+     * @param string $searchQuery The partial string to search for in last names.
+     * @param bool $sortDesc Whether to sort results descending by last name.
+     * @return Artist[] Array of matching Artist objects.
      */
     public function getArtistBySearchQuery(string $searchQuery, bool $sortDesc): array
     {
@@ -135,19 +147,20 @@ class ArtistRepository
     }
 
     /**
-     * Summary of getArtistNationalities
-     * @return array
+     * Retrieves a list of distinct artist nationalities from the database.
+     *
+     * @return string[] Array of unique nationalities.
      */
-    public function getArtistNationalities()
+    public function getArtistNationalities(): array
     {
         if (!$this->db->isConnected()) {
             $this->db->connect();
         }
 
         $sql = "
-        SELECT DISTINCT nationality FROM artists 
-        WHERE nationality IS NOT NULL 
-        ORDER BY nationality;
+        SELECT DISTINCT Nationality FROM artists 
+        WHERE Nationality IS NOT NULL 
+        ORDER BY Nationality;
         ";
 
         $stmt = $this->db->prepareStatement($sql);
@@ -156,7 +169,7 @@ class ArtistRepository
         $nationalities = [];
 
         foreach ($stmt as $row) {
-            $nationalities[] = $row['nationality']; // Fixed: use [] instead of ::append() and access the column
+            $nationalities[] = $row['Nationality'];
         }
 
         $this->db->disconnect();
@@ -165,15 +178,16 @@ class ArtistRepository
     }
 
     /**
-     * Summary of getArtistByAdvancedSearch
-     * @param mixed $name
-     * @param mixed $startYear
-     * @param mixed $endYear
-     * @param mixed $nationality
-     * @param bool $sortDesc
-     * @return Artist[]
+     * Performs an advanced search for artists based on optional filters.
+     *
+     * @param string|null $name The artist name to match (first and/or last name).
+     * @param int|null $startYear Minimum birth year filter.
+     * @param int|null $endYear Maximum birth year filter.
+     * @param string|null $nationality Nationality to filter by.
+     * @param bool $sortDesc Whether to sort results descending by last name.
+     * @return Artist[] Array of artists matching the filter criteria.
      */
-    public function getArtistByAdvancedSearch($name = null, $startYear = null, $endYear = null, $nationality = null, bool $sortDesc)
+    public function getArtistByAdvancedSearch($name = null, $startYear = null, $endYear = null, $nationality = null, bool $sortDesc): array
     {
         if (!$this->db->isConnected()) {
             $this->db->connect();
@@ -182,7 +196,7 @@ class ArtistRepository
         // Initialize SQL query with WHERE 1=1 to simplify appending conditions
         $sql = "SELECT * FROM artists WHERE 1=1";
         $params = [];
-        
+
         // Append name condition if provided, filtering by first and last name
         if (!empty($name)) {
             $nameParts = preg_split('/\s+/', trim($name));
@@ -215,7 +229,6 @@ class ArtistRepository
         // Ordering appended at the end
         $sql .= " ORDER BY LastName " . ($sortDesc ? "DESC" : "ASC");
 
-        // Prepare and execute the statement
         $stmt = $this->db->prepareStatement($sql);
         $stmt->execute($params);
 

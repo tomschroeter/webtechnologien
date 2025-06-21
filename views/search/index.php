@@ -1,3 +1,4 @@
+<!-- Search Results Header -->
 <h2 class="flex-grow-1 mb-1 mt-4">
     <?php if (isset($isAdvancedSearch) && $isAdvancedSearch): ?>
         Advanced Search Results
@@ -10,18 +11,20 @@
 
 <?php if (sizeof($artistSearchResults) > 0 || sizeof($artworkSearchResults) > 0): ?>
 
+    <!-- Display Artist Results -->
     <?php if (sizeof($artistSearchResults) > 0): ?>
-        <div class="d-flex align-items-center mt-3 mb-3">
+        <div class="d-flex align-items-center mt-3 mb-2">
             <h3 class="flex-grow-1 mb-0">Artists</h3>
         </div>
 
+        <!-- Artist Count and Sort Dropdown -->
         <div class="d-flex align-items-center justify-content-between mb-2">
             <p class="text-muted mb-0">
                 Found:
                 <?= sizeof($artistSearchResults) . ' ' . (sizeof($artistSearchResults) === 1 ? 'artist' : 'artists'); ?>
             </p>
 
-            <!-- Sorting form for artists -->
+            <!-- Artist Sorting Form -->
             <form method="get" class="d-flex align-items-center">
                 <?php foreach ($_GET as $key => $value): ?>
                     <?php if ($key !== 'sortArtist'): ?>
@@ -36,49 +39,52 @@
             </form>
         </div>
 
-        <ul class="list-group">
+        <!-- Artist List -->
+        <ul class="list-group mb-5">
             <?php foreach ($artistSearchResults as $artist): ?>
                 <li class="list-group-item d-flex align-items-center justify-content-between">
+                    <!-- Artist Link -->
                     <a href="/artists/<?= $artist->getArtistId() ?>"
                         class="d-flex align-items-center flex-grow-1 text-decoration-none text-dark" style="min-width:0;">
                         <span class="text-truncate" style="max-width: 60%; white-space: normal;">
-                            <?= htmlspecialchars($artist->getFirstName()) ?>             <?= htmlspecialchars($artist->getLastName()) ?>
+                            <?= htmlspecialchars($artist->getFirstName()) ?>
+                            <?= htmlspecialchars($artist->getLastName()) ?>
                         </span>
                     </a>
 
+                    <!-- Favorite Button and Image -->
                     <div class="d-flex align-items-center" style="gap: 0.5rem;">
                         <?php
-                            $type = "artist";
-                            $item = $artist;
-                            require dirname(dirname(__DIR__)) . "/components/add-to-favorites-button.php";
+                        $type = "artist";
+                        $item = $artist;
+                        require dirname(dirname(__DIR__)) . "/components/add-to-favorites-button.php";
 
-                            $imagePath = "/assets/images/artists/square-thumb/" . $artist->getArtistId() . ".jpg";
-                            $placeholderPath = "/assets/placeholder/artists/square-thumb/placeholder.svg";
-                            $correctImagePath = getImagePathOrPlaceholder($imagePath, $placeholderPath);
+                        $imagePath = "/assets/images/artists/square-thumb/" . $artist->getArtistId() . ".jpg";
+                        $placeholderPath = "/assets/placeholder/artists/square-thumb/placeholder.svg";
+                        $correctImagePath = getImagePathOrPlaceholder($imagePath, $placeholderPath);
                         ?>
-                        <img
-                            src="<?= $correctImagePath ?>"
-                            alt="Artist Image"
-                            style="width: 60px; height: 60px; object-fit: cover; border-radius: 0.25rem;"
-                        >
+                        <img src="<?= $correctImagePath ?>" alt="Artist Image"
+                            style="width: 60px; height: 60px; object-fit: cover; border-radius: 0.25rem;">
                     </div>
                 </li>
             <?php endforeach; ?>
         </ul>
     <?php endif; ?>
 
+    <!-- Display Artwork Results -->
     <?php if (sizeof($artworkSearchResults) > 0): ?>
-        <div class="d-flex align-items-center mt-4 mb-2">
+        <div class="d-flex align-items-center mt-4 mb-3">
             <h3 class="flex-grow-1 mb-0">Artworks</h3>
         </div>
 
+        <!-- Artwork Count and Sorting -->
         <div class="d-flex align-items-center justify-content-between mb-3 flex-wrap gap-2">
             <p class="text-muted mb-0">
                 Found:
                 <?= sizeof($artworkSearchResults) . ' ' . (sizeof($artworkSearchResults) === 1 ? 'artwork' : 'artworks'); ?>
             </p>
 
-            <!-- Sorting form for artworks -->
+            <!-- Artwork Sorting Form -->
             <form method="get" class="d-flex align-items-center gap-2">
                 <?php foreach ($_GET as $key => $value): ?>
                     <?php if (!in_array($key, ['sortParameter', 'sortArtwork'])): ?>
@@ -98,10 +104,13 @@
                 </select>
             </form>
         </div>
-        <ul class="list-group">
+
+        <!-- Artwork List -->
+        <ul class="list-group mb-5">
             <?php foreach ($artworkSearchResults as $combined): ?>
                 <?php $artwork = $combined->getArtwork(); ?>
                 <li class="list-group-item d-flex align-items-center justify-content-between">
+                    <!-- Artwork Link -->
                     <a href="/artworks/<?= $artwork->getArtworkId() ?>"
                         class="d-flex align-items-center flex-grow-1 text-dark link-underline-on-hover" style="min-width:0;">
                         <div>
@@ -115,6 +124,7 @@
                         </div>
                     </a>
 
+                    <!-- Favorite Button and Image -->
                     <div class="d-flex align-items-center" style="gap: 0.5rem;">
                         <?php
                         $type = "artwork";
@@ -125,8 +135,7 @@
                         $placeholderPath = "/assets/placeholder/works/square-small/placeholder.svg";
                         $correctImagePath = getImagePathOrPlaceholder($imagePath, $placeholderPath);
                         ?>
-                        <img
-                            src="<?= $correctImagePath ?>" alt="Artwork Image"
+                        <img src="<?= $correctImagePath ?>" alt="Artwork Image"
                             style="width: 60px; height: 60px; object-fit: cover; border-radius: 0.25rem;">
                     </div>
                 </li>
@@ -135,12 +144,14 @@
     <?php endif; ?>
 
 <?php else: ?>
+    <!-- No Results Found Message -->
     <div class="alert alert-info mt-4">
         <h4>No Results Found</h4>
 
         <?php if (!empty($isAdvancedSearch)): ?>
             <p>No results were found for your advanced search criteria.</p>
 
+            <!-- Display applied filters -->
             <?php if (!empty($filterBy)): ?>
                 <p><strong>Filter:</strong> <?= ucfirst(htmlspecialchars($filterBy)) ?></p>
             <?php endif; ?>
@@ -180,6 +191,7 @@
             <p>No results were found for the search term <strong>"<?= htmlspecialchars($searchQuery) ?>"</strong>.</p>
         <?php endif; ?>
 
+        <!-- Fallback navigation -->
         <div class="mt-3">
             <a href="/artists" class="btn btn-primary me-2">Browse All Artists</a>
             <a href="/artworks" class="btn btn-primary">Browse All Artworks</a>

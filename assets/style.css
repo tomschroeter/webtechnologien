@@ -1,4 +1,5 @@
 /* Local Google Font Declarations */
+/* Define the Lato font family with different weights and styles */
 @font-face {
   font-family: 'Lato';
   src: url('/assets/fonts/Lato/Lato-Regular.ttf') format('truetype');
@@ -31,6 +32,7 @@
   font-display: swap;
 }
 
+/* Define Lobster font family for headings */
 @font-face {
   font-family: 'Lobster';
   src: url('/assets/fonts/Lobster/Lobster-Regular.ttf') format('truetype');
@@ -39,26 +41,30 @@
   font-display: swap;
 }
 
-
-/* Ensure Footer is always on bottom of the page */
+/* Ensure footer sticks to bottom of the page */
+/* html and body fill full height and have no margin */
 html, body {
   height: 100%;
   margin: 0;
 }
 
+/* Make body a flex container with column direction */
 body {
   display: flex;
   flex-direction: column;
 }
 
+/* Main content grows to fill available space */
 main {
   flex: 1;
 }
 
+/* Footer padding */
 footer {
   padding: 1rem 0;
 }
 
+/* Horizontal break line styling */
 .break {
   border-top: 1px solid black;
   border-radius: 2rem;
@@ -68,9 +74,8 @@ footer {
   margin-bottom: 4rem;
 }
 
-/*
-  Ensures the navbar always spans the full viewport width, while still having the container tag around the html body
-*/
+/* Full-width navbar workaround */
+/* Allows navbar to span full viewport width while body is constrained */
 .fullwidth {
   position: relative;
   left: 50%;
@@ -79,25 +84,28 @@ footer {
   margin-right: -50vw;
   width: 100vw;
   max-width: 100vw;
-  /* z-index: 1030; */
 }
 
+/* Heart icon font fallback */
 .heart {
   font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI Symbol', 'Arial Unicode MS', sans-serif;
 }
 
-
-/* AJAX Loading and Notification Styles */
+/* Button styles when disabled */
+/* Reduce opacity and show not-allowed cursor */
 .btn:disabled {
   opacity: 0.6;
   cursor: not-allowed;
 }
 
+/* Button loading state styles */
+/* Hide text by making color transparent */
 .btn.loading {
   position: relative;
   color: transparent !important;
 }
 
+/* Show spinner on button when loading */
 .btn.loading::after {
   content: '';
   position: absolute;
@@ -113,12 +121,14 @@ footer {
   animation: spin 1s linear infinite;
 }
 
+/* Spinner animation keyframes */
 @keyframes spin {
   to {
     transform: rotate(360deg);
   }
 }
 
+/* Alert container fixed in top-right corner */
 #alert-container {
   position: fixed;
   top: 20px;
@@ -127,18 +137,19 @@ footer {
   z-index: 9999;
 }
 
+/* Alert box styling */
 #alert-container .alert {
   margin-bottom: 10px;
   box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
 }
 
-/* Table row highlight on action */
+/* Table row highlight for pending actions */
 .table tr.action-pending {
   background-color: #f8f9fa;
   opacity: 0.7;
 }
 
-/* font styles */
+/* Font styles for headings and body text */
 h1,
 h2,
 h3,
@@ -152,11 +163,14 @@ nav {
   font-family: 'Lato';
 }
 
-/* Spacing for fixed navbar */
+/* Add padding to body to prevent content hiding under fixed navbar */
 body {
   padding-top: 70px;
 }
 
+/* Star rating widget */
+
+/* Layout and styling for stars */
 .star-rating {
   display: flex;
   justify-content: flex-end;
@@ -165,30 +179,38 @@ body {
   flex-direction: row-reverse;
 }
 
+/* Hide radio inputs in star rating */
 .star-rating input {
   display: none;
 }
 
+/* Default star color and hover transition */
 .star-rating label {
   cursor: pointer;
   color: #ccc;
   transition: color 0.2s;
 }
 
-.star-rating input:checked~label {
+/* Stars remain grey if checked input is present */
+.star-rating input:checked ~ label {
   color: #ccc;
 }
 
-.star-rating input:checked+label,
-.star-rating input:checked+label~label {
+/* Highlight stars gold when selected */
+.star-rating input:checked + label,
+.star-rating input:checked + label ~ label {
   color: gold;
 }
 
+/* Highlight stars gold on hover */
 .star-rating label:hover,
-.star-rating label:hover~label {
+.star-rating label:hover ~ label {
   color: gold;
 }
 
+/* Link style variants */
+
+/* Remove underline and keep color intact */
 .link-no-underline,
 .link-no-underline:hover,
 .link-no-underline:focus,
@@ -198,6 +220,7 @@ body {
   cursor: pointer;
 }
 
+/* Link without underline by default, underline on hover/focus */
 .link-underline-on-hover {
   text-decoration: none;
   color: inherit;
@@ -209,18 +232,22 @@ body {
   text-decoration: underline;
 }
 
-/* Accordion - remove blue background when opened or focused */
+/* Accordion styles */
+
+/* Remove blue background on expanded accordion buttons */
 .accordion-button:not(.collapsed) {
   background-color: #fff !important;
   color: inherit !important;
 }
 
+/* Remove focus outline and add border color */
 .accordion-button:focus {
   box-shadow: none !important;
   border-color: #dee2e6 !important;
 }
 
-/* User management table - spread action buttons evenly */
+/* User management table - actions cell layout */
+/* Evenly space buttons, allow wrapping */
 .actions-cell {
   display: flex;
   gap: 0.5rem;
@@ -229,17 +256,36 @@ body {
   flex-wrap: wrap;
 }
 
+/* Buttons inside actions cell take equal space */
 .actions-cell .btn {
   flex: 1;
   min-width: 40px;
   white-space: nowrap;
 }
 
+/* Forms inside actions cell fill available space */
 .actions-cell form {
   flex: 1;
   display: flex;
 }
 
+/* Buttons inside forms fill full width */
 .actions-cell form .btn {
   width: 100%;
+}
+
+/* Large error code font */
+.error-template h1 {
+    font-size: 8rem;
+}
+
+/* Responsive adjustments for smaller screens */
+@media (max-width: 768px) {
+    .error-template h1 {
+        font-size: 4rem;
+    }
+
+    .error-template h2 {
+        font-size: 1.5rem;
+    }
 }

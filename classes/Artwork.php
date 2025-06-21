@@ -1,5 +1,15 @@
 <?php
 
+/**
+ * Represents an artwork entity from the database.
+ * 
+ * This class encapsulates artwork data and provides
+ * getter and setter methods for accessing and modifying
+ * artwork properties.
+ * 
+ * Instances are created using the static method `createArtworkFromRecord()`,
+ * which accepts an associative array (e.g., a database record).
+ */
 class Artwork
 {
     private int $artworkId;

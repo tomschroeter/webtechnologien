@@ -3,6 +3,8 @@
     <div class="card-body">
       <h2 class="mb-3">Advanced Search</h2>
       <hr>
+
+      <!-- Filter selection dropdown -->
       <form method="get" action="/advanced-search" class="d-flex align-items-center gap-3 mb-4">
         <label for="filterBy" class="form-label mb-0 ms-2">Filter By</label>
         <select name="filterBy" id="filterBy" class="form-select w-auto" onchange="this.form.submit()">
@@ -11,10 +13,12 @@
         </select>
       </form>
 
+      <!-- Search form with conditional filters based on selected filterBy -->
       <form method="get" action="/search" style="max-width: 200px;">
+        <!-- Preserve selected filterBy on submit -->
         <input type="hidden" name="filterBy" value="<?= htmlspecialchars($filterBy) ?>">
 
-        <!-- Artist Filters -->
+        <!-- Artist-specific filters -->
         <?php if ($filterBy === 'artist'): ?>
           <div id="artistFilters" class="mb-3 ms-5">
             <div class="mb-3">
@@ -48,7 +52,7 @@
           </div>
         <?php endif; ?>
 
-        <!-- Artwork Filters -->
+        <!-- Artwork-specific filters -->
         <?php if ($filterBy === 'artwork'): ?>
           <div id="artworkFilters" class="mb-3 ms-5">
             <div class="mb-3">
@@ -82,6 +86,7 @@
           </div>
         <?php endif; ?>
 
+        <!-- Submit button -->
         <button type="submit" class="btn btn-outline-primary ms-2 mt-3 mb-3">Search</button>
       </form>
     </div>

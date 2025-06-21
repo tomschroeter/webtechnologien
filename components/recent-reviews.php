@@ -16,7 +16,7 @@ $reviewRepository = new ReviewRepository($db);
 $reviews = $reviewRepository->getRecentReviews();
 
 // Check if valid reviews were returned
-if (is_array($reviews) && !empty($reviews)):
+if ($reviews && count($reviews) > 0):
   ?>
   <div style="display: flex; justify-content: space-between; flex-wrap: wrap; gap: 40px;">
     <?php foreach ($reviews as $review):

@@ -6,7 +6,7 @@ require_once dirname(dirname(__DIR__)) . "/repositories/GenreRepository.php";
 require_once dirname(dirname(__DIR__)) . "/repositories/SubjectRepository.php";
 require_once dirname(dirname(__DIR__)) . "/repositories/GalleryRepository.php";
 require_once dirname(dirname(__DIR__)) . "/repositories/ReviewRepository.php";
-require_once dirname(dirname(__DIR__)) . "/dtos/ReviewWithStats.php";
+require_once dirname(dirname(__DIR__)) . "/dtos/ReviewStats.php";
 
 // Fetch additional data that's not passed from controller
 $db = new Database();
@@ -30,7 +30,7 @@ try {
     $genres = [];
     $subjects = [];
     $reviews = [];
-    $reviewStats = new ReviewWithStats(0.0, 0);
+    $reviewStats = new ReviewStats(0.0, 0);
     $gallery = null;
 }
 
@@ -42,6 +42,7 @@ $correctLargeImagePath = getImagePathOrPlaceholder($largeImagePath, $placeholder
 ?>
 
 <br>
+<!-- Display title -->
 <h1><?php echo htmlspecialchars($artwork->getTitle()) ?></h1>
 
 <?php if (isset($message)): ?>
@@ -56,6 +57,7 @@ $correctLargeImagePath = getImagePathOrPlaceholder($largeImagePath, $placeholder
 <div class="mt-4">
     <div class="row">
         <div class="col-auto">
+            <!-- Display artwork image -->
             <a href="#" data-bs-toggle="modal" data-bs-target="#imageModal">
                 <img src="<?= $correctImagePath ?>" alt="<?= htmlspecialchars($artwork->getTitle()) ?>"
                     class="img-fluid border"
@@ -66,6 +68,7 @@ $correctLargeImagePath = getImagePathOrPlaceholder($largeImagePath, $placeholder
             <div class="modal fade" id="imageModal" tabindex="-1" aria-labelledby="imageModalLabel" aria-hidden="true">
                 <div class="modal-dialog modal-dialog-centered"
                     style="width: fit-content; max-width: 80vw; max-height: auto">
+                    <!-- Display modal header with close button -->
                     <div class="modal-content">
                         <div class="modal-header">
                             <h5 class="modal-title" id="imageModalLabel">
@@ -74,7 +77,7 @@ $correctLargeImagePath = getImagePathOrPlaceholder($largeImagePath, $placeholder
                             <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                         </div>
 
-                        <!-- Remove max-height and overflow-y here -->
+                        <!-- Display modal body -->
                         <div class="modal-body p-3">
                             <img src="<?= $correctLargeImagePath ?>" alt="<?= htmlspecialchars($artwork->getTitle()) ?>"
                                 class="img-fluid" style="max-width: 100%; height: auto; object-fit: contain;">
@@ -88,12 +91,13 @@ $correctLargeImagePath = getImagePathOrPlaceholder($largeImagePath, $placeholder
                     <?= htmlspecialchars($artist->getFullName()) ?>
                 </a></h3>
 
+            <!-- Display average rating if reviews are available -->
             <div class="mb-3">
                 <?php if ($reviewStats->hasReviews()): ?>
                     <div class="d-flex align-items-center gap-2">
                         <span class="h5 mb-0">Rating: <?= $reviewStats->getFormattedAverageRatingOutOf5() ?>
                             <?= renderStars($reviewStats->getFormattedAverageRating()) ?></span>
-                        <small class="text-muted">(based on <?= $reviewStats->getReviewText() ?>)</small>
+                        <small class="text-muted">(based on <?= $reviewStats->getNumberOfReviewsAsText() ?>)</small>
                     </div>
                 <?php else: ?>
                     <span class="text-muted">No reviews yet</span>
@@ -112,6 +116,7 @@ $correctLargeImagePath = getImagePathOrPlaceholder($largeImagePath, $placeholder
                 </div>
             <?php endif; ?>
 
+            <!-- Display artwork details -->
             <table class="table table-bordered">
                 <thead class="table-dark">
                     <tr>
@@ -189,6 +194,7 @@ $correctLargeImagePath = getImagePathOrPlaceholder($largeImagePath, $placeholder
     </div>
 </div>
 
+<!-- Display description or excerpt -->
 <?php if ($artwork->getDescription()): ?>
     <div class="row mt-4">
         <div class="col-12">
@@ -205,6 +211,7 @@ $correctLargeImagePath = getImagePathOrPlaceholder($largeImagePath, $placeholder
     </div>
 <?php endif; ?>
 
+<!-- Display gallery information if available -->
 <?php if ($gallery): ?>
     <div class="row mt-4">
         <div class="col-12">
@@ -270,75 +277,100 @@ $correctLargeImagePath = getImagePathOrPlaceholder($largeImagePath, $placeholder
     </div>
 <?php endif; ?>
 
+<!-- Display map to gallery if location is available -->
 <?php if ($gallery && $gallery->getLatitude() && $gallery->getLongitude()): ?>
     <div class="row mt-4">
         <div class="col-12">
+            <!-- Bootstrap accordion to toggle visibility of location map -->
             <div class="accordion" id="locationAccordion">
                 <div class="accordion-item">
                     <h2 class="accordion-header" id="locationHeading">
+                        <!-- Accordion button to expand/collapse the location panel -->
                         <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse"
                             data-bs-target="#locationCollapse" aria-expanded="false" aria-controls="locationCollapse">
                             Location
                         </button>
                     </h2>
+
+                    <!-- Accordion collapse panel containing the map -->
                     <div id="locationCollapse" class="accordion-collapse collapse" aria-labelledby="locationHeading"
                         data-bs-parent="#locationAccordion">
                         <div class="accordion-body">
                             <?php
+                            // Store latitude and longitude from gallery object for use in JS
                             $latitude = $gallery->getLatitude();
                             $longitude = $gallery->getLongitude();
                             ?>
+
+                            <!-- Div container for the Leaflet map, styled with fixed height and border -->
                             <div id="map" style="height: 300px; width: 100%; border: 1px solid #ccc; border-radius: 8px;">
                             </div>
 
-                            <!-- Leaflet CSS & JS -->
+                            <!-- Load Leaflet CSS and JS from CDN for map rendering -->
                             <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
                             <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
 
                             <script>
+                                // Wait until the DOM content is fully loaded before running the script
                                 document.addEventListener("DOMContentLoaded", function () {
+                                    // Pass PHP latitude and longitude variables into JS
                                     var lat = <?= json_encode($latitude) ?>;
                                     var lon = <?= json_encode($longitude) ?>;
 
-                                    var mapInstance = null;
-                                    var markerInstance = null;
-                                    var isMapInitialized = false;
+                                    var mapInstance = null;      // Leaflet map object
+                                    var markerInstance = null;   // Marker object on the map
+                                    var isMapInitialized = false; // Flag to prevent re-initialization
 
+                                    // Get the accordion collapse element by ID
                                     var locationCollapseElement = document.getElementById('locationCollapse');
 
                                     if (locationCollapseElement) {
+                                        // Listen for when the accordion panel is fully shown (expanded)
                                         locationCollapseElement.addEventListener('shown.bs.collapse', function () {
                                             var mapDiv = document.getElementById('map');
+
+                                            // Check that map container div exists
                                             if (!mapDiv) {
                                                 console.error("Map container #map not found.");
                                                 return;
                                             }
 
+                                            // Initialize map only once to optimize performance
                                             if (!isMapInitialized) {
+                                                // Create Leaflet map centered at gallery coordinates
                                                 mapInstance = L.map('map').setView([lat, lon], 13);
 
+                                                // Add OpenStreetMap tiles as base layer with proper attribution
                                                 L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
                                                     maxZoom: 19,
                                                     attribution: '© <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
                                                 }).addTo(mapInstance);
 
+                                                // Add a marker on the gallery's latitude and longitude
                                                 markerInstance = L.marker([lat, lon]).addTo(mapInstance);
 
+                                                // Create popup content with gallery name and coordinates
                                                 var galleryName = <?= json_encode($gallery->getGalleryName()) ?>;
                                                 var popupContent = '<strong>' + galleryName + '</strong><br>Latitude: ' + lat + '<br>Longitude: ' + lon;
+
+                                                // Bind the popup to the marker
                                                 markerInstance.bindPopup(popupContent);
 
+                                                // Open popup on marker click
                                                 markerInstance.on('click', function () {
                                                     markerInstance.openPopup();
                                                 });
 
+                                                // Set flag indicating map has been initialized
                                                 isMapInitialized = true;
                                             } else {
+                                                // If map already initialized, refresh its size and re-center it
                                                 mapInstance.invalidateSize();
                                                 mapInstance.setView([lat, lon], 13);
                                             }
                                         });
                                     } else {
+                                        // Log error if accordion collapse element is not found in the DOM
                                         console.error("Accordion collapse element #locationCollapse not found.");
                                     }
                                 });
@@ -350,12 +382,14 @@ $correctLargeImagePath = getImagePathOrPlaceholder($largeImagePath, $placeholder
         </div>
     </div>
 <?php endif; ?>
+
+<!-- Display review form and reviews -->
 <div class="row mt-5">
     <div class="col-12">
         <h3>Reviews</h3>
 
+        <!-- Display review form for users if they haven't already reviewed -->
         <?php if (isset($_SESSION['customerId'])): ?>
-
             <?php
             $alreadyReviewed = $reviewRepo->hasUserReviewed($_SESSION['customerId'], $artwork->getArtworkId());
             if (!$alreadyReviewed): ?>
@@ -392,6 +426,7 @@ $correctLargeImagePath = getImagePathOrPlaceholder($largeImagePath, $placeholder
             <p class="text-muted">Please log in to leave a review.</p>
         <?php endif; ?>
 
+        <!-- Show reviews if available -->
         <?php if (!empty($reviews)): ?>
             <div id="reviews-container" class="mt-4">
                 <?php foreach ($reviews as $reviewWithCustomerInfo): ?>
@@ -419,6 +454,7 @@ $correctLargeImagePath = getImagePathOrPlaceholder($largeImagePath, $placeholder
                                     </small>
                                 </div>
 
+                                <!-- Delete review button for admins -->
                                 <?php if ($_SESSION['isAdmin'] ?? false): ?>
                                     <div>
                                         <form class="delete-review-form" method="POST"
@@ -438,6 +474,7 @@ $correctLargeImagePath = getImagePathOrPlaceholder($largeImagePath, $placeholder
                 <?php endforeach; ?>
             </div>
         <?php else: ?>
+            <!-- Display message if no reviews were found -->
             <div id="reviews-container" class="mt-3">
                 <p class="text-muted">No reviews yet. Be the first to review this artwork!</p>
             </div>

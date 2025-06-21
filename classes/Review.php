@@ -1,5 +1,15 @@
 <?php
 
+/**
+ * Represents a review entity from the database.
+ * 
+ * This class encapsulates artwork data and provides
+ * getter and setter methods for accessing and modifying
+ * review properties.
+ * 
+ * Instances are created using the constructor or the static method `createReviewFromRecord()`,
+ * which accepts an associative array (e.g., a database record).
+ */
 class Review
 {
     private ?int $reviewId;

@@ -1,6 +1,9 @@
 <?php
 
-class ReviewWithStats
+/**
+ * Combines the average rating and the total amount of reviews for a specific artwork.
+ */
+class ReviewStats
 {
     private float $averageRating;
     private int $totalReviews;
@@ -21,11 +24,17 @@ class ReviewWithStats
         return $this->totalReviews;
     }
 
+    /**
+     * Checks if the artwork has associated reviews
+     */
     public function hasReviews(): bool
     {
         return $this->totalReviews > 0;
     }
 
+    /**
+     * Returns the average rating with 1 decimal digit
+     */
     public function getFormattedAverageRating(): string
     {
         // Remove .0 for whole numbers
@@ -33,12 +42,15 @@ class ReviewWithStats
         return rtrim(rtrim($formatted, '0'), '.');
     }
 
+    /**
+     * Returns the formatted average rating
+     */
     public function getFormattedAverageRatingOutOf5(): string
     {
         return $this->getFormattedAverageRating() . "/5";
     }
 
-    public function getReviewText(): string
+    public function getNumberOfReviewsAsText(): string
     {
         if ($this->totalReviews === 0) {
             return "No reviews yet";
@@ -49,17 +61,14 @@ class ReviewWithStats
 }
 
 /**
- * https://stackoverflow.com/questions/20763744/type-hinting-specify-an-array-of-objects
- *
- * For type completion:
- * @extends \ArrayObject<ReviewWithStats>
+ * @extends \ArrayObject ReviewStats>
  */
-class ReviewWithStatsArray extends \ArrayObject
+class ReviewStatsArray extends \ArrayObject
 {
     public function offsetSet(mixed $key, mixed $val): void
     {
-        if (!$val instanceof ReviewWithStats) {
-            throw new \InvalidArgumentException('Value must be an ReviewWithStats instance');
+        if (!$val instanceof ReviewStats) {
+            throw new \InvalidArgumentException('Value must be an ReviewStats instance');
         }
 
         parent::offsetSet($key, $val);

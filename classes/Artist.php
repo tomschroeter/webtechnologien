@@ -1,5 +1,15 @@
 <?php
 
+/**
+ * Represents an artist entity from the database.
+ * 
+ * This class encapsulates artist data and provides
+ * getter and setter methods for accessing and modifying
+ * artist properties.
+ * 
+ * Instances are created using the static method `createArtistFromRecord()`,
+ * which accepts an associative array (e.g., a database record).
+ */
 class Artist
 {
     private int $artistId;
@@ -38,7 +48,7 @@ class Artist
             (string) $record['FirstName'],
             (string) $record['LastName'],
             $record['Nationality'] ?? null,
-            $record['YearOfBirth'], 
+            $record['YearOfBirth'],
             $record['YearOfDeath'],
             $record['Details'] ?? null,
             $record['ArtistLink'] ?? null
@@ -125,6 +135,9 @@ class Artist
         $this->artistLink = $artistLink;
     }
 
+    /**
+     * Returns the full artist name 
+     */
     public function getFullName(): string
     {
         return trim(($this->getFirstName() ?? '') . ' ' . $this->getLastName());
