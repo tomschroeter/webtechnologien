@@ -1,12 +1,16 @@
 <?php
 
-// This can be also extended by more additional fields that
-// could be returned by future queries.
-// If so, a renaming would be appropriate.
+/**
+ * Represents an Artist object along with the count of reviews related to that artist.
+ *
+ * This class encapsulates an Artist instance and the number of reviews, providing
+ * convenient accessors to retrieve the artist data and review count.
+ *
+ */
 class ArtistWithStats
 {
-    private $artist;
-    private $reviewCount;
+    private Artist $artist;
+    private int $reviewCount;
 
     public function __construct(Artist $artist, int $reviewCount)
     {

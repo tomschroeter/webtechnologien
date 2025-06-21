@@ -1,14 +1,19 @@
 <?php
 
+/**
+ * Custom exception class for HTTP errors.
+ * Contains an HTTP status code and a corresponding status text message,
+ * alongside the standard exception message.
+ */
 class HttpException extends Exception
 {
     private int $statusCode;
     private string $statusText;
-    
+
     public function __construct(int $statusCode, string $message, array $statusTexts = null)
     {
         $this->statusCode = $statusCode;
-        
+
         // Default status texts
         $defaultStatusTexts = [
             400 => 'Bad Request',
@@ -21,18 +26,18 @@ class HttpException extends Exception
             502 => 'Bad Gateway',
             503 => 'Service Unavailable'
         ];
-        
+
         $statusTexts = $statusTexts ?? $defaultStatusTexts;
         $this->statusText = $statusTexts[$statusCode] ?? 'Unknown Error';
-        
+
         parent::__construct($message, $statusCode);
     }
-    
+
     public function getStatusCode(): int
     {
         return $this->statusCode;
     }
-    
+
     public function getStatusText(): string
     {
         return $this->statusText;

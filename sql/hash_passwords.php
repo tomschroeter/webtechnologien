@@ -1,11 +1,11 @@
 <?php
 /*
-* This script is used to drop the 'Salt' column in the database
-* and to hash all passwords from default users provided by the Art_Database SQL script 
-* How to use this script:
-* Windows: Navigate to your xampp directory and run '.\/php/php.exe htdocs/src/sql/hash_passwords.php'
-* MacOS: Navigate to your src directory and run '/Applications/XAMPP/bin/php sql/hash_passwords.php '
-*/
+ * This script is used to drop the 'Salt' column in the database
+ * and to hash all passwords from default users provided by the Art_Database SQL script 
+ * How to use this script:
+ * Windows: Navigate to your xampp directory and run '.\/php/php.exe htdocs/src/sql/hash_passwords.php'
+ * MacOS: Navigate to your src directory and run '/Applications/XAMPP/bin/php sql/hash_passwords.php '
+ */
 
 // Load env vars
 require_once dirname(__DIR__) . "/env.php";

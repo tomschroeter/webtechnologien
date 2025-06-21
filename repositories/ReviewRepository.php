@@ -4,7 +4,7 @@ require_once dirname(__DIR__) . "/Database.php";
 require_once dirname(__DIR__) . "/classes/Review.php";
 require_once dirname(__DIR__) . "/dtos/ReviewWithCustomerInfo.php";
 require_once dirname(__DIR__) . "/dtos/ReviewWithCustomerInfoAndArtwork.php";
-require_once dirname(__DIR__) . "/dtos/ReviewWithStats.php";
+require_once dirname(__DIR__) . "/dtos/ReviewStats.php";
 
 class ReviewRepository
 {
@@ -16,19 +16,22 @@ class ReviewRepository
     }
 
     /**
-     * Fügt eine neue Bewertung hinzu.
+     * Adds a new review to the database.
+     *
+     * @param Review $review The review to be added.
+     * @return int The ID of the newly inserted review.
      */
     public function addReview(Review $review): int
     {
         if (!$this->db->isConnected())
             $this->db->connect();
 
-        $sql = "
-            INSERT INTO reviews (ArtWorkId, CustomerId, ReviewDate, Rating, Comment)
-            VALUES (:artworkId, :customerId, :reviewDate, :rating, :comment)
+        $sql = "INSERT INTO reviews (ArtWorkId, CustomerId, ReviewDate, Rating, Comment)
+        VALUES (:artworkId, :customerId, :reviewDate, :rating, :comment)
         ";
 
         $stmt = $this->db->prepareStatement($sql);
+
         $stmt->bindValue("artworkId", $review->getArtworkId(), PDO::PARAM_INT);
         $stmt->bindValue("customerId", $review->getCustomerId(), PDO::PARAM_INT);
         $stmt->bindValue("reviewDate", $review->getReviewDate());
@@ -36,27 +39,50 @@ class ReviewRepository
         $stmt->bindValue("comment", $review->getComment());
 
         $stmt->execute();
-        
+
         // Get the review ID before disconnecting
         $reviewId = $this->db->lastInsertId();
 
         $this->db->disconnect();
-        
-        return (int)$reviewId;
+
+        return (int) $reviewId;
     }
 
     /**
-     * Prüft, ob der User das Artwork bereits bewertet hat.
+     * Deletes a review by its ID.
+     *
+     * @param int $reviewId The ID of the review to delete.
+     * @return void
+     */
+    public function deleteReview(int $reviewId): void
+    {
+        if (!$this->db->isConnected())
+            $this->db->connect();
+
+        $sql = "DELETE FROM reviews WHERE ReviewId = :id";
+
+        $stmt = $this->db->prepareStatement($sql);
+        $stmt->bindValue("id", $reviewId, PDO::PARAM_INT);
+        $stmt->execute();
+
+        $this->db->disconnect();
+    }
+
+    /**
+     * Checks whether a customer has already reviewed a specific artwork.
+     *
+     * @param int $customerId The ID of the customer.
+     * @param int $artworkId The ID of the artwork.
+     * @return bool True if the customer has reviewed the artwork, otherwise false.
      */
     public function hasUserReviewed(int $customerId, int $artworkId): bool
     {
         if (!$this->db->isConnected())
             $this->db->connect();
 
-        $sql = "
-            SELECT COUNT(*) as review_count
-            FROM reviews
-            WHERE CustomerId = :customerId AND ArtWorkId = :artworkId
+        $sql = "SELECT COUNT(*) AS ReviewCount
+        FROM reviews
+        WHERE CustomerId = :customerId AND ArtWorkId = :artworkId
         ";
 
         $stmt = $this->db->prepareStatement($sql);
@@ -68,23 +94,23 @@ class ReviewRepository
 
         $this->db->disconnect();
 
-        return $result && $result["review_count"] > 0;
+        $hasUserReviewed = $result && $result["ReviewCount"] > 0;
+
+        return $hasUserReviewed;
     }
 
     /**
-     * Holt alle Reviews zu einem bestimmten Artwork
-     * @return Review[]
+     * Retrieves all reviews for a specific artwork.
+     *
+     * @param int $artworkId The ID of the artwork.
+     * @return Review[] An array of Review objects sorted by review date descending.
      */
     public function getAllReviewsForArtwork(int $artworkId): array
     {
         if (!$this->db->isConnected())
             $this->db->connect();
 
-        $sql = "
-            SELECT * FROM reviews
-            WHERE ArtWorkId = :artworkId
-            ORDER BY ReviewDate DESC
-        ";
+        $sql = "SELECT * FROM reviews WHERE ArtWorkId = :artworkId ORDER BY ReviewDate DESC";
 
         $stmt = $this->db->prepareStatement($sql);
         $stmt->bindValue("artworkId", $artworkId, PDO::PARAM_INT);
@@ -97,32 +123,33 @@ class ReviewRepository
         }
 
         $this->db->disconnect();
+
         return $reviews;
     }
 
     /**
-     * Get all reviews for an artwork with customer information
-     * @param int $artworkId
-     * @return ReviewWithCustomerInfo[]
+     * Retrieves all reviews for a specific artwork, including customer information.
+     *
+     * @param int $artworkId The ID of the artwork.
+     * @return ReviewWithCustomerInfoArray An array of ReviewWithCustomerInfo objects.
      */
-    public function getAllReviewsWithCustomerInfo(int $artworkId): array
+    public function getAllReviewsWithCustomerInfo(int $artworkId): ReviewWithCustomerInfoArray
     {
         if (!$this->db->isConnected())
             $this->db->connect();
 
-        $sql = "
-            SELECT r.*, c.FirstName, c.LastName, c.City, c.Country
-            FROM reviews r
-            JOIN customers c ON r.CustomerId = c.CustomerID
-            WHERE r.ArtWorkId = :artworkId
-            ORDER BY r.ReviewDate DESC
+        $sql = "SELECT r.*, c.FirstName, c.LastName, c.City, c.Country
+        FROM reviews r
+        JOIN customers c ON r.CustomerId = c.CustomerID
+        WHERE r.ArtWorkId = :artworkId
+        ORDER BY r.ReviewDate DESC
         ";
 
         $stmt = $this->db->prepareStatement($sql);
         $stmt->bindValue("artworkId", $artworkId, PDO::PARAM_INT);
         $stmt->execute();
 
-        $reviews = [];
+        $reviews = new ReviewWithCustomerInfoArray();
 
         foreach ($stmt as $row) {
             $review = Review::createReviewFromRecord($row);
@@ -138,39 +165,24 @@ class ReviewRepository
         }
 
         $this->db->disconnect();
+
         return $reviews;
     }
 
     /**
-     * Deletes a review by ID
+     * Retrieves average rating and total review count for a given artwork.
+     *
+     * @param int $artworkId The ID of the artwork.
+     * @return ReviewStats A ReviewStats object containing average rating and total reviews.
      */
-    public function deleteReview(int $reviewId): void
+    public function getReviewStats(int $artworkId): ReviewStats
     {
         if (!$this->db->isConnected())
             $this->db->connect();
 
-        $sql = "DELETE FROM reviews WHERE ReviewId = :id";
-        $stmt = $this->db->prepareStatement($sql);
-        $stmt->bindValue("id", $reviewId, PDO::PARAM_INT);
-        $stmt->execute();
-
-        $this->db->disconnect();
-    }
-
-    /**
-     * Get review statistics for an artwork
-     * @param int $artworkId
-     * @return ReviewWithStats
-     */
-    public function getReviewStats(int $artworkId): ReviewWithStats
-    {
-        if (!$this->db->isConnected())
-            $this->db->connect();
-
-        $sql = "
-            SELECT AVG(Rating) as avgRating, COUNT(*) as totalReviews
-            FROM reviews
-            WHERE ArtWorkId = :artworkId
+        $sql = "SELECT AVG(Rating) as AvgRating, COUNT(*) as TotalReviews
+        FROM reviews
+        WHERE ArtWorkId = :artworkId
         ";
 
         $stmt = $this->db->prepareStatement($sql);
@@ -180,13 +192,20 @@ class ReviewRepository
         $result = $stmt->fetch();
         $this->db->disconnect();
 
-        $averageRating = $result['avgRating'] ? round($result['avgRating'], 1) : 0.0;
-        $totalReviews = (int) $result['totalReviews'];
+        $averageRating = $result['AvgRating'] ? round($result['AvgRating'], 1) : 0.0;
+        $totalReviews = (int) $result['TotalReviews'];
 
-        return new ReviewWithStats($averageRating, $totalReviews);
+        $reviewStats = new ReviewStats($averageRating, $totalReviews);
+
+        return $reviewStats;
     }
 
-    public function getRecentReviews()
+    /**
+     * Retrieves the most recent reviews including customer and artwork information.
+     *
+     * @return ReviewWithCustomerInfoAndArtworkArray An array of the latest 3 ReviewWithCustomerInfoAndArtwork objects.
+     */
+    public function getRecentReviews(): ReviewWithCustomerInfoAndArtworkArray
     {
         if (!$this->db->isConnected())
             $this->db->connect();
@@ -202,7 +221,7 @@ class ReviewRepository
         $stmt = $this->db->prepareStatement($sql);
         $stmt->execute();
 
-        $reviews = [];
+        $reviews = new ReviewWithCustomerInfoAndArtworkArray();
 
         foreach ($stmt as $row) {
             $review = Review::createReviewFromRecord($row);

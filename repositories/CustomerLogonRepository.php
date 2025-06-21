@@ -5,20 +5,28 @@ require_once dirname(__DIR__) . "/dtos/CustomerWithLogonData.php";
 
 class CustomerLogonRepository
 {
-    private $db;
+    private Database $db;
 
     public function __construct(Database $db)
     {
         $this->db = $db;
     }
 
-    public function userExists(string $username): bool
+    /**
+     * Checks whether a customer with the given username exists.
+     *
+     * @param string $username The username to check.
+     * @return bool True if the customer exists, false otherwise.
+     */
+    public function customerExists(string $username): bool
     {
         if (!$this->db->isConnected()) {
             $this->db->connect();
         }
 
-        $stmt = $this->db->prepareStatement("SELECT COUNT(*) FROM customerlogon WHERE UserName = :username");
+        $sql = "SELECT COUNT(*) FROM customerlogon WHERE UserName = :username";
+
+        $stmt = $this->db->prepareStatement($sql);
         $stmt->bindValue("username", $username);
         $stmt->execute();
 
@@ -29,17 +37,26 @@ class CustomerLogonRepository
         return $userExists;
     }
 
-    public function getActiveUserByUsername(string $username): CustomerLogon | null
+    /**
+     * Retrieves the active (enabled) customer logon by username.
+     *
+     * @param string $username The username to search for.
+     * @return ?CustomerLogon The CustomerLogon object if found and active; null otherwise.
+     */
+    public function getActiveCustomerByUsername(string $username): ?CustomerLogon
     {
         if (!$this->db->isConnected()) {
             $this->db->connect();
         }
 
-        $stmt = $this->db->prepareStatement("SELECT * FROM customerlogon WHERE UserName = :username AND State = 1");
+        $sql = "SELECT * FROM customerlogon WHERE UserName = :username AND State = 1";
+
+        $stmt = $this->db->prepareStatement($sql);
 
         $stmt->bindValue("username", $username);
         $stmt->execute();
         $result = $stmt->fetch();
+
         $this->db->disconnect();
 
         if ($result !== false) {
@@ -50,38 +67,52 @@ class CustomerLogonRepository
 
     }
 
-    public function updateUserState(int $customerId, int $state): void
+    /**
+     * Updates the state (e.g., active/inactive) of a customer's logon.
+     *
+     * @param int $customerId The customer ID to update.
+     * @param int $state The new state value (e.g., 1 for active, 0 for inactive).
+     * @return void
+     */
+    public function updateCustomerState(int $customerId, int $state): void
     {
         if (!$this->db->isConnected()) {
             $this->db->connect();
         }
 
-        $stmt = $this->db->prepareStatement("UPDATE customerlogon SET State = :state WHERE CustomerID = :id");
+        $sql = "UPDATE customerlogon SET State = :state WHERE CustomerID = :id";
+
+        $stmt = $this->db->prepareStatement($sql);
+
         $stmt->bindValue("id", $customerId, PDO::PARAM_INT);
         $stmt->bindValue("state", $state, PDO::PARAM_INT);
+
         $stmt->execute();
 
         $this->db->disconnect();
     }
 
     /**
-     * @return CustomerWithLogonData[]
+     * Retrieves all customers with their logon data.
+     *
+     * @return CustomerWithLogonDataArray An array of CustomerWithLogonData objects.
      */
-    public function getAllUsersWithLogonData()
+    public function getAllCustomersWithLogonData(): CustomerWithLogonDataArray
     {
         if (!$this->db->isConnected()) {
             $this->db->connect();
         }
 
-        $stmt = $this->db->prepareStatement("
-        SELECT c.CustomerID, c.FirstName, c.LastName, c.Email, c.Address, c.City, c.Region, c.Country, c.Postal, c.Phone, cl.UserName, cl.Type, cl.State, cl.isAdmin
+        $sql = "SELECT c.CustomerID, c.FirstName, c.LastName, c.Email, c.Address, c.City, c.Region, c.Country, c.Postal, c.Phone, cl.UserName, cl.Type, cl.State, cl.isAdmin
         FROM customers c
         JOIN customerlogon cl ON c.CustomerID = cl.CustomerID
         ORDER BY LastName, FirstName
-    ");
+        ";
+
+        $stmt = $this->db->prepareStatement($sql);
         $stmt->execute();
 
-        $users = [];
+        $users = new CustomerWithLogonDataArray();
 
         foreach ($stmt as $row) {
             $users[] = new CustomerWithLogonData(
@@ -107,20 +138,28 @@ class CustomerLogonRepository
         return $users;
     }
 
-    public function getUserDetailsById(int $id): CustomerWithLogonData
+    /**
+     * Retrieves a customer with logon data by customer ID.
+     *
+     * @param int $id The ID of the customer to retrieve.
+     * @return CustomerWithLogonData The corresponding customer with logon data.
+     */
+    public function getCustomerDetailsById(int $id): CustomerWithLogonData
     {
         if (!$this->db->isConnected()) {
             $this->db->connect();
         }
 
-        $stmt = $this->db->prepareStatement("
-        SELECT c.CustomerID, c.FirstName, c.LastName, c.Email, c.Address, c.City, c.Region, c.Country, c.Postal, c.Phone, cl.UserName, cl.Type, cl.State, cl.isAdmin
+        $sql = "SELECT c.CustomerID, c.FirstName, c.LastName, c.Email, c.Address, c.City, c.Region, c.Country, c.Postal, c.Phone, cl.UserName, cl.Type, cl.State, cl.isAdmin
         FROM customers c
         JOIN customerlogon cl ON c.CustomerId = cl.CustomerId
         WHERE c.CustomerId = :id
-    ");
+        ";
+
+        $stmt = $this->db->prepareStatement($sql);
         $stmt->bindValue("id", $id, PDO::PARAM_INT);
         $stmt->execute();
+
         $result = $stmt->fetch();
 
         $user = new CustomerWithLogonData(
@@ -145,27 +184,35 @@ class CustomerLogonRepository
         return $user;
     }
 
-    public function getUserDetailsByEmail(string $email): ?CustomerWithLogonData
+    /**
+     * Retrieves a customer with logon data by email address.
+     *
+     * @param string $email The email address to search for.
+     * @return ?CustomerWithLogonData The matching customer or null if not found.
+     */
+    public function getCustomerDetailsByEmail(string $email): ?CustomerWithLogonData
     {
         if (!$this->db->isConnected()) {
             $this->db->connect();
         }
 
-        $stmt = $this->db->prepareStatement("
-            SELECT c.CustomerID, c.FirstName, c.LastName, c.Email, c.Address, c.City, c.Region, c.Country, c.Postal, c.Phone, cl.UserName, cl.Type, cl.State, cl.isAdmin
-            FROM customers c
-            JOIN customerlogon cl ON c.CustomerId = cl.CustomerId
-            WHERE c.Email = :email
-        ");
+        $sql = "SELECT c.CustomerID, c.FirstName, c.LastName, c.Email, c.Address, c.City, c.Region, c.Country, c.Postal, c.Phone, cl.UserName, cl.Type, cl.State, cl.isAdmin
+        FROM customers c
+        JOIN customerlogon cl ON c.CustomerId = cl.CustomerId
+        WHERE c.Email = :email
+        ";
+
+        $stmt = $this->db->prepareStatement($sql);
         $stmt->bindValue("email", $email);
         $stmt->execute();
+
         $result = $stmt->fetch();
-        
+
         if ($result === false) {
             $this->db->disconnect();
             return null;
         }
-        
+
         $user = new CustomerWithLogonData(
             $result['CustomerID'],
             $result['FirstName'],
@@ -188,6 +235,21 @@ class CustomerLogonRepository
         return $user;
     }
 
+    /**
+     * Updates a customer's basic information.
+     *
+     * @param int $id Customer ID.
+     * @param string $first First name.
+     * @param string $last Last name.
+     * @param string $email Email address.
+     * @param string $address Street address.
+     * @param string $city City.
+     * @param ?string $region Region/state.
+     * @param string $country Country.
+     * @param ?string $postal Postal code.
+     * @param ?string $phone Phone number.
+     * @return void
+     */
     public function updateCustomerBasicInfo(
         int $id,
         string $first,
@@ -204,19 +266,14 @@ class CustomerLogonRepository
             $this->db->connect();
         }
 
-        $stmt = $this->db->prepareStatement("
-            UPDATE customers 
-            SET FirstName = :first, 
-                LastName = :last, 
-                Email = :email, 
-                Address = :address, 
-                City = :city, 
-                Region = :region,
-                Country = :country, 
-                Postal = :postal, 
-                Phone = :phone 
-            WHERE CustomerId = :id
-        ");
+        $sql = "UPDATE customers 
+        SET FirstName = :first, LastName = :last, Email = :email, Address = :address, City = :city, Region = :region,
+        Country = :country, Postal = :postal, Phone = :phone 
+        WHERE CustomerId = :id
+        ";
+
+        $stmt = $this->db->prepareStatement($sql);
+
         $stmt->bindValue("first", $first);
         $stmt->bindValue("last", $last);
         $stmt->bindValue("email", $email);
@@ -227,34 +284,51 @@ class CustomerLogonRepository
         $stmt->bindValue("postal", $postal);
         $stmt->bindValue("phone", $phone);
         $stmt->bindValue("id", $id);
+
         $stmt->execute();
 
         $this->db->disconnect();
     }
 
+    /**
+     * Updates the admin status of a customer.
+     *
+     * @param int $customerId The customer ID to update.
+     * @param bool $isAdmin Whether the user is an admin (true) or not (false).
+     * @return void
+     */
     public function updateUserAdmin(int $customerId, bool $isAdmin): void
     {
         if (!$this->db->isConnected()) {
             $this->db->connect();
         }
 
-        $stmt = $this->db->prepareStatement("
-        UPDATE customerlogon SET isAdmin = :isAdmin, DateLastModified = NOW() WHERE CustomerId = :id
-    ");
+        $sql = "UPDATE customerlogon SET isAdmin = :isAdmin, DateLastModified = NOW() WHERE CustomerId = :id";
+
+        $stmt = $this->db->prepareStatement($sql);
+
         $stmt->bindValue("isAdmin", $isAdmin, PDO::PARAM_BOOL);
         $stmt->bindValue("id", $customerId);
+
         $stmt->execute();
 
         $this->db->disconnect();
     }
 
+    /**
+     * Counts the number of currently active admin users.
+     *
+     * @return int The number of active administrators.
+     */
     public function countActiveAdmins(): int
     {
         if (!$this->db->isConnected()) {
             $this->db->connect();
         }
 
-        $stmt = $this->db->prepareStatement("SELECT COUNT(*) FROM customerlogon WHERE isAdmin = 1 AND State = 1");
+        $sql = "SELECT COUNT(*) FROM customerlogon WHERE isAdmin = 1 AND State = 1";
+
+        $stmt = $this->db->prepareStatement($sql);
         $stmt->execute();
 
         $count = (int) $stmt->fetchColumn();
@@ -265,20 +339,12 @@ class CustomerLogonRepository
     }
 
     /**
-     * Atomically registers a new customer with login credentials.
-     * This method prevents race conditions by handling everything in a single transaction.
-     * Uses AUTO_INCREMENT for CustomerId in customerlogon table.
-     * 
-     * Password Security:
-     * - Uses password_hash() to generate a secure hash that includes salt, algorithm info, and cost
-     * - The complete hash is stored in the Pass field (e.g., "$2y$10$92IXUNpkjO0rOQ5byMi.Ye4oKoEa3Ro9llC/.og/at2.uheWG/igi")
-     * - The salt is extracted from the hash and stored separately in the Salt field for database requirements
-     * - password_verify() still handles verification automatically using the complete hash
-     * 
-     * @param Customer $customer The customer data
-     * @param CustomerLogon $logon The login credentials (Pass should be hashed with password_hash())
-     * @return int The generated customer ID
-     * @throws Exception If registration fails
+     * Registers a new customer and associated logon data in a single transaction.
+     *
+     * @param Customer $customer Customer personal information.
+     * @param CustomerLogon $logon Login credentials (password should be hashed).
+     * @return int The newly created Customer ID.
+     * @throws Exception If registration fails.
      */
     public function registerCustomer(Customer $customer, CustomerLogon $logon): int
     {
@@ -293,27 +359,32 @@ class CustomerLogonRepository
             // Insert login credentials first (let AUTO_INCREMENT handle the CustomerId)
             $hashedPassword = $logon->getPass(); // This should be the complete hash from password_hash()
 
-            $stmt = $this->db->prepareStatement("
-                INSERT INTO customerlogon (UserName, Pass, State, Type, DateJoined, DateLastModified, isAdmin)
-                VALUES (:user, :pass, :state, :type, :joined, :modified, :isAdmin)
-            ");
+            $sql = "INSERT INTO customerlogon (UserName, Pass, State, Type, DateJoined, DateLastModified, isAdmin)
+            VALUES (:user, :pass, :state, :type, :joined, :modified, :isAdmin)
+            ";
+
+            $stmt = $this->db->prepareStatement($sql);
+
             $stmt->bindValue("user", $logon->getUserName());
             $stmt->bindValue("pass", $hashedPassword);
             $stmt->bindValue("state", $logon->getState());
             $stmt->bindValue("type", $logon->getType());
             $stmt->bindValue("joined", $logon->getDateJoined());
             $stmt->bindValue("modified", $logon->getDateLastModified());
-            $stmt->bindValue("isAdmin", false, PDO::PARAM_BOOL); // New users are not admins by default
+            $stmt->bindValue("isAdmin", false, PDO::PARAM_BOOL);
+
             $stmt->execute();
 
             // Get the generated customer ID from customerlogon
             $customerId = (int) $this->db->lastInsertId();
 
             // Insert customer data with the same CustomerId
-            $stmt = $this->db->prepareStatement("
-                INSERT INTO customers (CustomerId, FirstName, LastName, Address, City, Region, Country, Postal, Phone, Email)
-                VALUES (:id, :first, :last, :address, :city, :region, :country, :postal, :phone, :email)
-            ");
+            $sql = "INSERT INTO customers (CustomerId, FirstName, LastName, Address, City, Region, Country, Postal, Phone, Email)
+            VALUES (:id, :first, :last, :address, :city, :region, :country, :postal, :phone, :email)
+            ";
+
+            $stmt = $this->db->prepareStatement($sql);
+
             $stmt->bindValue("id", $customerId, PDO::PARAM_INT);
             $stmt->bindValue("first", $customer->getFirstName());
             $stmt->bindValue("last", $customer->getLastName());
@@ -324,6 +395,7 @@ class CustomerLogonRepository
             $stmt->bindValue("postal", $customer->getPostal());
             $stmt->bindValue("phone", $customer->getPhone());
             $stmt->bindValue("email", $customer->getEmail());
+
             $stmt->execute();
 
             // Commit the transaction
@@ -341,14 +413,24 @@ class CustomerLogonRepository
         }
     }
 
+    /**
+     * Retrieves a customer by ID.
+     *
+     * @param int $id Customer ID.
+     * @return Customer The Customer object.
+     */
     public function getCustomerById(int $id): Customer
     {
         if (!$this->db->isConnected()) {
             $this->db->connect();
         }
-        $stmt = $this->db->prepareStatement("SELECT * FROM customers WHERE CustomerId = :id");
+
+        $sql = "SELECT * FROM customers WHERE CustomerId = :id";
+
+        $stmt = $this->db->prepareStatement($sql);
         $stmt->bindValue("id", $id, PDO::PARAM_INT);
         $stmt->execute();
+
         $result = $stmt->fetch();
 
         $customer = Customer::createCustomerFromRecord($result);
@@ -358,6 +440,21 @@ class CustomerLogonRepository
         return $customer;
     }
 
+    /**
+     * Updates a customer's full information including contact and address.
+     *
+     * @param int $id Customer ID.
+     * @param string $first First name.
+     * @param string $last Last name.
+     * @param string $address Street address.
+     * @param string $city City.
+     * @param string|null $region Region/state.
+     * @param string $country Country.
+     * @param string|null $postal Postal code.
+     * @param string|null $phone Phone number.
+     * @param string $email Email address.
+     * @return void
+     */
     public function updateCustomerFullInfo(
         int $id,
         string $first,
@@ -373,9 +470,14 @@ class CustomerLogonRepository
         if (!$this->db->isConnected()) {
             $this->db->connect();
         }
-        $stmt = $this->db->prepareStatement(
-            "UPDATE customers SET FirstName = :first, LastName = :last, Address = :address, City = :city, Region = :region, Country = :country, Postal = :postal, Phone = :phone, Email = :email WHERE CustomerId = :id"
-        );
+
+        $sql = "UPDATE customers
+        SET FirstName = :first, LastName = :last, Address = :address, City = :city, Region = :region, Country = :country,
+        Postal = :postal, Phone = :phone, Email = :email
+        WHERE CustomerId = :id
+        ";
+        $stmt = $this->db->prepareStatement($sql);
+
         $stmt->bindValue("first", $first);
         $stmt->bindValue("last", $last);
         $stmt->bindValue("address", $address);
@@ -386,19 +488,37 @@ class CustomerLogonRepository
         $stmt->bindValue("phone", $phone);
         $stmt->bindValue("email", $email);
         $stmt->bindValue("id", $id);
+
         $stmt->execute();
+
         $this->db->disconnect();
     }
 
+    /**
+     * Updates the customer's password hash.
+     *
+     * @param int $id Customer ID.
+     * @param string $hashed The new hashed password (generated via password_hash()).
+     * @return void
+     */
     public function updateCustomerPassword(int $id, string $hashed): void
     {
         if (!$this->db->isConnected()) {
             $this->db->connect();
         }
-        $stmt = $this->db->prepareStatement("UPDATE customerlogon SET Pass = :pass, DateLastModified = NOW() WHERE CustomerId = :id");
+
+        $sql = "UPDATE customerlogon
+        SET Pass = :pass, DateLastModified = NOW()
+        WHERE CustomerId = :id
+        ";
+
+        $stmt = $this->db->prepareStatement($sql);
+
         $stmt->bindValue("pass", $hashed);
         $stmt->bindValue("id", $id);
+
         $stmt->execute();
+
         $this->db->disconnect();
     }
 }

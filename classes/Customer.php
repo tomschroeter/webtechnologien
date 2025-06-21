@@ -1,5 +1,15 @@
 <?php
 
+/**
+ * Represents a customer / user entity from the database.
+ * 
+ * This class encapsulates customer data and provides
+ * getter and setter methods for accessing and modifying
+ * customer properties.
+ * 
+ * Instances are created using the constructor or the static method `createCustomerFromRecord()`,
+ * which accepts an associative array (e.g., a database record).
+ */
 class Customer
 {
     private ?int $customerId;
@@ -153,6 +163,9 @@ class Customer
         $this->email = $email;
     }
 
+    /**
+     * Returns the full customer name 
+     */
     public function getFullName(): string
     {
         return $this->getFirstName() . ' ' . $this->getLastName();

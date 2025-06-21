@@ -17,7 +17,8 @@ $randomArtworks = array_rand($allArtworksAsMedium, min(16, count($allArtworksAsM
 $randomArtwork = $allArtworksAsLarge[array_rand($allArtworksAsLarge)];
 ?>
 
-<div id="homeCarousel" class="carousel slide card mb-5" data-bs-ride="carousel" style="overflow-x: hidden; border-radius: 0;">
+<div id="homeCarousel" class="carousel slide card mb-5" data-bs-ride="carousel"
+  style="overflow-x: hidden; border-radius: 0;">
   <div class="carousel-inner">
 
     <!-- Slide 1: Grid of random artworks -->

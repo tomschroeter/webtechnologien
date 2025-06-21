@@ -1,5 +1,15 @@
 <?php
 
+/**
+ * Represents a subject entity from the database.
+ * 
+ * This class encapsulates artwork data and provides
+ * getter and setter methods for accessing and modifying
+ * subject properties.
+ * 
+ * Instances are created using the static method `createSubjectFromRecord()`,
+ * which accepts an associative array (e.g., a database record).
+ */
 class Subject
 {
     private int $subjectId;

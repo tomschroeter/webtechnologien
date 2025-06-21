@@ -1,5 +1,15 @@
 <?php
 
+/**
+ * Represents a gallery entity from the database.
+ * 
+ * This class encapsulates gallery data and provides
+ * getter and setter methods for accessing and modifying
+ * gallery properties.
+ * 
+ * Instances are created using the static method `createGalleryFromRecord()`,
+ * which accepts an associative array (e.g., a database record).
+ */
 class Gallery
 {
     private int $galleryId;

@@ -13,7 +13,9 @@ class SubjectRepository
     }
 
     /**
-     * @return Subject[]
+     * Retrieves all subjects from the database, ordered alphabetically.
+     *
+     * @return Subject[] An array of Subject objects.
      */
     public function getAllSubjects(): array
     {
@@ -38,7 +40,12 @@ class SubjectRepository
     }
 
     /**
-     * @throws Exception if subject couldn't be found
+     * Retrieves a subject by its unique ID.
+     *
+     * @param int $subjectId The ID of the subject to retrieve.
+     * @return Subject The subject corresponding to the given ID.
+     *
+     * @throws Exception If the subject is not found in the database.
      */
     public function getSubjectById(int $subjectId): Subject
     {
@@ -64,9 +71,10 @@ class SubjectRepository
     }
 
     /**
-     * Get subjects for a specific artwork
-     * @param int $artworkId
-     * @return Subject[]
+     * Retrieves all subjects associated with a specific artwork.
+     *
+     * @param int $artworkId The ID of the artwork.
+     * @return Subject[] An array of Subject objects linked to the artwork.
      */
     public function getSubjectsByArtwork(int $artworkId): array
     {
@@ -74,12 +82,11 @@ class SubjectRepository
             $this->db->connect();
         }
 
-        $sql = "
-            SELECT s.*
-            FROM subjects s
-            JOIN artworksubjects ars ON s.SubjectID = ars.SubjectID
-            WHERE ars.ArtworkID = :artworkId
-            ORDER BY s.SubjectName ASC
+        $sql = "SELECT s.*
+        FROM subjects s
+        JOIN artworksubjects ars ON s.SubjectID = ars.SubjectID
+        WHERE ars.ArtworkID = :artworkId
+        ORDER BY s.SubjectName ASC
         ";
 
         $stmt = $this->db->prepareStatement($sql);
