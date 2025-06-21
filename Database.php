@@ -2,12 +2,24 @@
 
 require_once __DIR__ . "/env.php";
 
-// https://elearning.th-wildau.de/mod/resource/view.php?id=490348
+/**
+ * Class Database
+ *
+ * Handles connection to a MySQL database using PDO.
+ * Provides basic methods for connection management, query preparation,
+ * and transaction handling.
+ */
 class Database
 {
-    private $pdo;
+    private ?PDO $pdo;
 
-    public function connect()
+    /**
+     * Establishes a new database connection using environment variables.
+     *
+     * @throws Exception If already connected or connection fails.
+     * @return void
+     */
+    public function connect(): void
     {
         if ($this->isConnected()) {
             throw new Exception("Already connected to DB.");
@@ -24,12 +36,18 @@ class Database
             $this->pdo = new PDO($connectionString, $user, $pass);
             $this->pdo->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
         } catch (PDOException $e) {
-            $this->pdo;
             exit("Database connection failed: " . $e->getMessage());
         }
     }
 
-    public function prepareStatement(string $sql)
+    /**
+     * Prepares a SQL statement using the active database connection.
+     *
+     * @param string $sql The SQL query to prepare.
+     * @return PDOStatement The prepared statement object.
+     * @throws Exception If not connected to the database.
+     */
+    public function prepareStatement(string $sql): PDOStatement
     {
         if (!$this->isConnected()) {
             throw new Exception("Not connected to DB.");
@@ -38,12 +56,22 @@ class Database
         return $this->pdo->prepare($sql);
     }
 
+    /**
+     * Checks if the database is currently connected.
+     *
+     * @return bool True if connected; false otherwise.
+     */
     public function isConnected(): bool
     {
-        return $this->pdo != null;
+        return $this->pdo !== null;
     }
 
-    public function disconnect()
+    /**
+     * Closes the current database connection.
+     *
+     * @return void
+     */
+    public function disconnect(): void
     {
         if (!$this->isConnected()) {
             return;
@@ -52,6 +80,12 @@ class Database
         $this->pdo = null;
     }
 
+    /**
+     * Begins a new transaction.
+     *
+     * @return bool True on success.
+     * @throws Exception If not connected to the database.
+     */
     public function beginTransaction(): bool
     {
         if (!$this->isConnected()) {
@@ -60,6 +94,12 @@ class Database
         return $this->pdo->beginTransaction();
     }
 
+    /**
+     * Commits the current transaction.
+     *
+     * @return bool True on success.
+     * @throws Exception If not connected to the database.
+     */
     public function commit(): bool
     {
         if (!$this->isConnected()) {
@@ -68,6 +108,12 @@ class Database
         return $this->pdo->commit();
     }
 
+    /**
+     * Rolls back the current transaction.
+     *
+     * @return bool True on success.
+     * @throws Exception If not connected to the database.
+     */
     public function rollBack(): bool
     {
         if (!$this->isConnected()) {
@@ -76,6 +122,12 @@ class Database
         return $this->pdo->rollBack();
     }
 
+    /**
+     * Returns the ID of the last inserted row.
+     *
+     * @return string The last inserted ID.
+     * @throws Exception If not connected to the database.
+     */
     public function lastInsertId(): string
     {
         if (!$this->isConnected()) {
