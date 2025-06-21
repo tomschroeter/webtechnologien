@@ -6,7 +6,7 @@ require_once dirname(dirname(__DIR__)) . "/repositories/GenreRepository.php";
 require_once dirname(dirname(__DIR__)) . "/repositories/SubjectRepository.php";
 require_once dirname(dirname(__DIR__)) . "/repositories/GalleryRepository.php";
 require_once dirname(dirname(__DIR__)) . "/repositories/ReviewRepository.php";
-require_once dirname(dirname(__DIR__)) . "/dtos/ReviewWithStats.php";
+require_once dirname(dirname(__DIR__)) . "/dtos/ReviewStats.php";
 
 // Fetch additional data that's not passed from controller
 $db = new Database();
@@ -30,7 +30,7 @@ try {
     $genres = [];
     $subjects = [];
     $reviews = [];
-    $reviewStats = new ReviewWithStats(0.0, 0);
+    $reviewStats = new ReviewStats(0.0, 0);
     $gallery = null;
 }
 
@@ -93,7 +93,7 @@ $correctLargeImagePath = getImagePathOrPlaceholder($largeImagePath, $placeholder
                     <div class="d-flex align-items-center gap-2">
                         <span class="h5 mb-0">Rating: <?= $reviewStats->getFormattedAverageRatingOutOf5() ?>
                             <?= renderStars($reviewStats->getFormattedAverageRating()) ?></span>
-                        <small class="text-muted">(based on <?= $reviewStats->getReviewText() ?>)</small>
+                        <small class="text-muted">(based on <?= $reviewStats->getNumberOfReviewsAsText() ?>)</small>
                     </div>
                 <?php else: ?>
                     <span class="text-muted">No reviews yet</span>

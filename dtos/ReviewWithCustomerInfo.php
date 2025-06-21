@@ -1,7 +1,12 @@
 <?php
 
-require_once dirname(__DIR__) . "/classes/Review.php";
-
+/**
+ * Represents a Review object along with the associated customer data.
+ *
+ * This class encapsulates a Review instance together with the associated customer data,
+ * providing convenient accessors to retrieve both the review and the author's data.
+ *
+ */
 class ReviewWithCustomerInfo
 {
     private Review $review;
@@ -39,11 +44,6 @@ class ReviewWithCustomerInfo
         return $this->customerLastName;
     }
 
-    public function getCustomerFullName(): string
-    {
-        return $this->customerFirstName . ' ' . $this->customerLastName;
-    }
-
     public function getCustomerCity(): string
     {
         return $this->customerCity;
@@ -58,21 +58,27 @@ class ReviewWithCustomerInfo
     {
         return $this->customerCity . ' (' . $this->customerCountry . ')';
     }
+
+    /**
+     * Returns the customer's full name 
+     */
+    public function getCustomerFullName(): string
+    {
+        return $this->customerFirstName . ' ' . $this->customerLastName;
+    }
 }
 
 /**
- *
  * @extends \ArrayObject<ReviewWithCustomerInfo>
  */
 class ReviewWithCustomerInfoArray extends \ArrayObject
 {
-    public function offsetSet($key, $val)
+    public function offsetSet($key, $val): void
     {
-        if ($val instanceof ReviewWithCustomerInfo) {
-            return parent::offsetSet($key, $val);
+        if (!$val instanceof ReviewWithCustomerInfo) {
+            throw new \InvalidArgumentException('Value must be a ReviewWithCustomerInfo instance');
         }
 
-        // Backslash means using the Standard PHP Library ArrayObject class (same for \ArrayObject)
-        throw new \InvalidArgumentException('Value must be a ReviewWithCustomerInfo instance');
+        parent::offsetSet($key, $val);
     }
 }

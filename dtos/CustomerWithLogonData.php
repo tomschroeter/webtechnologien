@@ -1,5 +1,12 @@
 <?php
 
+/**
+ * Represents a Customer object along with the associated logon data.
+ *
+ * This class encapsulates a Customer instance together with their logon data,
+ * providing convenient accessors to retrieve both customer data and login information.
+ *
+ */
 class CustomerWithLogonData
 {
     private int $customerId;
@@ -201,13 +208,12 @@ class CustomerWithLogonData
  */
 class CustomerWithLogonDataArray extends \ArrayObject
 {
-    public function offsetSet($key, $val)
+    public function offsetSet($key, $val): void
     {
-        if ($val instanceof CustomerWithLogonData) {
-            return parent::offsetSet($key, $val);
+        if (!$val instanceof CustomerWithLogonData) {
+            throw new \InvalidArgumentException('Value must be a CustomerWithLogonData instance');
         }
 
-        // Backslash means using the Standard PHP Library ArrayObject class (same for \ArrayObject)
-        throw new \InvalidArgumentException('Value must be a CustomerWithLogonData instance');
+        parent::offsetSet($key, $val);
     }
 }

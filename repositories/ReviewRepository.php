@@ -4,7 +4,7 @@ require_once dirname(__DIR__) . "/Database.php";
 require_once dirname(__DIR__) . "/classes/Review.php";
 require_once dirname(__DIR__) . "/dtos/ReviewWithCustomerInfo.php";
 require_once dirname(__DIR__) . "/dtos/ReviewWithCustomerInfoAndArtwork.php";
-require_once dirname(__DIR__) . "/dtos/ReviewWithStats.php";
+require_once dirname(__DIR__) . "/dtos/ReviewStats.php";
 
 class ReviewRepository
 {
@@ -15,9 +15,6 @@ class ReviewRepository
         $this->db = $db;
     }
 
-    /**
-     * Fügt eine neue Bewertung hinzu.
-     */
     public function addReview(Review $review): int
     {
         if (!$this->db->isConnected())
@@ -36,18 +33,15 @@ class ReviewRepository
         $stmt->bindValue("comment", $review->getComment());
 
         $stmt->execute();
-        
+
         // Get the review ID before disconnecting
         $reviewId = $this->db->lastInsertId();
 
         $this->db->disconnect();
-        
-        return (int)$reviewId;
+
+        return (int) $reviewId;
     }
 
-    /**
-     * Prüft, ob der User das Artwork bereits bewertet hat.
-     */
     public function hasUserReviewed(int $customerId, int $artworkId): bool
     {
         if (!$this->db->isConnected())
@@ -71,10 +65,6 @@ class ReviewRepository
         return $result && $result["review_count"] > 0;
     }
 
-    /**
-     * Holt alle Reviews zu einem bestimmten Artwork
-     * @return Review[]
-     */
     public function getAllReviewsForArtwork(int $artworkId): array
     {
         if (!$this->db->isConnected())
@@ -100,11 +90,6 @@ class ReviewRepository
         return $reviews;
     }
 
-    /**
-     * Get all reviews for an artwork with customer information
-     * @param int $artworkId
-     * @return ReviewWithCustomerInfo[]
-     */
     public function getAllReviewsWithCustomerInfo(int $artworkId): array
     {
         if (!$this->db->isConnected())
@@ -141,9 +126,6 @@ class ReviewRepository
         return $reviews;
     }
 
-    /**
-     * Deletes a review by ID
-     */
     public function deleteReview(int $reviewId): void
     {
         if (!$this->db->isConnected())
@@ -157,12 +139,7 @@ class ReviewRepository
         $this->db->disconnect();
     }
 
-    /**
-     * Get review statistics for an artwork
-     * @param int $artworkId
-     * @return ReviewWithStats
-     */
-    public function getReviewStats(int $artworkId): ReviewWithStats
+    public function getReviewStats(int $artworkId): ReviewStats
     {
         if (!$this->db->isConnected())
             $this->db->connect();
@@ -183,7 +160,7 @@ class ReviewRepository
         $averageRating = $result['avgRating'] ? round($result['avgRating'], 1) : 0.0;
         $totalReviews = (int) $result['totalReviews'];
 
-        return new ReviewWithStats($averageRating, $totalReviews);
+        return new ReviewStats($averageRating, $totalReviews);
     }
 
     public function getRecentReviews()
