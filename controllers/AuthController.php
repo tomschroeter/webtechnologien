@@ -657,7 +657,7 @@ class AuthController extends BaseController
         echo $this->renderWithLayout('auth/change-password', $data);
     }
     
-    public function updatePassword()
+    public function updatePassword($id = null)
     {
         if (session_status() === PHP_SESSION_NONE) {
             session_start();
@@ -665,7 +665,23 @@ class AuthController extends BaseController
         
         $this->requireAuth();
         
-        $userId = (int)$_SESSION['customerId'];
+        // Get user ID - either from path parameter (admin editing) or session (user editing own profile)
+        $userId = $id ?? $_GET['id'] ?? null;
+        $isAdminEdit = false;
+        
+        if ($userId) {
+            // Admin editing another user's profile
+            if (!isset($_SESSION['isAdmin']) || !$_SESSION['isAdmin']) {
+                $this->redirectWithNotification('/', 'Access denied. Administrator privileges required.', 'error');
+                return;
+            }
+            $isAdminEdit = true;
+            $userId = (int)$userId;
+        } else {
+            // User editing their own profile
+            $userId = (int)$_SESSION['customerId'];
+        }
+        echo $userId;
         $user = $this->customerRepository->getUserDetailsById($userId);
         
         if (!$user) {
@@ -683,7 +699,7 @@ class AuthController extends BaseController
         $userLogon = $this->customerRepository->getActiveUserByUsername($user->getUserName());
         
         // Validate old password
-        if (!$userLogon || !password_verify($oldPassword, $userLogon->getPass())) {
+        if (!$isAdminEdit && (!$userLogon || !password_verify($oldPassword, $userLogon->getPass()))) {
             $errors[] = 'Current password is incorrect.';
         }
         
@@ -707,8 +723,9 @@ class AuthController extends BaseController
             foreach ($errors as $error) {
                 $notifications[] = ['message' => $error, 'type' => 'error'];
             }
-            
-            $this->redirectWithNotifications('/change-password', $notifications);
+
+            $redirectUrl = $isAdminEdit ? "/edit-profile/$userId" : "/edit-profile";
+            $this->redirectWithNotifications($redirectUrl, $notifications);
             return;
         }
         
@@ -716,10 +733,12 @@ class AuthController extends BaseController
             $hashed = password_hash($newPassword1, PASSWORD_DEFAULT);
             $this->customerRepository->updateCustomerPassword($userId, $hashed);
             
-            $this->redirectWithNotification('/account', 'Password changed successfully.', 'success');
+            $redirectUrl = $isAdminEdit ? '/manage-users' : '/account';
+            $this->redirectWithNotification($redirectUrl, 'Password changed successfully.', 'success');
             
         } catch (Exception $e) {
-            $this->redirectWithNotification('/change-password', 'An error occurred while updating the password. Please try again.', 'error');
+            $redirectUrl = $isAdminEdit ? "/edit-profile/$userId" : "/edit-profile";
+            $this->redirectWithNotification($redirectUrl, 'An error occurred while updating the password. Please try again.', 'error');
         }
     }
 }
