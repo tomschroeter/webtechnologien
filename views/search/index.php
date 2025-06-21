@@ -13,7 +13,7 @@
 
     <!-- Display Artist Results -->
     <?php if (sizeof($artistSearchResults) > 0): ?>
-        <div class="d-flex align-items-center mt-3 mb-3">
+        <div class="d-flex align-items-center mt-3 mb-2">
             <h3 class="flex-grow-1 mb-0">Artists</h3>
         </div>
 
@@ -40,7 +40,7 @@
         </div>
 
         <!-- Artist List -->
-        <ul class="list-group">
+        <ul class="list-group mb-5">
             <?php foreach ($artistSearchResults as $artist): ?>
                 <li class="list-group-item d-flex align-items-center justify-content-between">
                     <!-- Artist Link -->
@@ -73,7 +73,7 @@
 
     <!-- Display Artwork Results -->
     <?php if (sizeof($artworkSearchResults) > 0): ?>
-        <div class="d-flex align-items-center mt-4 mb-2">
+        <div class="d-flex align-items-center mt-4 mb-3">
             <h3 class="flex-grow-1 mb-0">Artworks</h3>
         </div>
 
@@ -106,7 +106,7 @@
         </div>
 
         <!-- Artwork List -->
-        <ul class="list-group">
+        <ul class="list-group mb-5">
             <?php foreach ($artworkSearchResults as $combined): ?>
                 <?php $artwork = $combined->getArtwork(); ?>
                 <li class="list-group-item d-flex align-items-center justify-content-between">

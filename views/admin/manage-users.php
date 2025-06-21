@@ -1,7 +1,7 @@
 <h1 class="mt-4">Manage Users</h1>
 
 <!-- Users table with columns for name, email, username, role, status, and actions -->
-<table class="table table-bordered mt-4">
+<table class="table table-bordered mt-4 mb-5">
     <thead class="table-dark">
         <tr>
             <th>Name</th>

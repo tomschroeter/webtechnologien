@@ -11,7 +11,7 @@ require_once __DIR__ . "/env.php";
  */
 class Database
 {
-    private ?PDO $pdo;
+    private $pdo;
 
     /**
      * Establishes a new database connection using environment variables.
