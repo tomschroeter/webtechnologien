@@ -1,6 +1,7 @@
 <div class="mt-4 mb-5">
     <h1>About Us</h1>
     <br>
+    <!-- Manifesto section -->
     <div class="card shadow-sm mb-4">
         <div class="card-body">
             <h2 class="h4 card-title">Our Manifesto</h2>
@@ -17,6 +18,8 @@
             </p>
         </div>
     </div>
+
+    <!-- Imprint / Company info -->
     <div class="card shadow-sm mb-5">
         <div class="card-body">
             <h2 class="h4 card-title">Imprint</h2>
@@ -28,6 +31,8 @@
                 Slaiwa, Tom Schröter</p>
         </div>
     </div>
+
+    <!-- Contributors cards section -->
     <div class="card-body">
         <?php
         require_once dirname(dirname(__DIR__)) . "/components/contributor-card.php";
@@ -35,6 +40,7 @@
         ?>
         <div class="d-flex flex-wrap justify-content-center">
             <?php
+            // Loop through contributors and render cards for each
             foreach ($contributors as $contributor):
                 $name = $contributor['name'];
                 $githubUsername = $contributor['githubUsername'];

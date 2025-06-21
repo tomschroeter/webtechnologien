@@ -42,6 +42,7 @@ $correctLargeImagePath = getImagePathOrPlaceholder($largeImagePath, $placeholder
 ?>
 
 <br>
+<!-- Display title -->
 <h1><?php echo htmlspecialchars($artwork->getTitle()) ?></h1>
 
 <?php if (isset($message)): ?>
@@ -56,6 +57,7 @@ $correctLargeImagePath = getImagePathOrPlaceholder($largeImagePath, $placeholder
 <div class="mt-4">
     <div class="row">
         <div class="col-auto">
+            <!-- Display artwork image -->
             <a href="#" data-bs-toggle="modal" data-bs-target="#imageModal">
                 <img src="<?= $correctImagePath ?>" alt="<?= htmlspecialchars($artwork->getTitle()) ?>"
                     class="img-fluid border"
@@ -66,6 +68,7 @@ $correctLargeImagePath = getImagePathOrPlaceholder($largeImagePath, $placeholder
             <div class="modal fade" id="imageModal" tabindex="-1" aria-labelledby="imageModalLabel" aria-hidden="true">
                 <div class="modal-dialog modal-dialog-centered"
                     style="width: fit-content; max-width: 80vw; max-height: auto">
+                    <!-- Display modal header with close button -->
                     <div class="modal-content">
                         <div class="modal-header">
                             <h5 class="modal-title" id="imageModalLabel">
@@ -74,7 +77,7 @@ $correctLargeImagePath = getImagePathOrPlaceholder($largeImagePath, $placeholder
                             <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                         </div>
 
-                        <!-- Remove max-height and overflow-y here -->
+                        <!-- Display modal body -->
                         <div class="modal-body p-3">
                             <img src="<?= $correctLargeImagePath ?>" alt="<?= htmlspecialchars($artwork->getTitle()) ?>"
                                 class="img-fluid" style="max-width: 100%; height: auto; object-fit: contain;">
@@ -88,6 +91,7 @@ $correctLargeImagePath = getImagePathOrPlaceholder($largeImagePath, $placeholder
                     <?= htmlspecialchars($artist->getFullName()) ?>
                 </a></h3>
 
+            <!-- Display average rating if reviews are available -->
             <div class="mb-3">
                 <?php if ($reviewStats->hasReviews()): ?>
                     <div class="d-flex align-items-center gap-2">
@@ -189,6 +193,7 @@ $correctLargeImagePath = getImagePathOrPlaceholder($largeImagePath, $placeholder
     </div>
 </div>
 
+<!-- Display description or excerpt -->
 <?php if ($artwork->getDescription()): ?>
     <div class="row mt-4">
         <div class="col-12">
@@ -205,6 +210,7 @@ $correctLargeImagePath = getImagePathOrPlaceholder($largeImagePath, $placeholder
     </div>
 <?php endif; ?>
 
+<!-- Display gallery information if available -->
 <?php if ($gallery): ?>
     <div class="row mt-4">
         <div class="col-12">
@@ -270,6 +276,7 @@ $correctLargeImagePath = getImagePathOrPlaceholder($largeImagePath, $placeholder
     </div>
 <?php endif; ?>
 
+<!-- Display map to gallery if location is available -->
 <?php if ($gallery && $gallery->getLatitude() && $gallery->getLongitude()): ?>
     <div class="row mt-4">
         <div class="col-12">
@@ -291,7 +298,7 @@ $correctLargeImagePath = getImagePathOrPlaceholder($largeImagePath, $placeholder
                             <div id="map" style="height: 300px; width: 100%; border: 1px solid #ccc; border-radius: 8px;">
                             </div>
 
-                            <!-- Leaflet CSS & JS -->
+                            <!-- Leaflet CSS & JS to display map -->
                             <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
                             <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
 
@@ -350,12 +357,14 @@ $correctLargeImagePath = getImagePathOrPlaceholder($largeImagePath, $placeholder
         </div>
     </div>
 <?php endif; ?>
+
+<!-- Display review form and reviews -->
 <div class="row mt-5">
     <div class="col-12">
         <h3>Reviews</h3>
 
+        <!-- Display review form for users if they haven't already reviewed -->
         <?php if (isset($_SESSION['customerId'])): ?>
-
             <?php
             $alreadyReviewed = $reviewRepo->hasUserReviewed($_SESSION['customerId'], $artwork->getArtworkId());
             if (!$alreadyReviewed): ?>
@@ -392,6 +401,7 @@ $correctLargeImagePath = getImagePathOrPlaceholder($largeImagePath, $placeholder
             <p class="text-muted">Please log in to leave a review.</p>
         <?php endif; ?>
 
+        <!-- Show reviews if available -->
         <?php if (!empty($reviews)): ?>
             <div id="reviews-container" class="mt-4">
                 <?php foreach ($reviews as $reviewWithCustomerInfo): ?>
@@ -419,6 +429,7 @@ $correctLargeImagePath = getImagePathOrPlaceholder($largeImagePath, $placeholder
                                     </small>
                                 </div>
 
+                                <!-- Delete review button for admins -->
                                 <?php if ($_SESSION['isAdmin'] ?? false): ?>
                                     <div>
                                         <form class="delete-review-form" method="POST"
@@ -438,6 +449,7 @@ $correctLargeImagePath = getImagePathOrPlaceholder($largeImagePath, $placeholder
                 <?php endforeach; ?>
             </div>
         <?php else: ?>
+            <!-- Display message if no reviews were found -->
             <div id="reviews-container" class="mt-3">
                 <p class="text-muted">No reviews yet. Be the first to review this artwork!</p>
             </div>

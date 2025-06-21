@@ -273,3 +273,19 @@ body {
 .actions-cell form .btn {
   width: 100%;
 }
+
+/* Large error code font */
+.error-template h1 {
+    font-size: 8rem;
+}
+
+/* Responsive adjustments for smaller screens */
+@media (max-width: 768px) {
+    .error-template h1 {
+        font-size: 4rem;
+    }
+
+    .error-template h2 {
+        font-size: 1.5rem;
+    }
+}
