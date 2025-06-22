@@ -72,7 +72,7 @@ class ArtworkRepository
      *
      * @param int $id The ID of the artwork.
      * @return Artwork The retrieved artwork.
-     * @throws Exception If artwork not found.
+     * @throws ArtworkNotFoundException If artwork not found.
      */
     public function getArtworkById(int $id): Artwork
     {
@@ -109,7 +109,7 @@ class ArtworkRepository
      *
      * @param int $artistId ID of the artist.
      * @return Artwork[] Array of Artwork objects.
-     * @throws Exception If artist ID does not exist.
+     * @throws ArtistNotFoundException If artist ID does not exist.
      */
     public function getArtworksByArtist(int $artistId): array
     {
@@ -125,7 +125,7 @@ class ArtworkRepository
 
         $stmt = $this->db->prepareStatement($sql);
 
-        // Checks if artist with given ID exists
+        // Checks if artist with given ID exists (can throw ArtistNotFoundException)
         $artistRepository = new ArtistRepository($this->db);
         $artistRepository->getArtistById($artistId);
 
@@ -152,7 +152,7 @@ class ArtworkRepository
      *
      * @param int $subjectId ID of the subject.
      * @return Artwork[] Array of Artwork objects.
-     * @throws Exception If subject ID does not exist.
+     * @throws SubjectNotFoundException If subject ID does not exist.
      */
     public function getArtworksBySubject(int $subjectId): array
     {
@@ -169,7 +169,7 @@ class ArtworkRepository
 
         $stmt = $this->db->prepareStatement($sql);
 
-        // Checks if subject with given ID exists (will throw exception if not found)
+        // Checks if subject with given ID exists (will throw SubjectNotFoundException if not found)
         $subjectRepository = new SubjectRepository($this->db);
         $subjectRepository->getSubjectById($subjectId);
 
@@ -196,7 +196,7 @@ class ArtworkRepository
      *
      * @param int $genreId ID of the genre.
      * @return Artwork[] Array of Artwork objects.
-     * @throws Exception If genre ID does not exist.
+     * @throws GenreNotFoundException If genre ID does not exist.
      */
     public function getArtworksByGenre(int $genreId): array
     {
@@ -213,7 +213,7 @@ class ArtworkRepository
 
         $stmt = $this->db->prepareStatement($sql);
 
-        // Checks if genre with given ID exists (will throw exception if not found)
+        // Checks if genre with given ID exists (will throw GenreNotFoundException if not found)
         $genreRepository = new GenreRepository($this->db);
         $genreRepository->getGenreById($genreId);
 

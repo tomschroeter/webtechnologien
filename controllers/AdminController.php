@@ -39,8 +39,7 @@ class AdminController extends BaseController
 
         // Check if user is admin
         if (!isset($_SESSION['isAdmin']) || !$_SESSION['isAdmin']) {
-            $this->redirectWithNotification('/', 'Access denied. Administrator privileges required.', 'error');
-            return;
+            throw new HttpException(403, 'Access denied. Administrator privileges required.');
         }
 
         // Fetch users and admin count
@@ -73,17 +72,27 @@ class AdminController extends BaseController
 
         // Ensure user is an admin
         if (!isset($_SESSION['isAdmin']) || !$_SESSION['isAdmin']) {
-            $this->redirectWithNotification('/', 'Access denied. Administrator privileges required.', 'error');
-            return;
+            throw new HttpException(403, 'Access denied. Administrator privileges required.');
         }
 
-        // Ensure request is POST
-        if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
-            $this->jsonResponse(['success' => false, 'message' => 'Invalid request method'], 405);
+        $customerID = ($_POST['customerId'] ?? 0);
+
+        // Validate the customer ID
+        if (!$customerID || !is_numeric($customerID)) {
+            throw new HttpException(400, "The customer ID parameter is invalid or missing.");
         }
 
-        $customerID = (int) ($_POST['customerId'] ?? 0);
+        $customerID = (int) $customerID;
+
         $action = $_POST['action'] ?? '';
+
+
+        try {
+            $user = $this->customerRepository->getCustomerDetailsById($customerID);
+        }
+        catch (CustomerNotFoundException $e) {
+            throw new HttpException(400, $e->getMessage());
+        }
 
         // Prevent demotion of the last admin
         if ($action === 'demote') {
@@ -94,13 +103,12 @@ class AdminController extends BaseController
                     'You can not demote yourself because you are the last admin.',
                     'error'
                 );
-                return;
             }
         }
 
         // Prevent deactivation of the last admin
         if ($action === 'deactivate') {
-            $user = $this->customerRepository->getCustomerDetailsById($customerID);
+
             if ($user && $user->getIsAdmin()) {
                 $adminCount = $this->customerRepository->countActiveAdmins();
                 if ($adminCount <= 1) {
@@ -109,7 +117,6 @@ class AdminController extends BaseController
                         'You can not deactivate yourself because you are the last admin.',
                         'error'
                     );
-                    return;
                 }
             }
         }

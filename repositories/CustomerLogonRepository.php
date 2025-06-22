@@ -409,10 +409,10 @@ class CustomerLogonRepository
             return $customerId;
 
         } catch (Exception $e) {
-            // Rollback on any error
+            // Rollback on any error and throw exception again
             $this->db->rollBack();
             $this->db->disconnect();
-            throw new Exception("Registration failed: " . $e->getMessage());
+            throw $e;
         }
     }
 

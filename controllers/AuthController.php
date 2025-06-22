@@ -148,27 +148,25 @@ class AuthController extends BaseController
             $this->redirectWithNotification('/register', 'Passwords do not match. Please try again.', 'error');
         } elseif ($this->customerRepository->customerExists($username)) {
             $this->redirectWithNotification('/register', 'Username already exists. Please choose another one.', 'error');
+        } elseif ($this->customerRepository->getCustomerDetailsByEmail($email)) {
+            $this->redirectWithNotification('/register', 'This email address is already in use by another user.', 'error');
         }
 
         // Register user
-        try {
-            $customer = new Customer(null, $firstName, $lastName, $address, $city, $region, $country, $postal, $phone, $email);
-            $hashed = password_hash($password, PASSWORD_DEFAULT);
-            $logon = new CustomerLogon(null, $username, $hashed, 1, 0, date("Y-m-d H:i:s"), date("Y-m-d H:i:s"), 0);
+        $customer = new Customer(null, $firstName, $lastName, $address, $city, $region, $country, $postal, $phone, $email);
+        $hashed = password_hash($password, PASSWORD_DEFAULT);
+        $logon = new CustomerLogon(null, $username, $hashed, 1, 0, date("Y-m-d H:i:s"), date("Y-m-d H:i:s"), 0);
 
-            $customerId = $this->customerRepository->registerCustomer($customer, $logon);
+        $customerId = $this->customerRepository->registerCustomer($customer, $logon);
 
-            unset($_SESSION['register_form_data']);
+        unset($_SESSION['register_form_data']);
 
-            // Log user in immediately
-            $_SESSION['customerId'] = $customerId;
-            $_SESSION['username'] = $username;
-            $_SESSION['isAdmin'] = false;
+        // Log user in immediately
+        $_SESSION['customerId'] = $customerId;
+        $_SESSION['username'] = $username;
+        $_SESSION['isAdmin'] = false;
 
-            $this->redirectWithNotification('/', 'Welcome to Art Gallery, ' . htmlspecialchars($username) . '! Your account has been created successfully.', 'success');
-        } catch (Exception $e) {
-            $this->redirectWithNotification('/register', 'Registration failed due to a database error. Please try again.', 'error');
-        }
+        $this->redirectWithNotification('/', 'Welcome to Art Gallery, ' . htmlspecialchars($username) . '! Your account has been created successfully.', 'success');
     }
 
     /**
