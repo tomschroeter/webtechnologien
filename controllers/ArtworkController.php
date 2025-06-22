@@ -6,6 +6,7 @@ require_once dirname(__DIR__) . "/repositories/ArtistRepository.php";
 require_once dirname(__DIR__) . "/repositories/ReviewRepository.php";
 require_once dirname(__DIR__) . "/Database.php";
 require_once dirname(__DIR__) . "/components/find-image-ref.php";
+require_once dirname(__DIR__) . "/exceptions/ArtistNotFound.php";
 
 /**
  * Handles actions related to artwork listings and details.
@@ -60,7 +61,7 @@ class ArtworkController extends BaseController
             try {
                 $artist = $this->artistRepository->getArtistById($artwork->getArtistID());
                 $artwork->artistName = $artist ? $artist->getFullName() : 'Unknown Artist';
-            } catch (Exception $e) {
+            } catch (ArtistNotFoundException $e) {
                 $artwork->artistName = 'Unknown Artist';
             }
         }
@@ -100,28 +101,21 @@ class ArtworkController extends BaseController
         // Retrieve artwork, artist and review data
         try {
             $artwork = $this->artworkRepository->getArtworkById($artworkId);
-
-            if (!$artwork) {
-                throw new HttpException(404, "No artwork with the given ID was found.");
-            }
-
-            $artist = $this->artistRepository->getArtistById($artwork->getArtistId());
-            $reviews = $this->reviewRepository->getAllReviewsWithCustomerInfo($artworkId);
-
-            $data = [
-                'artwork' => $artwork,
-                'artist' => $artist,
-                'reviews' => $reviews,
-                'title' => $artwork->getTitle() . ' - Artworks'
-            ];
-
-            $this->renderWithLayout('artworks/show', $data);
-
-        } catch (HttpException $e) {
-            throw $e;
-        } catch (Exception $e) {
-            error_log("Error loading artwork: " . $e->getMessage());
-            throw new HttpException(500, "A database error occurred while loading the artwork. Please try again later.");
         }
+        catch (ArtworkNotFoundException $e) {
+            throw new HttpException(404, $e->getMessage());
+        }
+
+        $artist = $this->artistRepository->getArtistById($artwork->getArtistId());
+        $reviews = $this->reviewRepository->getAllReviewsWithCustomerInfo($artworkId);
+
+        $data = [
+            'artwork' => $artwork,
+            'artist' => $artist,
+            'reviews' => $reviews,
+            'title' => $artwork->getTitle() . ' - Artworks'
+        ];
+
+        $this->renderWithLayout('artworks/show', $data);
     }
 }

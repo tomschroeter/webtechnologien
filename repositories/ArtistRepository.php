@@ -3,6 +3,7 @@
 require_once dirname(__DIR__) . "/Database.php";
 require_once dirname(__DIR__) . "/classes/Artist.php";
 require_once dirname(__DIR__) . "/dtos/ArtistWithStats.php";
+require_once dirname(__DIR__) . "/exceptions/ArtistNotFound.php";
 
 class ArtistRepository
 {
@@ -89,7 +90,7 @@ class ArtistRepository
      *
      * @param int $artistId The ID of the artist to retrieve.
      * @return Artist The matching Artist object.
-     * @throws Exception If no artist is found for the given ID.
+     * @throws ArtistNotFoundException If no artist is found for the given ID.
      */
     public function getArtistById(int $artistId): Artist
     {
@@ -110,7 +111,7 @@ class ArtistRepository
         if ($row !== false) {
             return Artist::createArtistfromRecord($row);
         } else {
-            throw new Exception("Artist with ID {$artistId} couldn't be found");
+            throw new ArtistNotFoundException($artistId);
         }
     }
 

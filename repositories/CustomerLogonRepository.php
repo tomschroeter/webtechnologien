@@ -2,6 +2,7 @@
 
 require_once dirname(__DIR__) . "/classes/Artist.php";
 require_once dirname(__DIR__) . "/dtos/CustomerWithLogonData.php";
+require_once dirname(__DIR__) . "/exceptions/CustomerNotFound.php";
 
 class CustomerLogonRepository
 {
@@ -162,26 +163,28 @@ class CustomerLogonRepository
 
         $result = $stmt->fetch();
 
-        $user = new CustomerWithLogonData(
-            $result['CustomerID'],
-            $result['FirstName'],
-            $result['LastName'],
-            $result['Email'],
-            $result['UserName'],
-            $result['Address'],
-            $result['City'],
-            $result['Region'],
-            $result['Country'],
-            $result['Postal'],
-            $result['Phone'],
-            $result['Type'],
-            $result['State'],
-            $result['isAdmin']
-        );
-
         $this->db->disconnect();
 
-        return $user;
+        if ($result !== false) {
+            return new CustomerWithLogonData(
+                $result['CustomerID'],
+                $result['FirstName'],
+                $result['LastName'],
+                $result['Email'],
+                $result['UserName'],
+                $result['Address'],
+                $result['City'],
+                $result['Region'],
+                $result['Country'],
+                $result['Postal'],
+                $result['Phone'],
+                $result['Type'],
+                $result['State'],
+                $result['isAdmin']
+            );
+        } else {
+            throw new CustomerNotFoundException($id);
+        }
     }
 
     /**
@@ -406,10 +409,10 @@ class CustomerLogonRepository
             return $customerId;
 
         } catch (Exception $e) {
-            // Rollback on any error
+            // Rollback on any error and throw exception again
             $this->db->rollBack();
             $this->db->disconnect();
-            throw new Exception("Registration failed: " . $e->getMessage());
+            throw $e;
         }
     }
 
