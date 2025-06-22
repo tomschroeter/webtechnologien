@@ -1,0 +1,79 @@
+/
+├── index.php                        # Einstiegspunkt der Anwendung
+├── Database.php                     # Datenbankverbindungsklasse
+├── env.php                          # Environment-Konfiguration (Datenbank-Credentials)
+├── README.md                        # Einfache Projekt Doku (Setup-Anleitung)
+│
+├── assets/                          # Statische Ressourcen (CSS, JS, Bootstrap, Bilder, Fonts, SVGs, Screenshots)
+│
+├── classes/                         # Entitäts-Klassen (Artist, Artwork, Customer, Review, Genre, Subject, etc.)
+│
+├── controllers/                     # Controller-Schicht
+│   ├── BaseController.php           # Beinhaltet grundlegende Funktionalitäten,
+|   |                                # wie das Rendern von Views, Weiterleiten, ...
+│   ├── AdminController.php          # AdminController behandlet Admin-Funktionalitäten, wie Deaktivieren von Usern
+│   ├── AuthController.php           # AuthController ist für Login/Register/Logout,
+|   |                                # Account Ansicht, Profil Bearbeitung, Favoriten zuständig
+│   ├── ErrorController.php          # ErrorController behandelt Fehler und zeigt entsprechende Error Seiten an
+│   ├── ArtworkController.php        # Anzeigen von Allen und spezifischen Artists
+│   └── ...
+│
+├── repositories/                    # Datenabfrage-Schicht (Artist, Artwork, Customer, Review, etc.)
+│   └── ...
+│
+├── dtos/                            # Data Transfer Objects
+│   ├── ArtistWithStats.php          # Künstler mit Statistik (Anzahl der Reviews)
+│   ├── ArtworkWithArtistName.php    # Kunstwerk mit Künstlername
+│   ├── ArtworkWithRatingAndArtistName.php # Kunstwerk mit Bewertung und Künstlername
+│   ├── CustomerWithLogonData.php    # Kundendaten mit dessen Login-Daten (ohne Passwort)
+│   ├── ReviewWithCustomerInfo.php   # Bewertung mit Kundeninfo
+│   ├── ReviewWithCustomerInfoAndArtwork.php # Bewertung mit Kunde und Kunstwerk
+│   └── ReviewWithStats.php          # Review Statistiken (Durchschnitt, Anzahl) für ein Kunstwerk
+│
+├── views/                          # View-Schicht
+│   ├── layouts/
+│   │   └── main.php                 # Master-Layout-Template
+│   ├── home/
+│   │   ├── index.php               # Hauptseite
+│   │   └── about.php               # Über uns
+│   ├── artists/
+│   │   ├── index.php               # Künstler Übersicht
+│   │   └── show.php                # Einzelner Künstler
+│   ├── artworks/                   # Kunstwerk-Views (index.php, show.php)
+│   ├── genres/                     # Genre-Views (index.php, show.php)
+│   ├── subjects/                   # Subject-Views (index.php, show.php)
+│   ├── auth/
+│   │   ├── login.php               # Login-Seite
+│   │   ├── register.php            # Registrierungs-Seite
+│   │   ├── account.php             # Account-Übersicht
+│   │   ├── edit-profile.php        # Profil bearbeiten
+│   │   ├── change-password.php     # Passwort ändern
+│   │   └── favorites.php           # Favoriten-Seite
+│   ├── search/
+│   │   ├── index.php               # Einfache Suche
+│   │   └── advanced.php            # Erweiterte Suche
+│   ├── admin/
+│   │   └── manage-users.php        # Benutzerverwaltung
+│   └── errors/
+│       └── error.php               # Allgemeine (dynamische) Fehlerseite
+│
+├── components/                     # Wiederverwendbare UI-Komponenten
+│   ├── add-to-favorites-button.php # Favoriten-Button-Komponente (z.B. auf Kunstwerkseite, Künstlerseite)
+│   ├── footer.php                  # Footer
+│   ├── head.php                    # HTML-Head
+│   ├── most-reviewed-artists.php   # Meist-bewertete Künstler (für Startseite)
+│   ├── navbar.php                  # Navigationsleiste
+│   └── ...
+│
+├── router/
+│   └── FrontController.php         # Haupt-Router (leitet auf spezifische Controller weiter)
+│
+├── exceptions/
+│   └── HttpException.php           # Eigene HTTP-Fehler-Klasse
+│
+└── sql/                            # Datenbankskripte
+    ├── db_setup.sql                # Datenbanksetup (isAdmin Spalte, Admin User)
+    └── hash_passwords.php          # Passwörter von existierenden Nutzern hashen
+
+
+
