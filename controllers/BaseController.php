@@ -18,7 +18,7 @@ abstract class BaseController
         // Make the array keys available as variables in the view
         extract($data);
 
-        // Start output buffering
+        // Start output buffering to send full html as one piece at the end
         ob_start();
 
         // Build full path to the view file

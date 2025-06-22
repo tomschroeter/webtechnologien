@@ -7,6 +7,8 @@ require_once dirname(__DIR__) . "/repositories/ArtworkRepository.php";
 require_once dirname(__DIR__) . "/Database.php";
 require_once dirname(__DIR__) . "/classes/Customer.php";
 require_once dirname(__DIR__) . "/classes/CustomerLogon.php";
+require_once dirname(__DIR__) . "/exceptions/HttpException.php";
+require_once dirname(__DIR__) . "/exceptions/ArtworkNotFound.php";
 
 /**
  * Controller handling user authentication (login, registration, logout)
@@ -34,11 +36,7 @@ class AuthController extends BaseController
      */
     public function showLogin(): void
     {
-        if (session_status() === PHP_SESSION_NONE) {
-            session_start();
-        }
-
-        if (isset($_SESSION['customerId'])) {
+        if ($this->getCurrentUser()) {
             $this->redirect('/');
         }
 
@@ -60,10 +58,6 @@ class AuthController extends BaseController
     {
         if (session_status() === PHP_SESSION_NONE) {
             session_start();
-        }
-
-        if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
-            $this->redirect('/login');
         }
 
         $username = trim($_POST['username'] ?? '');
@@ -97,11 +91,7 @@ class AuthController extends BaseController
      */
     public function showRegister(): void
     {
-        if (session_status() === PHP_SESSION_NONE) {
-            session_start();
-        }
-
-        if (isset($_SESSION['customerId'])) {
+        if ($this->getCurrentUser()) {
             $this->redirect('/');
         }
 
@@ -123,10 +113,6 @@ class AuthController extends BaseController
     {
         if (session_status() === PHP_SESSION_NONE) {
             session_start();
-        }
-
-        if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
-            $this->redirect('/register');
         }
 
         // Extract and sanitize input
@@ -204,13 +190,7 @@ class AuthController extends BaseController
      */
     public function showAccount(): void
     {
-        if (session_status() === PHP_SESSION_NONE) {
-            session_start();
-        }
-
-        if (!isset($_SESSION['customerId'])) {
-            $this->redirect('/login');
-        }
+        $this->requireAuth();
 
         $id = (int) $_SESSION['customerId'];
 
@@ -235,15 +215,7 @@ class AuthController extends BaseController
      */
     public function showFavorites(): void
     {
-        // Start session if it's not already started
-        if (session_status() === PHP_SESSION_NONE) {
-            session_start();
-        }
-
-        // Redirect to login if user is not logged in
-        if (!isset($_SESSION['customerId'])) {
-            $this->redirect('/login');
-        }
+        $this->requireAuth();
 
         // Retrieve favorite artist and artwork IDs from session
         $favoriteArtistIds = $_SESSION['favoriteArtists'] ?? [];
@@ -327,20 +299,20 @@ class AuthController extends BaseController
      */
     public function toggleArtistFavoriteAjax($artistId): void
     {
-        // Start session
-        if (session_status() === PHP_SESSION_NONE) {
-            session_start();
+        $this->requireAuth();
+
+        if (!$artistId || !is_numeric($artistId)) {
+            $this->jsonResponse(['success' => false, 'message' => 'Invalid artist ID'], 400);
         }
 
-        // Only allow POST requests
-        if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
-            $this->jsonResponse(['success' => false, 'message' => 'Invalid request method'], 405);
+        try {
+            $this->artistRepository->getArtistById($artistId);
+        }
+        catch (ArtistNotFoundException $e) {
+            $this->jsonResponse(['success' => false, 'message' => $e->getMessage()], 400);
         }
 
         $artistId = (int) $artistId;
-        if (!$artistId) {
-            $this->jsonResponse(['success' => false, 'message' => 'Invalid artist ID'], 400);
-        }
 
         try {
             // Initialize session array if not already set
@@ -372,6 +344,7 @@ class AuthController extends BaseController
                     'action' => 'added'
                 ]);
             }
+        // Exception needs to be catched here, to return JSON response instead of default error page
         } catch (Exception $e) {
             $this->jsonResponse(['success' => false, 'message' => 'Error updating favorites'], 500);
         }
@@ -385,20 +358,20 @@ class AuthController extends BaseController
      */
     public function toggleArtworkFavoriteAjax($artworkId): void
     {
-        // Start session
-        if (session_status() === PHP_SESSION_NONE) {
-            session_start();
+        $this->requireAuth();
+
+        if (!$artworkId || !is_numeric($artworkId)) {
+            $this->jsonResponse(['success' => false, 'message' => 'Invalid artwork ID'], 400);
         }
 
-        // Only allow POST requests
-        if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
-            $this->jsonResponse(['success' => false, 'message' => 'Invalid request method'], 405);
+        try {
+            $this->artworkRepository->getArtworkById($artworkId);
+        }
+        catch (ArtworkNotFoundException $e) {
+            $this->jsonResponse(['success' => false, 'message' => $e->getMessage()], 400);
         }
 
         $artworkId = (int) $artworkId;
-        if (!$artworkId) {
-            $this->jsonResponse(['success' => false, 'message' => 'Invalid artwork ID'], 400);
-        }
 
         try {
             // Initialize session array if not already set
@@ -427,9 +400,10 @@ class AuthController extends BaseController
                     'success' => true,
                     'message' => 'Artwork added to favorites!',
                     'isFavorite' => true,
-                    'action' => 'added'
+                    'action' => 'added',
                 ]);
             }
+        // Exception needs to be catched here, to return JSON response instead of default error page
         } catch (Exception $e) {
             $this->jsonResponse(['success' => false, 'message' => 'Error updating favorites'], 500);
         }
@@ -442,11 +416,6 @@ class AuthController extends BaseController
      */
     public function editProfile($id = null): void
     {
-        // Start session
-        if (session_status() === PHP_SESSION_NONE) {
-            session_start();
-        }
-
         // Ensure user is authenticated
         $this->requireAuth();
 
@@ -454,11 +423,12 @@ class AuthController extends BaseController
         $userId = $id ?? $_GET['id'] ?? null;
         $isAdminEdit = false;
 
+        // If admin is editing someone else's profile
         if ($userId) {
-            // Admin editing someone else's profile
+            // Prevent non-admins from editing other profiles
             if (!isset($_SESSION['isAdmin']) || !$_SESSION['isAdmin']) {
-                $this->redirectWithNotification('/', 'Access denied. Administrator privileges required.', 'error');
-                return;
+                // $this->redirectWithNotification('/', 'Access denied. Administrator privileges required.', 'error');
+                throw new HttpException(403, 'Access denied. Administrator privileges required.');
             }
             $isAdminEdit = true;
             $userId = (int) $userId;
@@ -468,16 +438,15 @@ class AuthController extends BaseController
         }
 
         if (!$userId || !is_numeric($userId)) {
-            $this->redirectWithNotification($isAdminEdit ? '/manage-users' : '/account', 'Invalid user ID.', 'error');
-            return;
+            throw new HttpException(400, 'Invalid user ID.');
         }
 
         // Retrieve user details
-        $user = $this->customerRepository->getCustomerDetailsById($userId);
-
-        if (!$user) {
-            $this->redirectWithNotification($isAdminEdit ? '/manage-users' : '/account', 'User not found.', 'error');
-            return;
+        try {
+            $user = $this->customerRepository->getCustomerDetailsById($userId);
+        }
+        catch (CustomerNotFoundException $e) {
+            throw new HttpException(404, $e->getMessage());
         }
 
         // Render the edit profile form
@@ -499,11 +468,6 @@ class AuthController extends BaseController
      */
     public function updateProfile($id = null): void
     {
-        // Start session if not already started
-        if (session_status() === PHP_SESSION_NONE) {
-            session_start();
-        }
-
         // Ensure the user is authenticated
         $this->requireAuth();
 
@@ -614,11 +578,6 @@ class AuthController extends BaseController
      */
     public function changePassword(): void
     {
-        // Start session
-        if (session_status() === PHP_SESSION_NONE) {
-            session_start();
-        }
-
         // Ensure user is logged in
         $this->requireAuth();
 
@@ -642,11 +601,6 @@ class AuthController extends BaseController
 
     public function updatePassword($id = null)
     {
-        // Start session
-        if (session_status() === PHP_SESSION_NONE) {
-            session_start();
-        }
-
         // Ensure user is authenticated
         $this->requireAuth();
 
