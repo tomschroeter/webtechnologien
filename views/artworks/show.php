@@ -454,11 +454,12 @@ $correctLargeImagePath = getImagePathOrPlaceholder($largeImagePath, $placeholder
                                     </small>
                                 </div>
 
-                                <!-- Delete review button for admins -->
+                                <!-- Delete review button for admins with confirmation dialog -->
                                 <?php if ($_SESSION['isAdmin'] ?? false): ?>
                                     <div>
                                         <form class="delete-review-form" method="POST"
-                                            action="/reviews/<?= $reviewWithCustomerInfo->getReview()->getReviewId() ?>/delete">
+                                            action="/reviews/<?= $reviewWithCustomerInfo->getReview()->getReviewId() ?>/delete"
+                                            onsubmit="return confirm('Are you sure you want to delete this review?');">
                                             <input type="hidden" name="reviewId"
                                                 value="<?= $reviewWithCustomerInfo->getReview()->getReviewId() ?>">
                                             <input type="hidden" name="artworkId"
