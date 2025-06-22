@@ -45,7 +45,7 @@ require_once dirname(dirname(__DIR__)) . "/components/find-image-ref.php";
                         <div class="card-body d-flex flex-column">
                             <!-- Artist name linked to profile -->
                             <h5 class="card-title text-center">
-                                <a href="<?= $artistLink ?>" class="text-body"><?= htmlspecialchars($artistName) ?></a>
+                                <a href="<?= $artistLink ?>" class="link-underline-on-hover"><?= htmlspecialchars($artistName) ?></a>
                             </h5>
                             <!-- Optional nationality -->
                             <?php if ($artist->getNationality()): ?>
@@ -110,12 +110,12 @@ require_once dirname(dirname(__DIR__)) . "/components/find-image-ref.php";
                         <div class="card-body d-flex flex-column">
                             <!-- Artwork title linked to detail page -->
                             <h5 class="card-title text-center">
-                                <a href="<?= $artworkLink ?>" class="text-body"><?= htmlspecialchars($artwork->getTitle()) ?></a>
+                                <a href="<?= $artworkLink ?>" class="link-underline-on-hover"><?= htmlspecialchars($artwork->getTitle()) ?></a>
                             </h5>
                             <!-- Optional artist info -->
                             <?php if ($artist): ?>
                                 <p class="card-text text-center text-muted">
-                                    by <a href="/artists/<?= $artist->getArtistId() ?>" class="text-decoration-none">
+                                    by <a href="/artists/<?= $artist->getArtistId() ?>" class="link-underline-on-hover">
                                         <?= htmlspecialchars($artist->getFullName()) ?>
                                     </a>
                                 </p>
