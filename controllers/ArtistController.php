@@ -71,28 +71,23 @@ class ArtistController extends BaseController
 
         $artistId = (int) $id;
 
+        // Fetch the artist by ID
         try {
-            // Fetch the artist by ID
             $artist = $this->artistRepository->getArtistById($artistId);
-
-            if (!$artist) {
-                throw new HttpException(404, "No artist with the given ID was found.");
-            }
-
-            // Fetch artworks by the artist
-            $artworks = $this->artworkRepository->getArtworksByArtist($artistId);
-
-            $data = [
-                'artist' => $artist,
-                'artworks' => $artworks,
-                'title' => $artist->getFullName() . ' - Artists'
-            ];
-
-            $this->renderWithLayout('artists/show', $data);
-
-        } catch (Exception $e) {
-            error_log("Error loading artist: " . $e->getMessage());
-            throw new HttpException(500, "A database error occurred while loading the artist. Please try again later.");
         }
+        catch (ArtistNotFoundException $e) {
+            throw new HttpException(404, $e->getMessage());
+        } 
+
+        // Fetch artworks by the artist
+        $artworks = $this->artworkRepository->getArtworksByArtist($artistId);
+
+        $data = [
+            'artist' => $artist,
+            'artworks' => $artworks,
+            'title' => $artist->getFullName() . ' - Artists'
+        ];
+
+        $this->renderWithLayout('artists/show', $data);
     }
 }
