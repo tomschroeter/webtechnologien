@@ -4,6 +4,7 @@ require_once __DIR__ . "/BaseController.php";
 require_once dirname(__DIR__) . "/repositories/ArtistRepository.php";
 require_once dirname(__DIR__) . "/repositories/ArtworkRepository.php";
 require_once dirname(__DIR__) . "/Database.php";
+require_once dirname(__DIR__) . "/exceptions/HttpException.php";
 
 /**
  * Handles display of (advanced) search results.
@@ -77,81 +78,71 @@ class SearchController extends BaseController
         $sortArtist = isset($_GET['sortArtist']) && $_GET['sortArtist'] === 'descending';
         $sortArtwork = isset($_GET['sortArtwork']) && $_GET['sortArtwork'] === 'descending';
 
-        try {
-            if ($isAdvancedSearch) {
-                // Load GenreRepository for filtering by genre
-                require_once dirname(__DIR__) . "/repositories/GenreRepository.php";
-                $genreRepository = new GenreRepository($this->db);
+        if ($isAdvancedSearch) {
+            // Load GenreRepository for filtering by genre
+            require_once dirname(__DIR__) . "/repositories/GenreRepository.php";
+            $genreRepository = new GenreRepository($this->db);
 
-                // Advanced search for artists if filterBy is 'artist' or empty
-                if ($filterBy === 'artist' || empty($filterBy)) {
-                    $artistSearchResults = $this->artistRepository->getArtistByAdvancedSearch(
-                        $artistName,
-                        $artistStartDate,
-                        $artistEndDate,
-                        $artistNationality,
-                        $sortArtist
-                    );
-                } else {
-                    $artistSearchResults = [];
-                }
-
-                // Advanced search for artworks if filterBy is 'artwork' or empty
-                if ($filterBy === 'artwork' || empty($filterBy)) {
-                    $artworkSearchResults = $this->artworkRepository->getArtworksByAdvancedSearch(
-                        $artworkTitle,
-                        $artworkStartDate,
-                        $artworkEndDate,
-                        $artworkGenre,
-                        $sortParameter,
-                        $sortArtwork
-                    );
-                } else {
-                    $artworkSearchResults = [];
-                }
-
-                $searchQuery = $isAdvancedSearch ? '' : $searchQuery;
-                $searchDisplayText = $isAdvancedSearch ? 'Advanced Search' : $searchQuery;
+            // Advanced search for artists if filterBy is 'artist' or empty
+            if ($filterBy === 'artist' || empty($filterBy)) {
+                $artistSearchResults = $this->artistRepository->getArtistByAdvancedSearch(
+                    $artistName,
+                    $artistStartDate,
+                    $artistEndDate,
+                    $artistNationality,
+                    $sortArtist
+                );
             } else {
-                // Regular search for artists and artworks by search query
-                $artistSearchResults = $this->artistRepository->getArtistBySearchQuery($searchQuery, $sortArtist);
-                $artworkSearchResults = $this->artworkRepository->getArtworkBySearchQuery($searchQuery, $sortParameter, $sortArtwork);
-                $searchDisplayText = $searchQuery;
+                $artistSearchResults = [];
             }
 
-            // Prepare data array for view rendering
-            $data = [
-                'searchQuery' => $searchQuery,
-                'searchDisplayText' => $searchDisplayText,
-                'artistSearchResults' => $artistSearchResults,
-                'artworkSearchResults' => $artworkSearchResults,
-                'sortParameter' => $sortParameter,
-                'sortArtist' => $sortArtist,
-                'sortArtwork' => $sortArtwork,
-                'isAdvancedSearch' => $isAdvancedSearch,
-                'filterBy' => $filterBy ?? '',
-                'artistName' => $artistName,
-                'artistStartDate' => $artistStartDate,
-                'artistEndDate' => $artistEndDate,
-                'artworkStartDate' => $artworkStartDate,
-                'artworkEndDate' => $artworkEndDate,
-                'artworkTitle' => $artworkTitle,
-                'artistNationality' => $artistNationality,
-                'artworkGenre' => $artworkGenre,
-                'title' => 'Search Results - Art Gallery'
-            ];
+            // Advanced search for artworks if filterBy is 'artwork' or empty
+            if ($filterBy === 'artwork' || empty($filterBy)) {
+                $artworkSearchResults = $this->artworkRepository->getArtworksByAdvancedSearch(
+                    $artworkTitle,
+                    $artworkStartDate,
+                    $artworkEndDate,
+                    $artworkGenre,
+                    $sortParameter,
+                    $sortArtwork
+                );
+            } else {
+                $artworkSearchResults = [];
+            }
 
-            // Render the search results view
-            echo $this->renderWithLayout('search/index', $data);
-
-        } catch (Exception $e) {
-            // On exception, redirect with error notification
-            $this->redirectWithNotification(
-                '/',
-                'Sorry something went wrong. Please try again.',
-                'error',
-            );
+            $searchQuery = $isAdvancedSearch ? '' : $searchQuery;
+            $searchDisplayText = $isAdvancedSearch ? 'Advanced Search' : $searchQuery;
+        } else {
+            // Regular search for artists and artworks by search query
+            $artistSearchResults = $this->artistRepository->getArtistBySearchQuery($searchQuery, $sortArtist);
+            $artworkSearchResults = $this->artworkRepository->getArtworkBySearchQuery($searchQuery, $sortParameter, $sortArtwork);
+            $searchDisplayText = $searchQuery;
         }
+
+        // Prepare data array for view rendering
+        $data = [
+            'searchQuery' => $searchQuery,
+            'searchDisplayText' => $searchDisplayText,
+            'artistSearchResults' => $artistSearchResults,
+            'artworkSearchResults' => $artworkSearchResults,
+            'sortParameter' => $sortParameter,
+            'sortArtist' => $sortArtist,
+            'sortArtwork' => $sortArtwork,
+            'isAdvancedSearch' => $isAdvancedSearch,
+            'filterBy' => $filterBy ?? '',
+            'artistName' => $artistName,
+            'artistStartDate' => $artistStartDate,
+            'artistEndDate' => $artistEndDate,
+            'artworkStartDate' => $artworkStartDate,
+            'artworkEndDate' => $artworkEndDate,
+            'artworkTitle' => $artworkTitle,
+            'artistNationality' => $artistNationality,
+            'artworkGenre' => $artworkGenre,
+            'title' => 'Search Results - Art Gallery'
+        ];
+
+        // Render the search results view
+        echo $this->renderWithLayout('search/index', $data);
     }
 
     /**
@@ -167,42 +158,32 @@ class SearchController extends BaseController
         require_once dirname(__DIR__) . "/repositories/GenreRepository.php";
         $genreRepository = new GenreRepository($this->db);
 
-        try {
-            // Retrieve list of artist nationalities for filter dropdown
-            $nationalities = $this->artistRepository->getArtistNationalities();
+        // Retrieve list of artist nationalities for filter dropdown
+        $nationalities = $this->artistRepository->getArtistNationalities();
 
-            // Retrieve list of genres for filter dropdown
-            $genres = $genreRepository->getAllGenres();
-            $genreNames = [];
-            foreach ($genres as $genre) {
-                $genreNames[] = $genre->getGenreName();
-            }
-
-            // Retrieve currently selected filters from GET parameters
-            $filterBy = $_GET['filterBy'] ?? 'artist';
-            $selectedArtistNationality = $_GET['artistNationality'] ?? '';
-            $selectedArtworkGenre = $_GET['artworkGenre'] ?? '';
-
-            // Prepare data array for view rendering
-            $data = [
-                'nationalities' => $nationalities,
-                'genreNames' => $genreNames,
-                'filterBy' => $filterBy,
-                'selectedArtistNationality' => $selectedArtistNationality,
-                'selectedArtworkGenre' => $selectedArtworkGenre,
-                'title' => 'Advanced Search - Art Gallery'
-            ];
-
-            // Render advanced search form view
-            echo $this->renderWithLayout('search/advanced', $data);
-
-        } catch (Exception $e) {
-            // On exception, redirect with error notification
-            $this->redirectWithNotification(
-                '/',
-                'Sorry something went wrong. Please try again.',
-                'error',
-            );
+        // Retrieve list of genres for filter dropdown
+        $genres = $genreRepository->getAllGenres();
+        $genreNames = [];
+        foreach ($genres as $genre) {
+            $genreNames[] = $genre->getGenreName();
         }
+
+        // Retrieve currently selected filters from GET parameters
+        $filterBy = $_GET['filterBy'] ?? 'artist';
+        $selectedArtistNationality = $_GET['artistNationality'] ?? '';
+        $selectedArtworkGenre = $_GET['artworkGenre'] ?? '';
+
+        // Prepare data array for view rendering
+        $data = [
+            'nationalities' => $nationalities,
+            'genreNames' => $genreNames,
+            'filterBy' => $filterBy,
+            'selectedArtistNationality' => $selectedArtistNationality,
+            'selectedArtworkGenre' => $selectedArtworkGenre,
+            'title' => 'Advanced Search - Art Gallery'
+        ];
+
+        // Render advanced search form view
+        echo $this->renderWithLayout('search/advanced', $data);
     }
 }

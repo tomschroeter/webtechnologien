@@ -10,8 +10,8 @@ class SubjectNotFoundException extends Exception
     public function __construct(int $subjectId)
     {
         $this->subjectId = $subjectId;
-
-        $message = "Subject with ID {$subjectId} couldn't be found";
+ 
+        $message = "Subject with ID {$subjectId} couldn't be found.";
         parent::__construct($message);
     }
 
