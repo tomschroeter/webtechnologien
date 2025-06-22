@@ -93,6 +93,7 @@ class ReviewController extends BaseController
 
     /**
      * Deletes a review by its ID. Only accessible to admin users.
+     * This method will not throw an exception, when there is no review with the given ID.
      *
      * @param int $reviewId The ID of the review to delete.
      *
