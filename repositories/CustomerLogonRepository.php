@@ -447,6 +447,7 @@ class CustomerLogonRepository
      * Updates a customer's full information including contact and address.
      *
      * @param int $id Customer ID.
+     * @param string $userName user name.
      * @param string $first First name.
      * @param string $last Last name.
      * @param string $address Street address.
@@ -460,6 +461,7 @@ class CustomerLogonRepository
      */
     public function updateCustomerFullInfo(
         int $id,
+        string $userName,
         string $first,
         string $last,
         string $address,
@@ -479,6 +481,7 @@ class CustomerLogonRepository
         Postal = :postal, Phone = :phone, Email = :email
         WHERE CustomerId = :id
         ";
+
         $stmt = $this->db->prepareStatement($sql);
 
         $stmt->bindValue("first", $first);
@@ -492,6 +495,12 @@ class CustomerLogonRepository
         $stmt->bindValue("email", $email);
         $stmt->bindValue("id", $id);
 
+        $stmt->execute();
+
+        $sqlLogon = "UPDATE customerlogon SET UserName = :username WHERE CustomerId = :id";
+        $stmt = $this->db->prepareStatement($sqlLogon);
+        $stmt->bindValue("username", $userName);
+        $stmt->bindValue("id", $id);
         $stmt->execute();
 
         $this->db->disconnect();

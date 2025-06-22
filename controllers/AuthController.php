@@ -491,6 +491,7 @@ class AuthController extends BaseController
         }
 
         // Retrieve and sanitize form input
+        $userName = trim($_POST['userName'] ?? '');
         $first = trim($_POST['firstName'] ?? '');
         $last = trim($_POST['lastName'] ?? '');
         $email = trim($_POST['email'] ?? '');
@@ -504,6 +505,8 @@ class AuthController extends BaseController
         $errors = [];
 
         // Validate required fields
+        if (empty($userName))
+            $errors[] = "Username is required.";
         if (empty($last))
             $errors[] = "Last name is required.";
         if (empty($email)) {
@@ -545,6 +548,7 @@ class AuthController extends BaseController
             // Update user data in database
             $this->customerRepository->updateCustomerFullInfo(
                 $userId,
+                $userName,
                 $first,
                 $last,
                 $address,

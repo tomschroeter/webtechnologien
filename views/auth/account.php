@@ -4,6 +4,13 @@
 <h4 class="mt-2">General Information</h4>
 <form class="mt-4 mb-4" action="/edit-account" method="get">
     <div class="row">
+        <!-- Username input, required -->
+        <div class="mb-3">
+            <label class="form-label">Username</label>
+            <input type="text" name="userName" class="form-control"
+                value="<?= htmlspecialchars($user->getUsername()) ?>" disabled>
+        </div>
+
         <div class="col-md-6 mb-3">
             <label class="form-label">First Name</label>
             <!-- Disabled input to show first name (read-only) -->
