@@ -4,6 +4,8 @@ Gruppe 2: Tom Schröter, Kian van der Meer, Tim Fuchs, Carlos Slaiwa, Arne Gutsc
 
 This application is developed as part of the "Web-Technologien" course at TH Wildau. It is a PHP-based web platform designed to showcase art as part of an art gallery, featuring dedicated pages for artworks, artists, genres, and subjects. Registered users can review various paintings, and add their favorite artworks and artists to personalized lists.
 
+You can find detailed documentation of our progress, software architecture, and more in our [Documentation](Dokumentation%20Art%20Gallery%20-%20Gruppe%202.pdf).
+
 ## Setup
 
 Make sure you have XAMPP installed and have added the art DB that was provided.
