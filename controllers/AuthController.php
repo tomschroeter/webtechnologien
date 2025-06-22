@@ -507,6 +507,8 @@ class AuthController extends BaseController
         // Validate required fields
         if (empty($userName))
             $errors[] = "Username is required.";
+        else if ($this->customerRepository->customerExists($userName))
+            $errors[] = "This username is already taken.";
         if (empty($last))
             $errors[] = "Last name is required.";
         if (empty($email)) {
