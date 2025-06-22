@@ -69,10 +69,6 @@ class SubjectController extends BaseController
             // Fetch the subject by ID
             $subject = $this->subjectRepository->getSubjectById($subjectId);
 
-            if (!$subject) {
-                throw new HttpException(404, "No subject with the given ID was found.");
-            }
-
             // Fetch artworks related to the subject
             $artworks = $this->artworkRepository->getArtworksBySubject($subjectId);
 
@@ -85,9 +81,8 @@ class SubjectController extends BaseController
             // Render the subject detail page
             $this->renderWithLayout('subjects/show', $data);
 
-        } catch (Exception $e) {
-            error_log("Error loading subject: " . $e->getMessage());
-            throw new HttpException(500, "A database error occurred while loading the subject. Please try again later.");
+        } catch (SubjectNotFoundException $e) {
+            throw new HttpException(404, $e->getMessage());
         }
     }
 }

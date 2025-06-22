@@ -2,6 +2,7 @@
 
 require_once dirname(__DIR__) . "/Database.php";
 require_once dirname(__DIR__) . "/classes/Subject.php";
+require_once dirname(__DIR__) . "/exceptions/SubjectNotFound.php";
 
 class SubjectRepository
 {
@@ -45,7 +46,7 @@ class SubjectRepository
      * @param int $subjectId The ID of the subject to retrieve.
      * @return Subject The subject corresponding to the given ID.
      *
-     * @throws Exception If the subject is not found in the database.
+     * @throws SubjectNotFoundException If the subject is not found in the database.
      */
     public function getSubjectById(int $subjectId): Subject
     {
@@ -66,7 +67,7 @@ class SubjectRepository
         if ($row !== false) {
             return Subject::createSubjectFromRecord($row);
         } else {
-            throw new Exception("Subject with ID {$subjectId} couldn't be found");
+            throw new SubjectNotFoundException($subjectId);
         }
     }
 
