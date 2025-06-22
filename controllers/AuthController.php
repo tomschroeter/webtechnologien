@@ -154,7 +154,7 @@ class AuthController extends BaseController
             $this->redirectWithNotification('/register', 'Please fill out all required fields.', 'error');
         } elseif (!$validPhoneNumber && !empty($phone)) {
             $this->redirectWithNotification('/register', 'The phone number does not have a valid format.', 'error');
-        } elseif (!filter_var($email, FILTER_VALIDATE_EMAIL)) {
+        } elseif (!filter_var($email, FILTER_VALIDATE_EMAIL, FILTER_FLAG_EMAIL_UNICODE)) { // FILTER_FLAG_EMAIL_UNICODE to allow characters like ł or ó
             $this->redirectWithNotification('/register', 'The E-Mail does not have a valid format.', 'error');
         } elseif (!$validPassword) {
             $this->redirectWithNotification('/register', 'The password must contain at least 6 characters, one uppercase letter, one number, and one special character.', 'error');
@@ -549,7 +549,7 @@ class AuthController extends BaseController
             $errors[] = "Last name is required.";
         if (empty($email)) {
             $errors[] = "Email is required.";
-        } elseif (!filter_var($email, FILTER_VALIDATE_EMAIL)) {
+        } elseif (!filter_var($email, FILTER_VALIDATE_EMAIL, FILTER_FLAG_EMAIL_UNICODE)) { // FILTER_FLAG_EMAIL_UNICODE to allow characters like ł or ó
             $errors[] = "Please enter a valid email address.";
         }
         if (empty($address))
