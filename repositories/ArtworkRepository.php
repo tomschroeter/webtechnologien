@@ -8,6 +8,7 @@ require_once dirname(__DIR__) . "/repositories/SubjectRepository.php";
 require_once dirname(__DIR__) . "/repositories/GenreRepository.php";
 require_once dirname(__DIR__) . "/dtos/ArtworkWithArtistName.php";
 require_once dirname(__DIR__) . "/components/fix-file-path.php";
+require_once dirname(__DIR__) . "/exceptions/ArtworkNotFound.php";
 
 class ArtworkRepository
 {
@@ -92,7 +93,7 @@ class ArtworkRepository
 
         if ($artwork === false) {
             $this->db->disconnect();
-            throw new Exception("Artwork with ID {$id} not found");
+            throw new ArtworkNotFoundException($id);
         }
 
         // Add 0 in front of image file name if name is 5 characters long
