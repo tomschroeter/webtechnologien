@@ -68,8 +68,8 @@
       </div>
       <div class="col-md-6 mb-3">
         <label class="form-label">Email*</label>
-        <!-- Email input, required and validated by browser -->
-        <input type="email" name="email" class="form-control" value="<?= htmlspecialchars($user->getEmail()) ?>"
+        <!-- Email input, required, but not validated by browser as type="email" doesn't allow characters like ł or ó -->
+        <input name="email" class="form-control" value="<?= htmlspecialchars($user->getEmail()) ?>"
           required>
       </div>
     </div>
