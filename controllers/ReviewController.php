@@ -2,6 +2,7 @@
 
 require_once __DIR__ . "/BaseController.php";
 require_once dirname(__DIR__) . "/repositories/ReviewRepository.php";
+require_once dirname(__DIR__) . "/repositories/ArtworkRepository.php";
 require_once dirname(__DIR__) . "/classes/Review.php";
 require_once dirname(__DIR__) . "/Database.php";
 
@@ -20,6 +21,7 @@ class ReviewController extends BaseController
     {
         $this->db = new Database();
         $this->reviewRepository = new ReviewRepository($this->db);
+        $this->artworkRepository = new ArtworkRepository($this->db);
     }
 
     /**
@@ -44,46 +46,54 @@ class ReviewController extends BaseController
         $comment = trim($_POST['comment'] ?? '');
         $customerId = $_SESSION['customerId'];
 
+        // Validate the ID types
+        if (!$artworkId || !is_numeric($artworkId)) {
+            throw new HttpException(400, "The artwork ID parameter is invalid or missing.");
+        }
+
         // Basic input validation
         if (!$artworkId || !$rating || $rating < 1 || $rating > 5 || empty($comment)) {
-            throw new HttpException(422, "Invalid review data. Please provide a valid rating (1-5) and comment.");
+            throw new HttpException(400, "Invalid review data. Please provide a valid rating (1-5) and comment.");
         }
 
         try {
-            // Prevent duplicate review from same user for the same artwork
-            if ($this->reviewRepository->hasUserReviewed($customerId, $artworkId)) {
-                throw new HttpException(409, "You have already reviewed this artwork.");
-            }
-
-            // Create Review object with current timestamp
-            $review = new Review(
-                null, // ReviewId (auto-generated)
-                $artworkId,
-                $customerId,
-                date('Y-m-d H:i:s'),
-                $rating,
-                $comment
-            );
-
-            // Save review to database and get its ID
-            $reviewId = $this->reviewRepository->addReview($review);
-
-            $redirectUrl = "/artworks/$artworkId";
-
-            // Redirect with success notification
-            $this->redirectWithNotification(
-                $redirectUrl,
-                'Successfully added your review!',
-                'success'
-            );
-
-        } catch (Exception $e) {
-            throw new HttpException(500, "An error occurred while saving your review. Please try again.");
+            $this->artworkRepository->getArtworkById($artworkId);
         }
+        catch (ArtworkNotFoundException $e) {
+            throw new HttpException(400, $e->getMessage());
+        }
+
+        // Prevent duplicate review from same user for the same artwork
+        if ($this->reviewRepository->hasUserReviewed($customerId, $artworkId)) {
+            throw new HttpException(409, "You have already reviewed this artwork.");
+        }
+
+        // Create Review object with current timestamp
+        $review = new Review(
+            null, // ReviewId (auto-generated)
+            $artworkId,
+            $customerId,
+            date('Y-m-d H:i:s'),
+            $rating,
+            $comment
+        );
+
+        // Save review to database and get its ID
+        $reviewId = $this->reviewRepository->addReview($review);
+
+        $redirectUrl = "/artworks/$artworkId";
+
+        // Redirect with success notification
+        $this->redirectWithNotification(
+            $redirectUrl,
+            'Successfully added your review!',
+            'success'
+        );
     }
 
     /**
      * Deletes a review by its ID. Only accessible to admin users.
+     * This method will not throw an exception, when there is no review with the given ID.
      *
      * @param int $reviewId The ID of the review to delete.
      *
@@ -105,30 +115,14 @@ class ReviewController extends BaseController
             throw new HttpException(400, "Invalid review ID provided.");
         }
 
-        try {
-            // Delete review from database
-            $this->reviewRepository->deleteReview($reviewId);
+        // Delete review from database
+        $this->reviewRepository->deleteReview($reviewId);
 
-            // Redirect back with success notification
-            $this->redirectWithNotification(
-                $_SERVER['HTTP_REFERER'] ?? '/',
-                'Successfully removed review!',
-                'success',
-            );
-
-        } catch (HttpException $e) {
-            throw $e; // Re-throw HttpExceptions for upstream handling
-        } catch (Exception $e) {
-            throw new HttpException(500, "An error occurred while deleting the review. Please try again.");
-        }
-    }
-
-    /**
-     * Checks if the current request is an AJAX request.
-     */
-    private function isAjaxRequest(): bool
-    {
-        return isset($_SERVER['HTTP_X_REQUESTED_WITH']) &&
-            strtolower($_SERVER['HTTP_X_REQUESTED_WITH']) === 'xmlhttprequest';
+        // Redirect back with success notification
+        $this->redirectWithNotification(
+            $_SERVER['HTTP_REFERER'] ?? '/',
+            'Successfully removed review!',
+            'success',
+        );
     }
 }

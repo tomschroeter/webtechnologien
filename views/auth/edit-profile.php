@@ -6,9 +6,6 @@
   <!-- Profile edit form -->
   <form class="mt-4 mb-4" method="POST" action="<?= $isAdminEdit ? "/edit-profile/{$userId}" : "/edit-profile" ?>">
 
-    <!-- Hidden input to carry user ID for processing -->
-    <input type="hidden" name="userId" value="<?= htmlspecialchars($userId) ?>">
-
     <!-- Name inputs -->
     <div class="row">
       <div class="col-md-6 mb-3">

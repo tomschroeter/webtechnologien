@@ -4,7 +4,7 @@
 
 <div class="mt-4">
     <div class="row">
-        <div class="col-md-4 mb-3 mb-md-0">
+        <div class="col-auto mb-3 mb-md-0">
             <?php
             // Include helper to find image or placeholder
             require_once dirname(dirname(__DIR__)) . "/components/find-image-ref.php";

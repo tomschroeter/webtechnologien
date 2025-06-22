@@ -4,6 +4,7 @@ require_once __DIR__ . "/BaseController.php";
 require_once dirname(__DIR__) . "/repositories/GenreRepository.php";
 require_once dirname(__DIR__) . "/repositories/ArtworkRepository.php";
 require_once dirname(__DIR__) . "/Database.php";
+require_once dirname(__DIR__) . "/exceptions/GenreNotFound.php";
 
 /**
  * Handles the listing and detail views of genres.
@@ -72,11 +73,6 @@ class GenreController extends BaseController
             // Attempt to fetch genre by ID
             $genre = $this->genreRepository->getGenreById($genreId);
 
-            // If genre not found, throw 404 error
-            if (!$genre) {
-                throw new HttpException(404, "No genre with the given ID was found.");
-            }
-
             // Fetch artworks belonging to the genre
             $artworks = $this->artworkRepository->getArtworksByGenre($genreId);
 
@@ -89,12 +85,8 @@ class GenreController extends BaseController
             // Render the genre details page with artworks
             $this->renderWithLayout('genres/show', $data);
 
-        } catch (Exception $e) {
-            // Log any unexpected error for debugging
-            error_log("Error loading genre: " . $e->getMessage());
-
-            // Throw a 500 Internal Server Error with a generic message
-            throw new HttpException(500, "A database error occurred while loading the genre. Please try again later.");
+        } catch (GenreNotFoundException $e) {
+            throw new HttpException(404, $e->getMessage());
         }
     }
 }
