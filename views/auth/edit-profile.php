@@ -6,6 +6,13 @@
   <!-- Profile edit form -->
   <form class="mt-4 mb-4" method="POST" action="<?= $isAdminEdit ? "/edit-profile/{$userId}" : "/edit-profile" ?>">
 
+    <!-- Username input, required -->
+    <div class="mb-3">
+      <label class="form-label">Username*</label>
+      <input type="text" name="userName" class="form-control" value="<?= htmlspecialchars($user->getUsername()) ?>"
+        required minlength="3">
+    </div>
+
     <!-- Name inputs -->
     <div class="row">
       <div class="col-md-6 mb-3">
@@ -66,8 +73,7 @@
       <div class="col-md-6 mb-3">
         <label class="form-label">Email*</label>
         <!-- Email input, required, but not validated by browser as type="email" doesn't allow characters like ł or ó -->
-        <input name="email" class="form-control" value="<?= htmlspecialchars($user->getEmail()) ?>"
-          required>
+        <input name="email" class="form-control" value="<?= htmlspecialchars($user->getEmail()) ?>" required>
       </div>
     </div>
 
