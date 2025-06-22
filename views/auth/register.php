@@ -58,10 +58,10 @@
             <input type="tel" name="phone" value="<?= htmlspecialchars($formData['phone'] ?? '') ?>"
                 class="form-control" placeholder="Phone (optional)" title="Please enter a valid phone number.">
         </div>
-        <!-- Email input (required, validated as email) -->
+        <!-- Email input (required, but not validated as email in browser, as type="eamil" doesn't allow characters like ł or ó) -->
         <div class="col-md-6 mb-3">
             <label class="form-label">Email*</label>
-            <input name="email" type="email" class="form-control" placeholder="Email" required
+            <input name="email" class="form-control" placeholder="Email" required
                 value="<?= htmlspecialchars($formData['email'] ?? '') ?>">
         </div>
     </div>
