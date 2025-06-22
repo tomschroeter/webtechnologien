@@ -478,8 +478,7 @@ class AuthController extends BaseController
         // If editing another user's profile, check admin privileges
         if ($userId && (int) $userId !== (int) $_SESSION['customerId']) {
             if (!isset($_SESSION['isAdmin']) || !$_SESSION['isAdmin']) {
-                $this->redirectWithNotification('/', 'Access denied. Administrator privileges required.', 'error');
-                return;
+                throw new HttpException(403, 'Access denied. Administrator privileges required.');
             }
             $isAdminEdit = true;
             $userId = (int) $userId;
@@ -490,9 +489,7 @@ class AuthController extends BaseController
 
         // Validate user ID
         if (!$userId || !is_numeric($userId)) {
-            $redirectUrl = $isAdminEdit ? '/manage-users' : '/account';
-            $this->redirectWithNotification($redirectUrl, 'Invalid user ID.', 'error');
-            return;
+            throw new HttpException(400, "The user ID parameter is invalid or missing.");
         }
 
         // Retrieve and sanitize form input
@@ -583,11 +580,14 @@ class AuthController extends BaseController
 
         // Get user details from session
         $userId = (int) $_SESSION['customerId'];
-        $user = $this->customerRepository->getCustomerDetailsById($userId);
 
-        if (!$user) {
-            $this->redirectWithNotification('/account', 'User not found.', 'error');
-            return;
+        // Retrieve user details
+        try {
+            $user = $this->customerRepository->getCustomerDetailsById($userId);
+        }
+        catch (CustomerNotFoundException $e) {
+            // In this case, it is a "forbidden" error, because not logged in users should not be able to use this page
+            throw new HttpException(401, "Invalid session.");
         }
 
         // Render password change form
@@ -611,8 +611,7 @@ class AuthController extends BaseController
         if ($userId) {
             // Admin editing another user's profile
             if (!isset($_SESSION['isAdmin']) || !$_SESSION['isAdmin']) {
-                $this->redirectWithNotification('/', 'Access denied. Administrator privileges required.', 'error');
-                return;
+                throw new HttpException(401, "Access denied. Administrator privileges required.");
             }
             $isAdminEdit = true;
             $userId = (int) $userId;
@@ -620,12 +619,13 @@ class AuthController extends BaseController
             // User editing their own profile
             $userId = (int) $_SESSION['customerId'];
         }
-        echo $userId;
-        $user = $this->customerRepository->getCustomerDetailsById($userId);
 
-        if (!$user) {
-            $this->redirectWithNotification('/account', 'User not found.', 'error');
-            return;
+        // Retrieve user details
+        try {
+            $user = $this->customerRepository->getCustomerDetailsById($userId);
+        }
+        catch (CustomerNotFoundException $e) {
+            throw new HttpException(401, "Invalid session.");
         }
 
         // Collect submitted password fields
@@ -670,17 +670,11 @@ class AuthController extends BaseController
             return;
         }
 
-        try {
-            // Hash and update new password
-            $hashed = password_hash($newPassword1, PASSWORD_DEFAULT);
-            $this->customerRepository->updateCustomerPassword($userId, $hashed);
+        // Hash and update new password
+        $hashed = password_hash($newPassword1, PASSWORD_DEFAULT);
+        $this->customerRepository->updateCustomerPassword($userId, $hashed);
 
-            $redirectUrl = $isAdminEdit ? '/manage-users' : '/account';
-            $this->redirectWithNotification($redirectUrl, 'Password changed successfully.', 'success');
-
-        } catch (Exception $e) {
-            $redirectUrl = $isAdminEdit ? "/edit-profile/$userId" : "/edit-profile";
-            $this->redirectWithNotification($redirectUrl, 'An error occurred while updating the password. Please try again.', 'error');
-        }
+        $redirectUrl = $isAdminEdit ? '/manage-users' : '/account';
+        $this->redirectWithNotification($redirectUrl, 'Password changed successfully.', 'success');
     }
 }
