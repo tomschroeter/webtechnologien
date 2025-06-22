@@ -2,6 +2,7 @@
 
 require_once dirname(__DIR__) . "/Database.php";
 require_once dirname(__DIR__) . "/classes/Genre.php";
+require_once dirname(__DIR__) . "/exceptions/GenreNotFound.php";
 
 class GenreRepository
 {
@@ -67,7 +68,7 @@ class GenreRepository
         if ($row !== false) {
             return Genre::createGenreFromRecord($row);
         } else {
-            throw new Exception("Genre with ID {$genreId} couldn't be found");
+            throw new GenreNotFoundException($genreId);
         }
     }
 

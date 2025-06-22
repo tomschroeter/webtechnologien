@@ -60,7 +60,7 @@ class ReviewController extends BaseController
             $this->artworkRepository->getArtworkById($artworkId);
         }
         catch (ArtworkNotFoundException $e) {
-            throw new HttpException(400, "There is no artwork with the given ID.");
+            throw new HttpException(400, $e->getMessage());
         }
 
         // Prevent duplicate review from same user for the same artwork
